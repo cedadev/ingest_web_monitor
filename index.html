@@ -1,0 +1,218 @@
+
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/popper.min.js"></script>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container-fluid">
+<h1>Ingest Stream State</h1>
+
+<form>Filters:
+<label>Stream name</label><input type="text" name="namefilter" id="name_filter"/>
+<label>Owner</label><input type="text" name="owner" id="owner_filter"/>
+<input type="submit" value="filter">
+</form>
+
+<div class="alert alert-light" role="alert" id="key">
+    Key:
+    <a href="#" class="btn btn-outline-primary active">Running</a>
+    <a href="#" class="btn btn-outline-success active">Recently finished</a>
+    <a href="#" class="btn btn-outline-success">Ran OK</a>
+    <a href="#" class="btn btn-outline-warning">Errors</a>
+    <a href="#" class="btn btn-outline-danger">Failed</a>
+    <a href="#" class="btn btn-outline-dark">Killed <i class="fas fa-skull"></i></a>
+    <a href="#" class="btn btn-outline-success">Over an hour <i class="fas fa-stopwatch"></i></a>
+    <a href="#" class="btn btn-outline-success">Manual <i class="fas fa-hand-pointer"></i></a>
+</div>
+
+
+<div id="streams"></div>
+
+<div id="z">
+
+</div>
+
+</div>
+
+<script>
+
+
+
+// query for last logs
+query = {
+  "query": {
+    "range": {
+      "logtime": {
+        "gte": "2018-06"
+      }
+    }
+  },
+
+  "aggs": {
+    "stream": {
+      "terms": {
+        "field": "stream.keyword",
+        size: 500
+      },
+      "aggs": {
+        "recent_logs": {
+          "top_hits": {
+            "size": 100,
+            "sort": [
+              {
+                "logtime": {
+                  "order": "desc"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "size": 0
+};
+
+function get_last_logs()
+{
+    console.log("in get_last_logs")
+    var outut = {};
+    $.post({
+                url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
+                data: JSON.stringify(query),
+                success: function (data) {
+                    console.log("in success function");
+                    for (i = 0; i < data.aggregations.stream.buckets.length; i++) {
+                        var stream = data.aggregations.stream.buckets[i].key;
+                        var last_log = data.aggregations.stream.buckets[i].recent_logs.hits.hits[0]._source;
+                        var nlogs = data.aggregations.stream.buckets[i].recent_logs.hits.hits.length;
+                        var counts = {};
+                        for (var j=0; j < nlogs; j++) {
+                            var doc = data.aggregations.stream.buckets[i].recent_logs.hits.hits[j]._source;
+                            if (doc.state in counts) {
+                                counts[doc.state]++;
+                            } else {
+                                counts[doc.state] = 1;
+                            }
+                        }
+                        last_log.counts = counts;
+                        last_log.nlogs = nlogs;
+
+                        outut[stream] = last_log;
+                    }
+                    outpt = outut; // set global var
+                    refresh_page_info(outut);
+                    setTimeout(get_last_logs, 5000);
+                },
+
+                error: function (data) {
+                    console.log(data)
+                },
+                contentType: "application/json"
+            }
+    );
+    console.log("-->", outut);
+    return outut;
+}
+
+
+
+function hovershow(x) {
+    // show the last log info below
+    z.empty();
+    var last_log = outpt[x.id];
+    z.text(JSON.stringify(last_log, null, 4));
+    z.html("<pre>"+ z.html()+"</pre>");
+    z.prepend("<h4>"+ x.id+"</h4>");
+}
+
+//
+function refresh_page_info(a) {
+    // function to refresh the stream info on the page
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var name_filter = urlParams.get("namefilter");
+    var owner_filter = urlParams.get("owner");
+    console.log(name_filter, owner_filter);
+    streams_div.empty();
+
+    for (var s in a) {
+        if (name_filter && !(s.includes(name_filter))) {continue}
+
+        var last_log = a[s];
+        if (owner_filter) {
+            if ("config" in last_log && "owner" in last_log.config) {
+                if ( !(last_log.config.owner.includes(owner_filter)) ) {continue}   // skip if not the owner
+            } else {
+                continue  // skip if no owner defined
+            }
+        }
+
+       // console.log(last_log.start_time.substring(0,19))
+
+        var state = last_log.state;
+        var start_time = new Date(last_log.start_time.substring(0, 19));
+        var end_time = new Date(last_log.end_time.substring(0, 19));
+        if (state == "running") {end_time = new Date()}
+        var job_time = (end_time - start_time)/(1000*60);
+        var long_job = job_time > 60;
+        var ago = Math.floor((new Date() - end_time)/(1000*60));
+        var recent = (ago < 5);
+        var cron =  ("config" in last_log && "when" in last_log.config);
+        var killed = last_log.killed;
+
+        // counts not running that are not this state
+        var b = '';
+        for (var c in last_log.counts) {
+            if (c == "running") {continue}
+            b += ' <span class="badge badge-'+colours[c]+'">'+last_log.counts[c]+'</span>';
+        }
+
+
+        var boot_class = "mb-1 btn btn-sm";
+        boot_class += " btn-outline-" +colours[state];
+        if (recent || state == "running") {boot_class += " active"}
+
+        var w = '<a href="#" id="'+s+'" onclick="hovershow(this);" class="' + boot_class + '">' + s + b;
+        if (!cron) {w += ' <i class="fas fa-hand-pointer"></i>'}
+        if (long_job) {w += ' <i class="fas fa-stopwatch"></i>'}
+        if (killed) {w += ' <i class="fas fa-skull"></i>'}
+        w += '</a> ';
+
+        streams_div.append(w);
+    }
+    streams_div.html("<div>"+ streams_div.html()+"</div>");
+}
+
+
+// badges colours for different states
+//colours = {"ok": "badge-success", "ok-errors": "badge-success", "fail": "badge-danger", "killed": "badge-danger",
+//           "warn": "badge-warning", "running": "badge-primary", "died": "badge-dark"};
+// badges colours for different states
+colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark",
+           "warn": "warning", "running": "primary", "died": "dark"};
+
+streams_div = $("#streams");
+z = $("#z");
+
+var outpt = get_last_logs();
+
+
+
+
+
+</script>
+</body>
+</html>
