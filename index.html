@@ -6,13 +6,13 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/popper.min.js"></script>
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
       integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="lib.js"></script>
 
 </head>
 <body>
@@ -40,50 +40,9 @@
 
 <div id="streams"></div>
 
-<div id="z">
-
-</div>
-
 </div>
 
 <script>
-
-
-
-// query for last logs
-query = {
-  "query": {
-    "range": {
-      "logtime": {
-        "gte": "2018-06"
-      }
-    }
-  },
-
-  "aggs": {
-    "stream": {
-      "terms": {
-        "field": "stream.keyword",
-        size: 500
-      },
-      "aggs": {
-        "recent_logs": {
-          "top_hits": {
-            "size": 100,
-            "sort": [
-              {
-                "logtime": {
-                  "order": "desc"
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  },
-  "size": 0
-};
 
 function get_last_logs()
 {
@@ -91,7 +50,7 @@ function get_last_logs()
     var outut = {};
     $.post({
                 url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
-                data: JSON.stringify(query),
+                data: JSON.stringify(last_logs_query),
                 success: function (data) {
                     console.log("in success function");
                     for (i = 0; i < data.aggregations.stream.buckets.length; i++) {
@@ -127,16 +86,6 @@ function get_last_logs()
     return outut;
 }
 
-
-
-function hovershow(x) {
-    // show the last log info below
-    z.empty();
-    var last_log = outpt[x.id];
-    z.text(JSON.stringify(last_log, null, 4));
-    z.html("<pre>"+ z.html()+"</pre>");
-    z.prepend("<h4>"+ x.id+"</h4>");
-}
 
 //
 function refresh_page_info(a) {
@@ -191,18 +140,13 @@ function refresh_page_info(a) {
         if (killed) {w += ' <i class="fas fa-skull"></i>'}
         w += '</a> ';
 
+
+        w = stream_button(last_log);
         streams_div.append(w);
     }
     streams_div.html("<div>"+ streams_div.html()+"</div>");
 }
 
-
-// badges colours for different states
-//colours = {"ok": "badge-success", "ok-errors": "badge-success", "fail": "badge-danger", "killed": "badge-danger",
-//           "warn": "badge-warning", "running": "badge-primary", "died": "badge-dark"};
-// badges colours for different states
-colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark",
-           "warn": "warning", "running": "primary", "died": "dark"};
 
 streams_div = $("#streams");
 z = $("#z");

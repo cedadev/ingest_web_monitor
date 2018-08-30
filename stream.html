@@ -1,0 +1,102 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="lib.js"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+<h1>Ingest Stream State</h1>
+
+<div id="z">
+
+</div>
+
+</div>
+
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var streamname = urlParams.get("streamname");
+
+    z = $("#z");
+
+    z.html("<h1>"+streamname+"</h1>");
+
+
+
+    function get_last_logs()
+    {
+        var query = {
+            "query": {
+                "term": {
+                    "stream.keyword":  streamname
+                }
+            }, "sort": [
+                {
+                    "logtime": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            "size": 1000
+        };
+        console.log(query);
+        var logs = [];
+        var job_names = []
+        $.post({
+                    url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
+                    data: JSON.stringify(query),
+                    success: function (data) {
+                        console.log("in success function");
+                        for (var i = 0; i < data.hits.hits.length; i++) {
+                            var doc = data.hits.hits[i]._source;
+
+                            if (doc.state == "running") {
+                                if (!(job_names.includes(doc.jobname))) {
+                                    logs.push(doc);   // only add running jobs the have no matching finished log
+                                }
+                            } else {
+                                logs.push(doc);   // always add jobs if not running
+                                job_names.push(doc.jobname);
+                            }
+                        }
+                        render_logs(logs);
+                    },
+
+                    error: function (data) {
+                        console.log(data)
+                    },
+                    contentType: "application/json"
+                }
+        );
+        return logs;
+    }
+
+    llogs = get_last_logs();
+
+    function render_logs(logs) {
+        z.append("<p><a href='index.html' class='btn btn-lg btn-primary'>All streams</a></p>")
+        for (var i=0; i < logs.length; i++){
+            console.log(logs[i]);
+            var logb = job_button(logs[i]);
+            z.append(logb);
+        }
+        //z.append(JSON.stringify(logs, null, 4))
+    }
+
+
+</script>
+
+</body>
+</html>

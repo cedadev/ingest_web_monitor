@@ -1,0 +1,88 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="lib.js"></script>
+
+</head>
+<body>
+<div class="container-fluid" id="z">
+
+</div>
+
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var job_name = urlParams.get("job");
+
+    z = $("#z");
+
+    z.html("<h1>Job Records for "+job_name+"</h1>");
+
+    function get_last_logs()
+    {
+        var query = {
+            "query": {
+                "term": {
+                    "jobname.keyword":  job_name
+                }
+            }, "sort": [
+                {
+                    "logtime": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            "size": 1000
+        };
+        console.log(query);
+        var logs = [];
+        $.post({
+                    url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
+                    data: JSON.stringify(query),
+                    success: function (data) {
+                        for (var i = 0; i < data.hits.hits.length; i++) {
+                            var doc = data.hits.hits[i]._source;
+                            logs.push(doc);
+                        }
+                        render_job_logs(logs);
+                    },
+
+                    error: function (data) {
+                        console.log(data)
+                    },
+                    contentType: "application/json"
+                }
+        );
+        return logs;
+    }
+
+    llogs = get_last_logs();
+
+    function render_job_logs(logs) {
+        var last_log = logs[0];
+        z.append("<p>Back: " + stream_button(logs[0]) + "</p>");
+        if (last_log.output) {
+            z.append("<div class='alert alert-info' role='alert'><h4>Output</h4><pre><code>"+
+                     last_log.output+"</code></pre></div>")}
+        if (last_log.errors) {
+            z.append("<div class='alert alert-warning' role='alert'><h4>Errors</h4><pre><code>"+
+                     last_log.errors+"</code></pre></div>")}
+
+        z.append("<pre>"+ JSON.stringify(logs, null, 4) + "</pre>");
+    }
+
+
+</script>
+
+</body>
+</html>
