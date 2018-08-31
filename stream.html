@@ -28,6 +28,8 @@
 <script>
     var urlParams = new URLSearchParams(window.location.search);
     var streamname = urlParams.get("streamname");
+    var name_filter = urlParams.get("namefilter");
+    var owner_filter = urlParams.get("owner");
 
     z = $("#z");
 
@@ -51,14 +53,13 @@
             ],
             "size": 1000
         };
-        console.log(query);
+
         var logs = [];
         var job_names = []
         $.post({
                     url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
                     data: JSON.stringify(query),
                     success: function (data) {
-                        console.log("in success function");
                         for (var i = 0; i < data.hits.hits.length; i++) {
                             var doc = data.hits.hits[i]._source;
 
@@ -86,11 +87,16 @@
     llogs = get_last_logs();
 
     function render_logs(logs) {
-        z.append("<p><a href='index.html' class='btn btn-lg btn-primary'>All streams</a></p>")
+        z.append("<p>"+top_button()+"</p>");
+        var last_job_start = new Date();
         for (var i=0; i < logs.length; i++){
-            console.log(logs[i]);
+            var job_start = new Date(logs[i].start_time.substring(0, 19));
+            var s = spacer(last_job_start - job_start);
             var logb = job_button(logs[i]);
+            z.append(s);
             z.append(logb);
+
+            last_job_start = job_start;
         }
         //z.append(JSON.stringify(logs, null, 4))
     }

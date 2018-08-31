@@ -22,8 +22,9 @@
 <form>Filters:
 <label>Stream name</label><input type="text" name="namefilter" id="name_filter"/>
 <label>Owner</label><input type="text" name="owner" id="owner_filter"/>
+<label>Don't show OK</label><input type="checkbox" name="hide_ok" id="hide_ok"/>
 <input type="submit" value="filter">
-</form>
+
 
 <div class="alert alert-light" role="alert" id="key">
     Key:
@@ -37,6 +38,8 @@
     <a href="#" class="btn btn-outline-success">Manual <i class="fas fa-hand-pointer"></i></a>
 </div>
 
+</div>
+</form>
 
 <div id="streams"></div>
 
@@ -46,13 +49,11 @@
 
 function get_last_logs()
 {
-    console.log("in get_last_logs")
     var outut = {};
     $.post({
                 url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
                 data: JSON.stringify(last_logs_query),
                 success: function (data) {
-                    console.log("in success function");
                     for (i = 0; i < data.aggregations.stream.buckets.length; i++) {
                         var stream = data.aggregations.stream.buckets[i].key;
                         var last_log = data.aggregations.stream.buckets[i].recent_logs.hits.hits[0]._source;
@@ -82,7 +83,6 @@ function get_last_logs()
                 contentType: "application/json"
             }
     );
-    console.log("-->", outut);
     return outut;
 }
 
@@ -90,57 +90,28 @@ function get_last_logs()
 //
 function refresh_page_info(a) {
     // function to refresh the stream info on the page
-
-    var urlParams = new URLSearchParams(window.location.search);
-    var name_filter = urlParams.get("namefilter");
-    var owner_filter = urlParams.get("owner");
-    console.log(name_filter, owner_filter);
     streams_div.empty();
 
     for (var s in a) {
+        // skip streams that do not match the name filter
         if (name_filter && !(s.includes(name_filter))) {continue}
 
+        // skip streams that do not match the owner
         var last_log = a[s];
         if (owner_filter) {
             if ("config" in last_log && "owner" in last_log.config) {
-                if ( !(last_log.config.owner.includes(owner_filter)) ) {continue}   // skip if not the owner
+                if (!(last_log.config.owner.includes(owner_filter))) {
+                    continue
+                }   // skip if not the owner
             } else {
-                continue  // skip if no owner defined
+                continue; // skip if no owner defined
             }
         }
 
-       // console.log(last_log.start_time.substring(0,19))
+        // skip ok streams if flag set
+        if (hide_ok && last_log.state == "ok") {continue}
 
-        var state = last_log.state;
-        var start_time = new Date(last_log.start_time.substring(0, 19));
-        var end_time = new Date(last_log.end_time.substring(0, 19));
-        if (state == "running") {end_time = new Date()}
-        var job_time = (end_time - start_time)/(1000*60);
-        var long_job = job_time > 60;
-        var ago = Math.floor((new Date() - end_time)/(1000*60));
-        var recent = (ago < 5);
-        var cron =  ("config" in last_log && "when" in last_log.config);
-        var killed = last_log.killed;
-
-        // counts not running that are not this state
-        var b = '';
-        for (var c in last_log.counts) {
-            if (c == "running") {continue}
-            b += ' <span class="badge badge-'+colours[c]+'">'+last_log.counts[c]+'</span>';
-        }
-
-
-        var boot_class = "mb-1 btn btn-sm";
-        boot_class += " btn-outline-" +colours[state];
-        if (recent || state == "running") {boot_class += " active"}
-
-        var w = '<a href="#" id="'+s+'" onclick="hovershow(this);" class="' + boot_class + '">' + s + b;
-        if (!cron) {w += ' <i class="fas fa-hand-pointer"></i>'}
-        if (long_job) {w += ' <i class="fas fa-stopwatch"></i>'}
-        if (killed) {w += ' <i class="fas fa-skull"></i>'}
-        w += '</a> ';
-
-
+        // make button and add to the display
         w = stream_button(last_log);
         streams_div.append(w);
     }
@@ -153,7 +124,14 @@ z = $("#z");
 
 var outpt = get_last_logs();
 
-
+// populate form from url
+var urlParams = new URLSearchParams(window.location.search);
+var name_filter = urlParams.get("namefilter");
+$('#name_filter').attr("value", name_filter);
+var owner_filter = urlParams.get("owner");
+$('#owner_filter').attr("value", owner_filter);
+var hide_ok = urlParams.get("hide_ok");
+$('#hide_ok').prop("checked", hide_ok);
 
 
 

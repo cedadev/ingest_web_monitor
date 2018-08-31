@@ -44,7 +44,7 @@ last_logs_query = {
 colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark",
            "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info"};
 
-// period display
+// period job display
 function periodbadge(p) {
 
     if (p < 2000) {return ''}
@@ -57,6 +57,37 @@ function periodbadge(p) {
     p = p/24;
     return '<span class="badge badge-danger">'+Math.round(p)+" days</span>"
 }
+
+// spacer
+function spacer(p) {
+    function closeto(n, target) {return (n < target*1.01 && n > target*0.99)}
+    if (p < 2000) {return ''}
+    p = p/1000;  // miliseconds to seconds
+    if (p < 120) {return ''}
+    p = p/60;    // seconds to minutes
+    if (closeto(p, 5)) {return '<img src="5m.png" width="20">'}
+    if (closeto(p, 10)) {return '<img src="10m.png" width="20">'}
+    if (closeto(p, 15)) {return '<img src="15m.png" width="20">'}
+    if (closeto(p, 20)) {return '<img src="20m.png" width="20">'}
+    if (closeto(p, 30)) {return '<img src="30m.png" width="20">'}
+    if (closeto(p, 60)) {return '<img src="1h.png" width="20">'}
+    if (p < 90) {return '<span class="btn btn-secondary btn-sm" disabled>'+Math.round(p)+" min</span>"}
+    p = p/60;    // mins to hours
+    if (closeto(p, 2)) {return '<img src="2h.png" width="20">'}
+    if (closeto(p, 6)) {return '<img src="6h.png" width="20">'}
+    if (closeto(p, 24)) {return '<img src="1d.png" width="20">'}
+    if (p < 50) {return '<span class="btn btn-secondary btn-sm" disabled>'+Math.round(p)+" hrs</span>"}
+    p = p/24;    // hours to days
+    if (closeto(p, 7)) {return '<img src="1w.png" width="20">'}
+    return '<span class="btn btn-dark btn-sm" disabled>'+Math.round(p)+" days</span>"
+}
+
+function top_button() {
+    var p = make_params();
+    var url = 'index.html?' + $.param(p);
+    return '<a href="'+url+'" class="btn btn-lg btn-primary">All streams</a>';
+}
+
 
 
 function stream_button(log) {
@@ -88,8 +119,10 @@ function stream_button(log) {
     if (recent || state == "running") {
         boot_class += " active"
     }
-
-    var w = '<a href="stream.html?streamname='+ streamname +'" class="' + boot_class + '">' + streamname + ' ' + b;
+    var p = make_params();
+    p["streamname"] = streamname;
+    var url = 'stream.html?'+ $.param(p);
+    var w = '<a href="'+ url +'" class="' + boot_class + '">' + streamname + ' ' + b;
     if (!cron) {
         w += ' <i class="fas fa-hand-pointer"></i>'
     }
@@ -131,7 +164,10 @@ function job_button(log) {
     var label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0"+(start_time.getMonth()+1)).slice(-2) + "-" +
     start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
 
-    var w = '<a href="job.html?job='+job_name+'" class="' + boot_class + '">' + label + ' ' +b;
+    var p = make_params();
+    p["job"] = job_name;
+    var url = 'job.html?' + $.param(p)
+    var w = '<a href="'+url+'" class="' + boot_class + '">' + label + ' ' +b;
     if (!cron) {
         w += ' <i class="fas fa-hand-pointer"></i>'
     }
@@ -143,4 +179,16 @@ function job_button(log) {
     }
     w += '</a> ';
     return w;
+}
+
+function make_params() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var name_filter = urlParams.get("namefilter");
+    var owner_filter = urlParams.get("owner");
+    var hide_ok = urlParams.get("hide_ok");
+    var parameters = {};
+    if (name_filter) {parameters["namefilter"] = name_filter}
+    if (owner_filter) {parameters["owner"] = owner_filter}
+    if (hide_ok) {parameters["hide_ok"] = hide_ok}
+    return parameters;
 }

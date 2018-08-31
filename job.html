@@ -28,6 +28,8 @@
 
     z.html("<h1>Job Records for "+job_name+"</h1>");
 
+    z.append("<p>"+top_button()+"</p>");
+
     function get_last_logs()
     {
         var query = {
@@ -44,7 +46,7 @@
             ],
             "size": 1000
         };
-        console.log(query);
+
         var logs = [];
         $.post({
                     url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
