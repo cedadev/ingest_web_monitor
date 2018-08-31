@@ -20,13 +20,15 @@
 
 </div>
 
+
+
 <script>
     var urlParams = new URLSearchParams(window.location.search);
     var job_name = urlParams.get("job");
 
     z = $("#z");
 
-    z.html("<h1>Job Records for "+job_name+"</h1>");
+    z.append("<h1>Job Record for "+job_name+"</h1>");
 
     z.append("<p>"+top_button()+"</p>");
 
@@ -73,6 +75,16 @@
     function render_job_logs(logs) {
         var last_log = logs[0];
         z.append("<p>Back: " + stream_button(logs[0]) + "</p>");
+        var cron = ' (Manualy run)';
+        if (last_log.config && last_log.config.when) {cron = " (Cron: "+ last_log.config.when + ")" }
+        z.append("<div class='alert alert-primary' role='alert'>" +
+                     "<p>Script: <kbd>"+last_log.script+"</kbd></p>" +
+                     "<p>Times: "+last_log.start_time+" &rarr; "+last_log.end_time+" "+periodbadge(last_log, true) +
+                        cron +
+                     "</p></div>");
+        if (last_log.config) {
+            z.append("<div class='alert alert-secondary' role='alert'><h4>Config</h4><pre><code>"+
+                     JSON.stringify(last_log.config, null, 4)+"</code></pre></div>")}
         if (last_log.output) {
             z.append("<div class='alert alert-info' role='alert'><h4>Output</h4><pre><code>"+
                      last_log.output+"</code></pre></div>")}
@@ -80,7 +92,8 @@
             z.append("<div class='alert alert-warning' role='alert'><h4>Errors</h4><pre><code>"+
                      last_log.errors+"</code></pre></div>")}
 
-        z.append("<pre>"+ JSON.stringify(logs, null, 4) + "</pre>");
+        z.append("<div class='alert alert-light' role='alert'><h4>Full set of records for this job</h4><pre>"+
+                JSON.stringify(logs, null, 4) + "</pre></div>");
     }
 
 

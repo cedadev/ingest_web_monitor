@@ -45,9 +45,20 @@ colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": 
            "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info"};
 
 // period job display
-function periodbadge(p) {
+function periodbadge(log, do_millisec) {
+    var start_time = new Date(log.start_time.substring(0, 19));
+    var end_time = new Date(log.end_time.substring(0, 19));
+    var ms = log.end_time.substring(17) - log.start_time.substring(17);
 
-    if (p < 2000) {return ''}
+
+    if (log.state == "running") {
+        end_time = new Date()
+    }
+    var p = end_time - start_time;
+    if (p < 2000) {
+        if (do_millisec) {return '<span class="badge badge-info">'+ms.toFixed(5)+" s</span>"}
+        else {return ''}
+    }
     p = p/1000;
     if (p < 120) {return '<span class="badge badge-info">'+Math.round(p)+" s</span>"}
     p = p/60;
@@ -153,8 +164,7 @@ function job_button(log) {
     var cron = ("config" in log && "when" in log.config);
     var killed = log.killed;
 
-    var b = periodbadge(end_time-start_time);
-
+    var b = periodbadge(log);
 
     var boot_class = "mb-1 btn btn-sm";
     boot_class += " btn-outline-" + colours[state];
