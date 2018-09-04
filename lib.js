@@ -101,8 +101,8 @@ function periodbadge(log, do_millisec) {
 // spacer
 function spacer(p, last_p) {
     if (p < last_p*1.01 && p > last_p*0.99) {var c = "white"} else { var c = "#220"}
-    var s ="<svg width='10' height='150'><image width=20 href='5m.png'/><path d='M0 0 L10 30' stroke-width='5' '/></svg>";
-    s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'", stroke="black"/>';
+
+    var s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'", stroke="black"/>';
     s += '<text x=7 y=11 fill="gray" style="font-family: Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
     var unit = "ms";
 
