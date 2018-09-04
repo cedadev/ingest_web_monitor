@@ -52,7 +52,7 @@
         };
 
         var logs = [];
-        var job_names = []
+        var job_names = [];
         $.post({
                     url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
                     data: JSON.stringify(query),
@@ -86,12 +86,15 @@
     function render_logs(logs) {
         z.append("<p>"+top_button()+"</p>");
         var last_job_start = new Date();
+        var last_space = 0;
         for (var i=0; i < logs.length; i++){
             var job_start = new Date(logs[i].start_time.substring(0, 19));
-            var s = spacer(last_job_start - job_start);
+            var space = last_job_start - job_start;
+            var s = spacer(space, last_space);
             var logb = job_button(logs[i]);
             z.append(s);
             z.append(logb);
+            last_space = space;
 
             last_job_start = job_start;
         }

@@ -39,10 +39,39 @@ last_logs_query = {
   "size": 0
 };
 
+// icons for states
+state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
+    "warn": "exclamation-triangle", "fail": "bell"};
 
 // colours for states
-colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark",
-           "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info"};
+colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "secondary",
+           "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
+           "do_not_run": "secondary"};
+
+
+// icons
+function icons(log) {
+    var state = log.state;
+    var start_time = new Date(log.start_time.substring(0, 19));
+    var end_time = new Date(log.end_time.substring(0, 19));
+    if (state == "running") {
+        end_time = new Date()
+    }
+    var job_time = (end_time - start_time) / (1000 * 60);
+    var long_job = job_time > 60;
+    var cron = ("config" in log && "when" in log.config);
+    var w = '';
+    if (cron) {
+        w += ' <i class="fas fa-redo"></i>'
+    }
+    if (long_job) {
+        w += ' <i class="fas fa-stopwatch"></i>'
+    }
+    if (state_icons.hasOwnProperty(state)) {
+        w += ' <i class="fas fa-' + state_icons[state] + '"></i>'
+    }
+    return w
+}
 
 // period job display
 function periodbadge(log, do_millisec) {
@@ -70,27 +99,23 @@ function periodbadge(log, do_millisec) {
 }
 
 // spacer
-function spacer(p) {
-    function closeto(n, target) {return (n < target*1.01 && n > target*0.99)}
+function spacer(p, last_p) {
+    if (p < last_p*1.01 && p > last_p*0.99) {var c = "white"} else { var c = "#220"}
+    var s ="<svg width='10' height='150'><image width=20 href='5m.png'/><path d='M0 0 L10 30' stroke-width='5' '/></svg>";
+    s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'", stroke="black"/>';
+    s += '<text x=7 y=11 fill="gray" style="font-family: Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
+    var unit = "ms";
+
     if (p < 2000) {return ''}
-    p = p/1000;  // miliseconds to seconds
+    p = p/1000; unit = "s";   // miliseconds to seconds
     if (p < 120) {return ''}
-    p = p/60;    // seconds to minutes
-    if (closeto(p, 5)) {return '<img src="5m.png" width="20">'}
-    if (closeto(p, 10)) {return '<img src="10m.png" width="20">'}
-    if (closeto(p, 15)) {return '<img src="15m.png" width="20">'}
-    if (closeto(p, 20)) {return '<img src="20m.png" width="20">'}
-    if (closeto(p, 30)) {return '<img src="30m.png" width="20">'}
-    if (closeto(p, 60)) {return '<img src="1h.png" width="20">'}
-    if (p < 90) {return '<span class="btn btn-secondary btn-sm" disabled>'+Math.round(p)+" min</span>"}
-    p = p/60;    // mins to hours
-    if (closeto(p, 2)) {return '<img src="2h.png" width="20">'}
-    if (closeto(p, 6)) {return '<img src="6h.png" width="20">'}
-    if (closeto(p, 24)) {return '<img src="1d.png" width="20">'}
-    if (p < 50) {return '<span class="btn btn-secondary btn-sm" disabled>'+Math.round(p)+" hrs</span>"}
-    p = p/24;    // hours to days
-    if (closeto(p, 7)) {return '<img src="1w.png" width="20">'}
-    return '<span class="btn btn-dark btn-sm" disabled>'+Math.round(p)+" days</span>"
+    p = p/60; unit = "min";     // seconds to minutes
+    if (p < 90) {return s + Math.round(p) + " " + unit + "</text></svg>"}
+    p = p/60; unit = "hrs";     // mins to hours
+    if (p < 50) {return s + Math.round(p) + " " + unit + "</text></svg>"}
+    p = p/24; unit = "days";     // hours to days
+    return s + Math.round(p) + " " + unit + "</text></svg>";
+
 }
 
 function top_button() {
@@ -100,21 +125,15 @@ function top_button() {
 }
 
 
-
 function stream_button(log) {
     var state = log.state;
     var streamname = log.stream;
-    var start_time = new Date(log.start_time.substring(0, 19));
     var end_time = new Date(log.end_time.substring(0, 19));
     if (state == "running") {
         end_time = new Date()
     }
-    var job_time = (end_time - start_time) / (1000 * 60);
-    var long_job = job_time > 60;
     var ago = Math.floor((new Date() - end_time) / (1000 * 60));
     var recent = (ago < 5);
-    var cron = ("config" in log && "when" in log.config);
-    var killed = log.killed;
 
     // counts not running that are not this state
     var b = '';
@@ -134,19 +153,11 @@ function stream_button(log) {
     p["streamname"] = streamname;
     var url = 'stream.html?'+ $.param(p);
     var w = '<a href="'+ url +'" class="' + boot_class + '">' + streamname + ' ' + b;
-    if (!cron) {
-        w += ' <i class="fas fa-hand-pointer"></i>'
-    }
-    if (long_job) {
-        w += ' <i class="fas fa-stopwatch"></i>'
-    }
-    if (killed) {
-        w += ' <i class="fas fa-skull"></i>'
-    }
+
+    w += icons(log);
     w += '</a> ';
     return w;
 }
-
 
 
 function job_button(log) {
@@ -157,12 +168,8 @@ function job_button(log) {
     if (state == "running") {
         end_time = new Date()
     }
-    var job_time = (end_time - start_time) / (1000 * 60);
-    var long_job = job_time > 60;
     var ago = Math.floor((new Date() - end_time) / (1000 * 60));
     var recent = (ago < 5);
-    var cron = ("config" in log && "when" in log.config);
-    var killed = log.killed;
 
     var b = periodbadge(log);
 
@@ -176,17 +183,10 @@ function job_button(log) {
 
     var p = make_params();
     p["job"] = job_name;
-    var url = 'job.html?' + $.param(p)
+    var url = 'job.html?' + $.param(p);
     var w = '<a href="'+url+'" class="' + boot_class + '">' + label + ' ' +b;
-    if (!cron) {
-        w += ' <i class="fas fa-hand-pointer"></i>'
-    }
-    if (long_job) {
-        w += ' <i class="fas fa-stopwatch"></i>'
-    }
-    if (killed) {
-        w += ' <i class="fas fa-skull"></i>'
-    }
+
+    w += icons(log);
     w += '</a> ';
     return w;
 }

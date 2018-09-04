@@ -77,11 +77,17 @@
         z.append("<p>Back: " + stream_button(logs[0]) + "</p>");
         var cron = ' (Manualy run)';
         if (last_log.config && last_log.config.when) {cron = " (Cron: "+ last_log.config.when + ")" }
-        z.append("<div class='alert alert-primary' role='alert'>" +
-                     "<p>Script: <kbd>"+last_log.script+"</kbd></p>" +
-                     "<p>Times: "+last_log.start_time+" &rarr; "+last_log.end_time+" "+periodbadge(last_log, true) +
-                        cron +
-                     "</p></div>");
+        if (last_log.state == "new"){
+            z.append("<div class='alert alert-"+colours[last_log.state]+"' role='alert'>" +
+                    "<p>Script: <kbd>"+last_log.script+"</kbd></p>" +
+                    "<p>Times: Never run" + cron + "</p></div>");
+        } else {
+            z.append("<div class='alert alert-"+colours[last_log.state]+"' role='alert'>" +
+                    "<p>Script: <kbd>" + last_log.script + "</kbd></p>" +
+                    "<p>Times: " + last_log.start_time + " &rarr; " + last_log.end_time + " " + periodbadge(last_log, true) +
+                    cron +
+                    "</p></div>");
+        }
         if (last_log.config) {
             z.append("<div class='alert alert-secondary' role='alert'><h4>Config</h4><pre><code>"+
                      JSON.stringify(last_log.config, null, 4)+"</code></pre></div>")}
