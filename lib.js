@@ -41,12 +41,25 @@ last_logs_query = {
 
 // icons for states
 state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
-    "warn": "exclamation-triangle", "fail": "bell"};
+    "warn": "exclamation-triangle", "error-ok": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
+    "re-running": "cog"};
 
 // colours for states
-colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "secondary",
+colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "info",
            "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
            "do_not_run": "secondary"};
+
+// get parameters from url and set to global variables
+var urlParams = new URLSearchParams(window.location.search);
+var name_filter = urlParams.get("namefilter");
+var owner_filter = urlParams.get("owner");
+var states_filter = [];
+var sfilter_button_names = ["running", "ok", "warn", "fail", "killed", "died", "do_not_run", "new", "ok-errors", "cleanup", "re-running"];
+for (var i=0; i< sfilter_button_names.length; i++) {
+    if (urlParams.get(sfilter_button_names[i])) {
+        states_filter.push(sfilter_button_names[i]);
+    }
+}
 
 
 // icons
@@ -100,11 +113,12 @@ function periodbadge(log, do_millisec) {
 
 // spacer
 function spacer(p, last_p) {
-    if (p < last_p*1.01 && p > last_p*0.99) {var c = "white"} else { var c = "#220"}
+    var c = '';
+    if (p < last_p*1.01 && p > last_p*0.99) {c = "white"} else {c = "#220"}
 
-    var s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'", stroke="black"/>';
-    s += '<text x=7 y=11 fill="gray" style="font-family: Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
-    var unit = "ms";
+    var s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'" stroke="black"/>';
+    s += '<text x=7 y=11 fill="gray" style="font-family: monospace, Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
+    var unit;
 
     if (p < 2000) {return ''}
     p = p/1000; unit = "s";   // miliseconds to seconds
@@ -195,10 +209,16 @@ function make_params() {
     var urlParams = new URLSearchParams(window.location.search);
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
-    var hide_ok = urlParams.get("hide_ok");
     var parameters = {};
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
-    if (hide_ok) {parameters["hide_ok"] = hide_ok}
+    for (var i=0; i<states_filter.length; i++){
+        parameters[states_filter[i]] = "on"
+    }
     return parameters;
+}
+
+function button_filter(f) {
+    var checkbox = $('#'+ f.id+' :input');
+    checkbox.prop("checked", !checkbox.prop("checked"));
 }

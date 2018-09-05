@@ -20,33 +20,52 @@
 <h1>Ingest Stream State</h1>
 
 <form>Filters:
-<label>Stream name</label><input type="text" name="namefilter" id="name_filter"/>
-<label>Owner</label><input type="text" name="owner" id="owner_filter"/>
-<label>Don't show OK</label><input type="checkbox" name="hide_ok" id="hide_ok"/>
+<label>Stream name </label><input type="text" name="namefilter" id="name_filter"/>
+<label>Owner </label><input type="text" name="owner" id="owner_filter"/>
 <input type="submit" value="filter">
 
 
-<div class="alert alert-light" role="alert" id="key">
+<div class="alert alert-light" role="alert" id="states">
+    State filters:
+    <button class="btn btn-outline-primary active" id="running" onclick="button_filter(this);">
+        <input type="checkbox" name="running"> Running</button>
+    <button class="btn btn-outline-success" id="ok" onclick="button_filter(this);">
+        <input type="checkbox" name="ok"> Ran OK</button>
+    <button class="btn btn-outline-warning" id="warn" onclick="button_filter(this);">
+        <input type="checkbox" name="warn"> Errors <i class="fas fa-exclamation-triangle"></i></button>
+    <button class="btn btn-outline-danger" id="fail" onclick="button_filter(this);">
+        <input type="checkbox" name="fail"> Failed <i class="fas fa-bell"></i></button>
+    <button class="btn btn-outline-dark" id="killed" onclick="button_filter(this);">
+        <input type="checkbox" name="killed"> Killed <i class="fas fa-skull"></i></button>
+    <button class="btn btn-outline-dark" id="died" onclick="button_filter(this);">
+        <input type="checkbox" name="died"> Died <i class="fas fa-bomb"></i></button>
+     <button class="btn btn-outline-secondary" id="do_not_run" onclick="button_filter(this);">
+        <input type="checkbox" name="do_not_run" > do_not_run <i class="fas fa-ban"></i></button>
+     <button class="btn btn-outline-success" id="ok-errors" onclick="button_filter(this);">
+        <input type="checkbox" name="ok-errors" > ok-errors <i class="fas fa-exclamation-triangle"></i></button>
+     <button class="btn btn-outline-info" id="new" onclick="button_filter(this);">
+        <input type="checkbox" name="new" > new <i class="fas fa-asterisk"></i></button>
+     <button class="btn btn-outline-info" id="cleanup" onclick="button_filter(this);">
+        <input type="checkbox" name="cleanup" > cleanup <i class="fas fa-broom"></i></button>
+     <button class="btn btn-outline-info" id="re-running" onclick="button_filter(this);">
+        <input type="checkbox" name="re-running" > re-running <i class="fas fa-cog"></i></button>
+</div>
+    <div class="alert alert-light" role="alert" id="key">
     Key:
-    <a href="#" class="btn btn-outline-primary active">Running</a>
-    <a href="#" class="btn btn-outline-success active">Recently finished</a>
-    <a href="#" class="btn btn-outline-success">Ran OK</a>
-    <a href="#" class="btn btn-outline-warning">Errors</a>
-    <a href="#" class="btn btn-outline-danger">Failed</a>
-    <a href="#" class="btn btn-outline-dark">Killed <i class="fas fa-skull"></i></a>
-    <a href="#" class="btn btn-outline-dark">Died <i class="fas fa-bomb"></i></a>
-    <a href="#" class="btn btn-outline-success">Over an hour <i class="fas fa-stopwatch"></i></a>
-    <a href="#" class="btn btn-outline-success">Cron <i class="fas fa-redo"></i></a>
-    <a href="#" class="btn btn-outline-secondary">do_not_run <i class="fas fa-ban"></i></a>
+    <span class="btn btn-success" id="recent">Recently finished</span>
+    Over an hour <i class="fas fa-stopwatch"></i>
+    Cron <i class="fas fa-redo"></i>
 </div>
 
-</div>
+
 </form>
 
-<div id="streams"></div>
-
+<div id="streams">
+<image src="Loading_icon.gif"></image>
 </div>
 
+    </div>
+</body>
 <script>
 
 function get_last_logs()
@@ -110,8 +129,8 @@ function refresh_page_info(a) {
             }
         }
 
-        // skip ok streams if flag set
-        if (hide_ok && last_log.state == "ok") {continue}
+        // skip if state filter
+        if (!(states_filter.includes(last_log.state))) {continue}
 
         // make button and add to the display
         w = stream_button(last_log);
@@ -128,15 +147,15 @@ var outpt = get_last_logs();
 
 // populate form from url
 var urlParams = new URLSearchParams(window.location.search);
-var name_filter = urlParams.get("namefilter");
 $('#name_filter').attr("value", name_filter);
-var owner_filter = urlParams.get("owner");
 $('#owner_filter').attr("value", owner_filter);
-var hide_ok = urlParams.get("hide_ok");
-$('#hide_ok').prop("checked", hide_ok);
+
+for (var i=0; i< states_filter.length; i++) {
+    $('#'+states_filter[i]+' :input').prop("checked", states_filter[i]);
+}
 
 
 
 </script>
-</body>
+
 </html>
