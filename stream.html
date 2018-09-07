@@ -16,7 +16,7 @@
 
 </head>
 <body>
-<div class="container-fluid">
+<div id="main" class="container-fluid">
 
 <div id="z">
 
@@ -30,9 +30,11 @@
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
 
-    z = $("#z");
+    var main = $("#main");
+    var z = $("#z");
 
-    z.html("<h1>Job timeline for "+streamname+"</h1>");
+    main.prepend("<div><h1>Job timeline for "+streamname+"</h1></div>");
+    main.prepend("<p>"+top_button()+"</p>");
 
     function get_last_logs()
     {
@@ -69,7 +71,9 @@
                                 job_names.push(doc.jobname);
                             }
                         }
-                        render_logs(logs);
+                        var total = data.hits.total;
+                        render_logs(logs, total);
+                        setTimeout(get_last_logs, 5000);
                     },
 
                     error: function (data) {
@@ -83,8 +87,10 @@
 
     llogs = get_last_logs();
 
-    function render_logs(logs) {
-        z.append("<p>"+top_button()+"</p>");
+    function render_logs(logs, total) {
+
+        z.empty();
+        z.append("<p>Total log records: "+total+"</p>");
         var last_job_start = new Date();
         var last_space = 0;
         for (var i=0; i < logs.length; i++){

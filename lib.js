@@ -7,18 +7,18 @@
 // query for last logs
 last_logs_query = {
   "query": {
-    "range": {
-      "logtime": {
-        "gte": "2018-06"
+      "range": {
+          "logtime": {
+              "gte": "2018-06"
+          }
       }
-    }
   },
 
   "aggs": {
     "stream": {
       "terms": {
         "field": "stream.keyword",
-        size: 500
+        size: 1000
       },
       "aggs": {
         "recent_logs": {
@@ -52,6 +52,7 @@ colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": 
 // get parameters from url and set to global variables
 var urlParams = new URLSearchParams(window.location.search);
 var name_filter = urlParams.get("namefilter");
+
 var owner_filter = urlParams.get("owner");
 var states_filter = [];
 var sfilter_button_names = ["running", "ok", "warn", "fail", "killed", "died", "do_not_run", "new", "ok-errors", "cleanup", "re-running"];
@@ -61,6 +62,19 @@ for (var i=0; i< sfilter_button_names.length; i++) {
     }
 }
 
+var reclen = urlParams.get("reclen");
+
+
+var reclen_date = new Date(new Date() - reclen*24*3600*1000);
+
+last_logs_query.query.range.logtime.gte = reclen_date;
+
+// if name filter then change query
+if (name_filter) {
+ //     last_logs_query.query= {"bool": {"must": {"match": {"stream": "test"}}}};
+
+//    last_logs_query.query = {"match": {"stream": name_filter}};
+}
 
 // icons
 function icons(log) {
@@ -209,9 +223,11 @@ function make_params() {
     var urlParams = new URLSearchParams(window.location.search);
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
+    var reclen = urlParams.get("reclen");
     var parameters = {};
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
+    if (reclen) {parameters["reclen"] = reclen}
     for (var i=0; i<states_filter.length; i++){
         parameters[states_filter[i]] = "on"
     }
