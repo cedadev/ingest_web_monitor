@@ -41,7 +41,7 @@ last_logs_query = {
 
 // icons for states
 state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
-    "warn": "exclamation-triangle", "error-ok": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
+    "warn": "exclamation-triangle", "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
     "re-running": "cog"};
 
 // colours for states
