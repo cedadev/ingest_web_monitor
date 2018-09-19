@@ -120,8 +120,18 @@ function refresh_page_info(a) {
     streams_div.empty();
 
     for (var s in a) {
-        // skip streams that do not match the name filter
-        if (name_filter && !(s.includes(name_filter))) {continue}
+
+        // skip streams by name filter
+        if (name_filter) {
+            // if the name filter starts with "!" then skip matching streams
+            if (name_filter.startsWith("!")) {
+                if (s.includes(name_filter.substring(1))) {continue}
+            }
+            // otherwise skip ones that do not match
+            else {
+                if (!(s.includes(name_filter))) {continue}
+            }
+        }
 
         // skip streams that do not match the owner
         var last_log = a[s];
