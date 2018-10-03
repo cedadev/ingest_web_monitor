@@ -84,7 +84,7 @@
         } else {
             z.append("<div class='alert alert-"+colours[last_log.state]+"' role='alert'>" +
                     "<p>Script: <kbd>" + last_log.script + "</kbd></p>" +
-                    "<p>Times: " + last_log.start_time + " &rarr; " + last_log.end_time + " " + periodbadge(last_log, true) +
+                    "<p>Times: " + last_log.start_time + " &rarr; " + last_log.end_time + " " + log_periodbadge(last_log) +
                     cron +
                     "</p></div>");
         }

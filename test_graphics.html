@@ -1,0 +1,67 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="lib.js"></script>
+
+</head>
+<body>
+<div id="main" class="container-fluid">
+
+<div id="z">
+
+</div>
+
+</div>
+
+<script>
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var streamname = urlParams.get("streamname");
+    var name_filter = urlParams.get("namefilter");
+    var owner_filter = urlParams.get("owner");
+
+
+    var main = $("#main");
+    var z = $("#z");
+
+    main.prepend("<div><h1>Job timeline for "+streamname+"</h1></div>");
+    main.prepend("<p>"+top_button()+"</p>");
+
+
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:00:01'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:00:30'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:01:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:02:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:05:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:10:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 00:40:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 01:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 02:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 06:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 12:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-01 18:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-02 00:00:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-03 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-04 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-10 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-01-20 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-02-01 00:30:00'}));
+    z.append(job_button({"state": "ok", "start_time": "2018-01-01 00:00", "end_time": '2018-06-01 00:30:00'}));
+
+</script>
+
+</body>
+</html>
