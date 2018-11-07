@@ -64,10 +64,17 @@ for (var i=0; i< sfilter_button_names.length; i++) {
 
 var reclen = urlParams.get("reclen");
 
-
 var reclen_date = new Date(new Date() - reclen*24*3600*1000);
 
 last_logs_query.query.range.logtime.gte = reclen_date;
+
+
+var ingest1 = urlParams.get("ingest1");
+var ingest2 = urlParams.get("ingest2");
+var ingest3 = urlParams.get("ingest3");
+
+
+
 
 // if name filter then change query
 if (name_filter) {
@@ -257,23 +264,31 @@ function job_button(log, last_log) {
     if (recent || state == "running") {
         boot_class += " active"
     }
-    var label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0"+(start_time.getMonth()+1)).slice(-2) + "-" +
-    start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+
+    var job_start = new Date(log.start_time.substring(0, 19));
+    var last_job_start = new Date(last_log.start_time.substring(0, 19));
+    var space = last_job_start - job_start;
+    var label;
+
+    if (space > 12*3600000) {
+        label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0" + (start_time.getMonth() + 1)).slice(-2) + "-" +
+            start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+    } else {
+        label = ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+    }
 
     var p = make_params();
     p["job"] = job_name;
     var url = 'job.html?' + $.param(p);
 
-    var job_start = new Date(log.start_time.substring(0, 19));
-    var last_job_start = new Date(last_log.start_time.substring(0, 19));
-    var space = last_job_start - job_start;
     //var s = spacer(space, 0);
     var s = '<div style="float: right">' + periodbadge(log.start_time, last_log.start_time) + '</div>';
 
     var w = '<div style="float: left" class="mb-3 mr-1">';
     w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
-    w += '<br/><div style="float: right" class="mb-1">' + b + '</div>';
-    w += '<br/><div style="float: right">'+s+'</div>';
+    w += '<br/><div style="float: right; clear:both" class="mb-1">' + b + '</div>';
+    w += '<br/><div style="float: right; clear:both">'+s+'</div>';
+    w += '</div>';
     return w;
 }
 
@@ -282,10 +297,16 @@ function make_params() {
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
     var reclen = urlParams.get("reclen");
+    var ingest1 = urlParams.get("ingest1");
+    var ingest2 = urlParams.get("ingest2");
+    var ingest3 = urlParams.get("ingest3");
     var parameters = {};
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
     if (reclen) {parameters["reclen"] = reclen}
+    if (ingest1) {parameters["ingest1"] = ingest1}
+    if (ingest2) {parameters["ingest2"] = ingest2}
+    if (ingest3) {parameters["ingest3"] = ingest3}
     for (var i=0; i<states_filter.length; i++){
         parameters[states_filter[i]] = "on"
     }

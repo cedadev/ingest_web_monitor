@@ -30,6 +30,12 @@
         <input type="radio" name="reclen" id="reclen_36500" value="36500">All records
 
 
+        <label>Ingest1 </label><input type="checkbox" name="ingest1" id="ingest1">
+        <label>Ingest2 </label><input type="checkbox" name="ingest2" id="ingest2">
+        <label>Ingest3 </label><input type="checkbox" name="ingest3" id="ingest3">
+
+
+
 
 <div class="alert alert-light" role="alert" id="states">
     State filters:
@@ -147,6 +153,11 @@ function refresh_page_info(a) {
 
         // skip if state filter
         if (!(states_filter.includes(last_log.state))) {continue}
+        // skip if host filter
+        if ( !(ingest1) && last_log.host == 'ingest1.ceda.ac.uk') {continue}
+        if ( !(ingest2) && last_log.host == 'ingest2.ceda.ac.uk') {continue}
+        if ( !(ingest3) && last_log.host == 'ingest3.ceda.ac.uk') {continue}
+
 
         // make button and add to the display
         w = stream_button(last_log);
@@ -171,6 +182,11 @@ $('#reclen_'+reclen).prop("checked", true);
 for (var i=0; i< states_filter.length; i++) {
     $('#'+states_filter[i]+' :input').prop("checked", states_filter[i]);
 }
+
+if (ingest1) {$('#ingest1').prop('checked', ingest1)}
+if (ingest2) {$('#ingest2').prop('checked', ingest2)}
+if (ingest3) {$('#ingest3').prop('checked', ingest3)}
+
 
 
 
