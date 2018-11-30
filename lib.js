@@ -94,7 +94,13 @@ function icons(log) {
     var job_time = (end_time - start_time) / (1000 * 60);
     var long_job = job_time > 60;
     var cron = ("config" in log && "when" in log.config);
+
     var w = '';
+
+    if ("user" in log && log.user) {
+        cron = false;
+        w += ' <i class="fas fa-user"></i> ' + log.user;
+    }
     if (cron) {
         w += ' <i class="fas fa-redo"></i>'
     }
@@ -160,6 +166,36 @@ function periodbadge(start_time, end_time) {
     if (p < 50) {return '<span class="badge badge-warning">'+svg+' '+Math.round(p)+" hrs "+svg+"</span>"}
     p = p/24;
     return '<span class="badge badge-danger" style="float: left">'+svg+' '+Math.round(p)+" days "+svg+"</span>"
+}
+
+//period text and color from period
+function periodtextcolour(p) {
+    if (p < 0) {return {text: "-" + " ms", colour: "danger", unit: "ms", number: p}}
+    if (p < 1000) {return {text: p.toFixed() + " ms", colour: "success", unit: "ms", number: p}}
+    p = p/1000;  // miliseconds to seconds
+    if (p < 120) {return {text: p.toFixed() + " s", colour: "primary", unit: "s", number: p}}
+    p = p/60;    // seconds to minutes
+    if (p < 90) {return {text: p.toFixed() + " min", colour: "info", unit: "mins", number: p}}
+    p = p/60;    // mins to hours
+    if (p < 50) {return {text: p.toFixed()+ " hrs", colour: "warning", unit: "hrs", number: p}}
+    p = p/24;     // hours to days
+    return {text: p.toFixed() + " days", colour: "danger", unit: "days", number: p}
+}
+
+// period job display
+function periodbar(start_time, job_end, next_time) {
+    var job_length = job_end - start_time;
+    var period_length = next_time - start_time;
+    var idle_length = period_length - job_length;
+    var dis_period_length = Math.round(Math.pow((period_length/1000+0.01), 0.3)*6);
+    var dis_job_length = dis_period_length * job_length/period_length;
+
+    var dis_idle_length = dis_period_length - dis_job_length;
+
+    var s = '<div class="progress" style="float: right; height: 20; width: ' + (dis_period_length + 80) + '">';
+        s += '<div class="progress-bar bg-secondary" role="progressbar" style="width: '+ (dis_idle_length + 40) +'">'+periodtextcolour(idle_length).text+'</div>';
+        s += '<div class="progress-bar bg-'+periodtextcolour(job_length).colour+'" role="progressbar" style="width: '+ (dis_job_length + 40) +'">'+periodtextcolour(job_length).text+'</div> </div>';
+    return s
 }
 
 // spacer
@@ -286,8 +322,9 @@ function job_button(log, last_log) {
 
     var w = '<div style="float: left" class="mb-3 mr-1">';
     w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
-    w += '<br/><div style="float: right; clear:both" class="mb-1">' + b + '</div>';
-    w += '<br/><div style="float: right; clear:both">'+s+'</div>';
+    //w += '<br/><div style="float: right; clear:both" class="mb-1">' + b + '</div>';
+    //w += '<br/><div style="float: right; clear:both">'+s+'</div>';
+    w += '<br/><div style="float: right; clear:both">'+ periodbar(job_start, end_time, last_job_start) +'</div>';
     w += '</div>';
     return w;
 }
