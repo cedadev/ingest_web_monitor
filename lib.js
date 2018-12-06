@@ -99,7 +99,7 @@ function icons(log) {
 
     if ("user" in log && log.user) {
         cron = false;
-        w += ' <i class="fas fa-user"></i> ' + log.user;
+        w += ' <span style="background-color: #ff0; color: #333"><i class="fas fa-user"></i> ' + log.user + '</span>';
     }
     if (cron) {
         w += ' <i class="fas fa-redo"></i>'
