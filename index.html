@@ -125,22 +125,29 @@ function refresh_page_info(a) {
     // function to refresh the stream info on the page
     streams_div.empty();
 
+    var sorted_stream_names = [];
     for (var s in a) {
+        sorted_stream_names[sorted_stream_names.length] = s;
+    }
+    sorted_stream_names.sort();
 
+    for (var i=0; i < sorted_stream_names.length; i++) {
+
+        var stream = sorted_stream_names[i];
         // skip streams by name filter
         if (name_filter) {
             // if the name filter starts with "!" then skip matching streams
             if (name_filter.startsWith("!")) {
-                if (s.includes(name_filter.substring(1))) {continue}
+                if (stream.includes(name_filter.substring(1))) {continue}
             }
             // otherwise skip ones that do not match
             else {
-                if (!(s.includes(name_filter))) {continue}
+                if (!(stream.includes(name_filter))) {continue}
             }
         }
 
         // skip streams that do not match the owner
-        var last_log = a[s];
+        var last_log = a[stream];
         if (owner_filter) {
             if ("config" in last_log && "owner" in last_log.config) {
                 if (!(last_log.config.owner.includes(owner_filter))) {
