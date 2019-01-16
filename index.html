@@ -84,7 +84,7 @@ function get_last_logs()
 {
     var outut = {};
     $.post({
-                url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
+                url: ES_URL,
                 data: JSON.stringify(last_logs_query),
                 success: function (data) {
                     for (i = 0; i < data.aggregations.stream.buckets.length; i++) {

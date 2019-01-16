@@ -56,7 +56,7 @@
         var logs = [];
         var job_names = [];
         $.post({
-                    url: "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search",
+                    url: ES_URL,
                     data: JSON.stringify(query),
                     success: function (data) {
                         for (var i = 0; i < data.hits.hits.length; i++) {

@@ -2,6 +2,8 @@
  * Created by sjp23 on 30/08/2018.
  */
 
+//var ES_URL = "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search";
+var ES_URL = "https://jasmin-es-test.ceda.ac.uk/ingest-log/_search";
 
 
 // query for last logs
