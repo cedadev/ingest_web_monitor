@@ -3,7 +3,7 @@
  */
 
 //var ES_URL = "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search";
-var ES_URL = "https://jasmin-es.ceda.ac.uk/ingest-log/_search";
+var ES_URL = "https://jasmin-es1.ceda.ac.uk/ingest-log/_search";
 
 
 // query for last logs
