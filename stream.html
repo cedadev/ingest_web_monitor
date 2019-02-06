@@ -99,6 +99,7 @@
             var job_start = new Date(logs[i].start_time.substring(0, 19));
             var space = last_job_start - job_start;
             var s = spacer(space, last_space);
+            //var logb = job_out_button(logs[i], last_log);
             var logb = job_button(logs[i], last_log);
             //z.append(s);
             z.append(logb);

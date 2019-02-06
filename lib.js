@@ -75,7 +75,60 @@ var ingest1 = urlParams.get("ingest1");
 var ingest2 = urlParams.get("ingest2");
 var ingest3 = urlParams.get("ingest3");
 
+var icon_list = ["ambulance", "anchor", "apple-alt", "archway", "atom", "bath", "bone", "beer", "bicycle",
+                 "book",
+                 "bus", "car", "car-side", "cloud", "couch",
+                 "broom", "chess-bishop", "chess-king", "chess-knight", "flask", "gavel", "gem",
+                 "glass-martini", "helicopter", "marker",
+                 "chess-pawn", "chess-rook", "cookie", "crow",
+                 "dove", "feather", "fish", "frog",
+                 "hotel", "kiwi-bird",
+                 "lemon", "motorcycle", "oil-can", "paw",
+                 "seedling", "shuttle-van", "truck", "truck-monster",
+                 "truck-pickup", "university"];
+icon_list = icon_list.concat(icon_list);
+icon_list = icon_list.concat(icon_list);
+icon_list = icon_list.concat(icon_list);
 
+
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
+function test_icons() {
+    var s = '';
+    for (var i=0; i < icon_list.length; i++) {
+        s +=  i+ ' <i class="fas fa-'+icon_list[i]+'"></i> '
+    }
+    return s
+}
+
+function icongen(s) {
+    if (s == undefined) {return ''}
+    var hash = 0, i, chr;
+    for (i = 0; i < s.length; i++) {
+    chr   = s.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  var byte1 = (hash & 0xfff00000) >> 20;
+  var byte2 = (hash & 0x000fff00) >> 8;
+  var byte3 = hash & 0x000000ff;
+  var back = ("000" + byte2.toString(16));
+    back = back.substring(back.length - 3);
+  var colour = byte2.toString(16);
+    if (colour.length == 2) {"0" + colour};
+ // console.log(s, hash, byte1, byte2, byte3, back, colour)
+  return  '<span class="border border-dark mr-1 p-1" style="background-color: #' + back + '"'+
+           'title="'+ s +'"></span>';
+
+    //<i class="fas fa-'+icon_list[byte3]+'"></i>
+}
 
 
 // if name filter then change query
@@ -104,7 +157,7 @@ function icons(log) {
         w += ' <span style="background-color: #ff0; color: #333"><i class="fas fa-user"></i> ' + log.user + '</span>';
     }
     if (cron) {
-        w += ' <i class="fas fa-redo"></i>'
+        w += ' <i class="fas fa-redo" title="'+log.config.when+'"></i>'
     }
     if (long_job) {
         w += ' <i class="fas fa-stopwatch"></i>'
@@ -154,7 +207,7 @@ function periodbadge(start_time, end_time) {
 
     var p = end_time - start_time;
     p = Math.max(p, 0);
-    console.log(end_time, start_time, p);
+   // console.log(end_time, start_time, p);
 
     var logp = Math.round(Math.pow((p/1000+0.01), 0.3)*3);
     if (logp <= 1) {logp=1}
@@ -265,7 +318,7 @@ function stream_button(log) {
         if (c == "running") {
             continue
         }
-        b += ' <span class="badge badge-' + colours[c] + '">' + log.counts[c] + '</span>';
+        b += ' <span class="badge badge-' + colours[c] + '" title="'+ c +'">' + log.counts[c] + '</span>';
     }
 
     var boot_class = "mb-1 btn btn-sm";
@@ -276,7 +329,14 @@ function stream_button(log) {
     var p = make_params();
     p["streamname"] = streamname;
     var url = 'stream.html?'+ $.param(p);
-    var w = '<a href="'+ url +'" class="' + boot_class + '">' + streamname + ' ' + b;
+    var confbar = icongen(log.configfile);
+    var tooltip = log.errors || log.output;
+    tooltip = escapeHtml(tooltip);
+    tooltip = "Last ran: " + log.start_time + " -> " +  log.end_time + "\n\n"+ tooltip;
+
+    var w = '<a href="'+ url +'" class="' + boot_class + '"' +
+        'title="' + tooltip + '">' +
+        confbar + streamname + ' ' + b;
 
     w += icons(log);
     w += '</a> ';
@@ -324,9 +384,74 @@ function job_button(log, last_log) {
 
     var w = '<div style="float: left" class="mb-3 mr-1">';
     w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
-    //w += '<br/><div style="float: right; clear:both" class="mb-1">' + b + '</div>';
-    //w += '<br/><div style="float: right; clear:both">'+s+'</div>';
     w += '<br/><div style="float: right; clear:both">'+ periodbar(job_start, end_time, last_job_start) +'</div>';
+    w += '</div>';
+    return w;
+}
+
+
+function output_box(log) {
+    var box = "";
+    if (log.output) {
+            box = "<div class='alert alert-info' role='alert'><small><small><p>Output log: <kbd>" +
+                  log.output_log + "</kbd></p><pre><code>"+
+                     log.output+"</code></pre></small></small></div>";
+    }
+    return box;
+}
+
+function error_box(log) {
+    var box = '';
+    if (log.errors) {
+            box = "<div class='alert alert-warning' role='alert'><small><p>Error log: <kbd>" +
+                  log.error_log + "</kbd></p><pre><code>"+
+                     log.errors+"</code></pre></small></div>";
+    }
+    return box;
+}
+
+function job_out_button(log, last_log) {
+    var state = log.state;
+    var job_name = log.jobname;
+    var start_time = new Date(log.start_time.substring(0, 19));
+    var end_time = new Date(log.end_time.substring(0, 19));
+    if (state == "running") {
+        end_time = new Date()
+    }
+    var ago = Math.floor((new Date() - end_time) / (1000 * 60));
+    var recent = (ago < 5);
+
+    var b = log_periodbadge(log);
+
+    var boot_class = "mb-1 btn";
+    boot_class += " btn-outline-" + colours[state];
+    if (recent || state == "running") {
+        boot_class += " active"
+    }
+
+    var job_start = new Date(log.start_time.substring(0, 19));
+    var last_job_start = new Date(last_log.start_time.substring(0, 19));
+    var space = last_job_start - job_start;
+    var label;
+
+    if (space > 12*3600000) {
+        label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0" + (start_time.getMonth() + 1)).slice(-2) + "-" +
+            start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+    } else {
+        label = ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+    }
+
+    var p = make_params();
+    p["job"] = job_name;
+    var url = 'job.html?' + $.param(p);
+
+    //var s = spacer(space, 0);
+    var s = '<div>' + periodbadge(log.start_time, last_log.start_time) + '</div>';
+
+    var w = '<div class="mb-3 mr-1">';
+    w += '<div><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
+    w += output_box(log);
+    w += error_box(log);
     w += '</div>';
     return w;
 }
