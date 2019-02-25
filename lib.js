@@ -92,6 +92,7 @@ icon_list = icon_list.concat(icon_list);
 
 
 function escapeHtml(unsafe) {
+    if (unsafe == undefined) {return ''}
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
@@ -123,11 +124,12 @@ function icongen(s) {
     back = back.substring(back.length - 3);
   var colour = byte2.toString(16);
     if (colour.length == 2) {"0" + colour};
- // console.log(s, hash, byte1, byte2, byte3, back, colour)
-  return  '<span class="border border-dark mr-1 p-1" style="background-color: #' + back + '"'+
-           'title="'+ s +'"></span>';
+ // console.log(s, hash, byte1, byte2, byte3, back, colour) border border-dark
+  // return  '<span class="mr-1 py-1" style="background-color: #' + back + '" title="'+ s +'">.</span>';
 
-    //<i class="fas fa-'+icon_list[byte3]+'"></i>
+    return '<span class="border border-dark rounded-circle mr-1 p-1" '+
+                 'title="' + s +'">' +
+                 '<i class="fas fa-' + icon_list[byte3] + '"></i></span>'
 }
 
 
@@ -247,10 +249,17 @@ function periodbar(start_time, job_end, next_time) {
 
     var dis_idle_length = dis_period_length - dis_job_length;
 
-    var s = '<div class="progress" style="float: right; height: 20; width: ' + (dis_period_length + 80) + '">';
+    var s = '<div class="progress" style="float: right; height: 20px; width: ' + (dis_period_length + 80) + '">';
         s += '<div class="progress-bar bg-secondary" role="progressbar" style="width: '+ (dis_idle_length + 40) +'">'+periodtextcolour(idle_length).text+'</div>';
         s += '<div class="progress-bar bg-'+periodtextcolour(job_length).colour+'" role="progressbar" style="width: '+ (dis_job_length + 40) +'">'+periodtextcolour(job_length).text+'</div> </div>';
     return s
+}
+
+function tooltip(log) {
+    var ttip = log.errors || log.output;
+    ttip = escapeHtml(ttip);
+    ttip = "Last ran: " + log.start_time + " -> " + log.end_time + "\n\n" + ttip;
+    return ttip;
 }
 
 // spacer
@@ -330,12 +339,10 @@ function stream_button(log) {
     p["streamname"] = streamname;
     var url = 'stream.html?'+ $.param(p);
     var confbar = icongen(log.configfile);
-    var tooltip = log.errors || log.output;
-    tooltip = escapeHtml(tooltip);
-    tooltip = "Last ran: " + log.start_time + " -> " +  log.end_time + "\n\n"+ tooltip;
+    var ttip = tooltip(log);
 
     var w = '<a href="'+ url +'" class="' + boot_class + '"' +
-        'title="' + tooltip + '">' +
+        'title="' + ttip + '">' +
         confbar + streamname + ' ' + b;
 
     w += icons(log);
@@ -381,9 +388,13 @@ function job_button(log, last_log) {
 
     //var s = spacer(space, 0);
     var s = '<div style="float: right">' + periodbadge(log.start_time, last_log.start_time) + '</div>';
+    var ttip = tooltip(log);
 
     var w = '<div style="float: left" class="mb-3 mr-1">';
-    w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
+    w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"' +
+         ' title="' + ttip + '">' +
+         '<small>' + label + ' ' + icons(log) + '</small></a></div>';
+
     w += '<br/><div style="float: right; clear:both">'+ periodbar(job_start, end_time, last_job_start) +'</div>';
     w += '</div>';
     return w;
