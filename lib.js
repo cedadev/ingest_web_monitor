@@ -109,6 +109,15 @@ function test_icons() {
     return s
 }
 
+var blop = new Audio('blop.mp3');
+var clang = new Audio('clang.mp3');
+var snap = new Audio('snap.mp3');
+// sounds for states
+sounds = {"ok": blop, "ok-errors": blop, "fail": clang, "killed": clang, "new": blop,
+           "warn": snap, "running": blop, "died": clang, "cleanup": blop, "re-running": blop,
+           "do_not_run": blop};
+
+
 function icongen(s) {
     if (s == undefined) {return ''}
     var hash = 0, i, chr;
@@ -315,6 +324,7 @@ function stream_button(log) {
     var state = log.state;
     var streamname = log.stream;
     var end_time = new Date(log.end_time.substring(0, 19));
+    var start_time = new Date(log.start_time.substring(0, 19));
     if (state == "running") {
         end_time = new Date()
     }
@@ -347,6 +357,16 @@ function stream_button(log) {
 
     w += icons(log);
     w += '</a> ';
+
+    //console.log(streamname, end_time, new Date - end_time, "ff");
+    if (((new Date - end_time) < 5000) && (state != "running")) {
+        console.log("****** End  ****", streamname, end_time, new Date - end_time);
+        sounds[state].play();
+    }
+    if ((new Date - start_time) < 5000) {
+        console.log("***** Start **", streamname, end_time, new Date - end_time);
+        sounds[state].play();
+    }
     return w;
 }
 
