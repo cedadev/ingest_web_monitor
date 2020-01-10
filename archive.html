@@ -9,122 +9,161 @@
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
       integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
- <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<script src="lib.js"></script>
-<script src="deposits.js"></script>
+<!--<script src="lib.js"></script>-->
+<!--<script src="deposits.js"></script>-->
+
+   <script>
+        function network_plot(host, size, period, report) {
+            var image;
+            image = '<image width="' + size + '" ';
+            image += 'src="http://mgmt.jc.rl.ac.uk/ganglia/graph.php?h=' + host;
+            image += '.ceda.ac.uk&m=load_one&r=' + period;
+            image += '&s=by%20name&hc=4&mc=2&st=1561013641&g=' + report;
+            image += '&z=medium&c=JASMIN%20Cluster"></image>';
+            return image;
+        }
+</script>
 
 </head>
 <body>
 <div class="container-fluid">
 <h1>Archive State</h1>
 
-<div>
-
-    <div class="border bg-light m-3 w-50" >
-        <h2>Ingest</h2>
-        <div>
-            <i class="fas fa-hdd"></i> arrivals
-        </div>
-
-        <div>
-            <i class="fas fa-hdd"></i> processing
-             <div class="progress" style="width: 200px; float: left">
-                <div class="progress-bar" role="progressbar" style="width: 30%">30% </div>
-            </div>
-       </div>
-        <div>
-            <i class="fas fa-hdd"></i> processing2
-             <div class="progress" style="width: 200px; float: left">
-                <div class="progress-bar" role="progressbar" style="width: 90%">90% </div>
-            </div>
-       </div>
-        <div>
-            <i class="fas fa-hdd"></i> processing3
-            <div class="progress" style="width: 200px; float: left">
-                <div class="progress-bar" role="progressbar" style="width: 20%">20% </div>
-            </div>
-        </div>
-        <div><a href="http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=&owner=&reclen=30&ingest1=on&ingest2=on&ingest3=on&running=on&warn=on&fail=on&killed=on&died=on">
-            <i class="fas fa-arrow-down"></i> Ingest state
-        </a>
-        </div>
-    </div>
-
-    <div class="border bg-light m-3" >
-        <h2>Archive</h2>
-        <div>
-            <a href="http://cedaarchiveapp.ceda.ac.uk/admin/cedaarchiveapp/partition/">
-                <i class="fas fa-hdd"></i> archive
-            </a>
-        </div></div>
-
-
-   <div class="border bg-light m-3" >
-               <h2>Access</h2>
-        <div><a href="http://stats.ceda.ac.uk/app/downloads/bymethod?start=201801&end=201812&user=&dataset=&method=&anon=all">
-            <i class="fas fa-download"></i> Download stats
-        </a>
-        </div>
-</div>
 
 
     </div>
 
 <div id="deposits">
 
-</div>
 
-    eeeee<div id="like_button_container">dddd</div>
-
-</div>
-
-  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<!--  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
 
   <!-- Load our React component. -->
-  <script src="like_button.js"></script>
+<!--   <script src="like_button.js"></script> -->
 
 
-<svg width="1000" height="600">
-    <svg x=10 y=20 width="150" height="200">
-        <text x="30" y="30" fill="red">Arrivals</text>
-      <rect x=3 y=3 rx="20" ry="20" width="140" height="190"
-      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"\>
+<svg width="1200" height="800" style="background-color:papayawhip" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg x="210" y="40" width="150" height="200">
+      <rect x="3" y="3" rx="20" ry="20" width="140" height="190"
+      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <a xlink:href=" http://mgmt.jc.rl.ac.uk/ganglia/?r=hour&cs=&ce=&m=load_one&s=by+name&c=JASMIN+Cluster&h=arrivals1.ceda.ac.uk&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4"
+           target="_blank">
+               <text x="30" y="30" fill="red">Arrivals</text></a>
+    </svg>
+
+    <svg x="60" y="550" width="150" height="200">
+      <rect x="3" y="3" rx="10" ry="10" width="140" height="190"
+      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <text x="10" y="30" fill="red">Catalogue</text>
+    </svg>
+
+    <svg x=250 y=550 width="150" height="200">
+      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
+      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <text x="60" y="30" fill="green">Data<script>document.write(Math.random())</script></text>
+    </svg>
+
+    <svg x=400 y=550 width="150" height="200">
+      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
+      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <text x="60" y="30" fill="red">dap</text>
+    </svg>
+
+    <svg x=550 y=550 width="150" height="200">
+      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
+      style="fill:tan;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <text x="60" y="30" fill="red">FTP</text>
+    </svg>
+
+    <svg x=700 y=550 width="150" height="200">
+        <text x="80" y="30" fill="red">jasmin</text>
+      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
+      style="fill: blue;stroke:black;stroke-width:5;opacity:0.2"></rect>
+
+    </svg>
+
+    <svg x="540" y="300" width="200" height="200">
+      <rect x="3" y="3" rx="20" ry="20" width="190" height="140"
+      style="fill:blue;stroke:black;stroke-width:5;opacity:0.2"></rect>
+        <text x="60" y="30" fill="blue">deposit.ceda.ac.uk</text>
+        <a xlink:href=" http://mgmt.jc.rl.ac.uk/ganglia/?r=hour&cs=&ce=&m=load_one&s=by+name&c=JASMIN+Cluster&h=deposit1.ceda.ac.uk&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4"
+           target="_blank">
+               <text x="60" y="40" fill="red">1</text></a>
     </svg>
 
 
-    <svg x=30 y="50" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M15 5
-        l6 6 -6 6
-        v-3
-        h-13
-        v-6
-        h13
-        v-3.171
-        z
-        m-2-4.829
-        v6h-13
-        v10h13
-        v6
-        l11-11-11-11
-        z"/></svg>
-    <svg  x=170 y="50" width="24" height="24">
-        <path d="M24 12 l -6 6 v-3 h-13 v-6 h13 v-3 z" style="fill: blue;opacity:0.5"/></svg>
-    <svg  x=270 y="50" width="24" height="24">
-        <path d="M12 24 l -6 -6 h3 v-13 h6 v13 h3 z" style="fill: green;opacity:0.5"/></svg>
-
     <!-- down arrow -->
-    <svg  x=370 y="50" width="40" height="70">
-        <text x="0" y="50" fill="red">Arrivals</text>
+    <svg  x=70 y="250" width="40" height="70">
+        <text x="0" y="50" fill="red" >Arrivals</text>
         <path d="M20 70 l -20 -20 h10 v-50 h20 v50 h10 z" style="fill: green;opacity:0.5"/></svg>
 
-    <!-- disk -->
-    <svg  x=470 y="50" width="100" height="160">
+    <!-- down cink right arrow -->
+    <svg  x=285 y="0" width="140" height="170">
+        <path d="M100 170 l -20 -20 h10 v-35 l-50 -50 v-45 h20 v35 l50 50 v45 h10 z" style="fill: orange;opacity:0.5"/></svg>
+
+    <!-- down cink right arrow -->
+    <svg  x=20 y="20" width="140" height="170">
+        <path d="M100 170 l -20 -20 h10 v-45 l-50 -50 v-55 h20 v45 l50 50 v55 h10 z" style="fill:blue;opacity:0.1"/></svg>
+
+    <!-- down box right arrow -->
+    <svg  x=70 y="350" width="140" height="170" style="background-color: grey">
         <text x="0" y="50" fill="red">Arrivals</text>
+        <path d="M100 170 l -20 -20 h10 v-40 h-50 v-70 h20 v50 h50 v60 h10 z" style="fill: orange;opacity:0.5"/></svg>
+
+    <!-- down cink left arrow -->
+    <svg  x=270 y="250" width="140" height="170">
+        <text x="0" y="50" fill="red">Arrivals</text>
+        <path d="M20 170 l -20 -20 h10 v-55 l50 -50 v-45 h20 v55 l-50 50 v45 h10 z" style="fill: lightblue;opacity:0.5"/></svg>
+
+    <!-- down left box arrow -->
+    <svg  x=370 y="250" width="140" height="170">
+        <text x="0" y="50" fill="red">Arrivals</text>
+        <path d="M20 170 l-20 -20 h10 v-60 h50 v-50 h20 v70 h-50 v40 h10 z" style="fill: lightblue;opacity:0.5"/></svg>
+
+
+    <!-- down funnel arrow -->
+    <svg  x=470 y="200" width="240" height="170">
+        <text x="0" y="50" fill="red">Arrivals</text>
+        <path d="M110 170 l -20 -20 h10 v-150 h20 v150 h10 z" style="fill: green;opacity:0.5"/>
+        <path d="M120 170 l -20 -20 h10 v-55 l50 -50 v-45 h20 v55 l-50 50 v45 h10 z" style="fill: lightblue;opacity:0.5"/>
+        <path d="M100 170 l -20 -20 h10 v-45 l-50 -50 v-55 h20 v45 l50 50 v55 h10 z" style="fill: orange;opacity:0.5"/>
+    </svg>
+
+    <!-- disk -->
+    <svg  x=370 y="90" width="100" height="160">
+        <text x="10" y="50" fill="red" style="font-size: 8pt;font-family: 'Courier New'">.../arrivals</text>
         <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: purple;opacity:0.5"/>
         <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: purple;opacity:0.3"/></svg>
+
+    <!-- disk -->
+    <svg  x=520 y="50" width="100" height="160">
+        <text x="0" y="50" fill="red">Processing</text>
+        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: pink;opacity:0.5"/>
+        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: pink;opacity:0.3"/></svg>
+    <!-- disk -->
+    <svg  x=670 y="50" width="100" height="160">
+        <text x="0" y="50" fill="red">GWS</text>
+        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: red;opacity:0.5"/>
+        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: red;opacity:0.3"/></svg>
+    <!-- disk -->
+    <svg  x=270 y="400" width="100" height="160" viewBox="0 0 100 200">
+        <text x="0" y="50" fill="red">DB1</text>
+        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: darkgreen;opacity:0.5"/>
+        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: darkgreen;opacity:0.3"/></svg>
+    <!-- disk -->
+    <svg  x=390 y="400" width="100" height="160" viewBox="0 0 100 200">
+        <text x="0" y="50" fill="red">FBI</text>
+        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: green;opacity:0.5"/>
+        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: green;opacity:0.3"/></svg>
+    <!-- disk -->
+    <svg  x=520 y="400" width="100" height="160">
+        <text x="0" y="50" fill="red">Archive</text>
+        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: blue;opacity:0.5"/>
+        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: blue;opacity:0.3"/></svg>
 
 </svg>
 
