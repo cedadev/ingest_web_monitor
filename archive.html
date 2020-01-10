@@ -12,8 +12,9 @@
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<!--<script src="lib.js"></script>-->
-<!--<script src="deposits.js"></script>-->
+<script src="lib.js"></script>
+<script src="deposits.js"></script>
+<script src="diagram_comp.js"></script>
 
    <script>
         function network_plot(host, size, period, report) {
@@ -35,6 +36,39 @@
 
 
     </div>
+
+
+<div>
+    <canvas id='canvas' height='600px' width='600px'></canvas>
+</div>
+
+<script>
+
+
+
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    down_arrow(ctx, "rgba(255,0,0,0.5)", 60, 100, 30);
+    down_arrow(ctx, "rgba(255,255,0,0.5)", 70, 110, 40);
+    down_arrow(ctx, "rgba(0,255,255,0.5)", 80, 90, 50);
+    down_arrow(ctx, "rgba(255,0,255,0.5)", 90, 100, 40);
+    down_arrow(ctx, "rgba(0,255,0,0.5)", 100, 100, 30);
+
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 150);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 90);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 60);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 30);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 0);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -30);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -60);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -95);
+    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -100);
+    down_cink_arrow(ctx, "rgba(200,255,0,0.9)", 200 , 150, 30, 80, 30, -72);
+
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,255,0.5)", 400, 100, 50, 60)
+
+</script>
 
 <div id="deposits">
 
@@ -103,7 +137,7 @@
 
     <!-- down cink right arrow -->
     <svg  x=285 y="0" width="140" height="170">
-        <path d="M100 170 l -20 -20 h10 v-35 l-50 -50 v-45 h20 v35 l50 50 v45 h10 z" style="fill: orange;opacity:0.5"/></svg>
+        <path d="M100 170 l -20 -20 h10 v-35 l-50 -50 v-45 h20 v35 l50 50 v45 h10 z" style="fill: pink;opacity:0.5"/></svg>
 
     <!-- down cink right arrow -->
     <svg  x=20 y="20" width="140" height="170">
