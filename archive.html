@@ -38,36 +38,84 @@
     </div>
 
 
+
+<div hidden>
+
+    <img id="testimg" src="http://archive.ceda.ac.uk/static/media/uploads/slider/ukmo-charts_20180706_12t00.gif"/>
+    <img id="testimg2" src="http://mgmt.jc.rl.ac.uk/ganglia/graph.php?h=arrivals1.ceda.ac.uk&m=load_one&r=3day&s=by%20name&hc=4&mc=2&st=1561013641&g=load_report&z=medium&c=JASMIN%20Cluster"/>
+    <img id="ganglia.png" src="ganglia.png"/>
+    <img id="helpscout.png" src="helpscout.png"/>
+    <img id="ingest_mon.png" src="ingest_mon.png"/>
+    <img id="deposit_mon.png" src="deposit_mon.png"/>
+</div>
+
 <div>
-    <canvas id='canvas' height='600px' width='600px'></canvas>
+<canvas id='canvas' height='900px' width='1200px'></canvas>
 </div>
 
 <script>
-
-
-
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    down_arrow(ctx, "rgba(255,0,0,0.5)", 60, 100, 30);
-    down_arrow(ctx, "rgba(255,255,0,0.5)", 70, 110, 40);
-    down_arrow(ctx, "rgba(0,255,255,0.5)", 80, 90, 50);
-    down_arrow(ctx, "rgba(255,0,255,0.5)", 90, 100, 40);
-    down_arrow(ctx, "rgba(0,255,0,0.5)", 100, 100, 30);
+    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 250, 10, "data provider", "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+    image_link(ctx, "helpscout.png", 260, 15, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+    machine(ctx, 220, 50, 150,100,  "rgba(255,0,255,0.2)",  "rgba(255,0,255,0.3)", "arrivals", "arrivals1.ceda.ac.uk");
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,255,0.5)", 400, 130, 70, 70, "/arrivals");
+    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 430 , 150, 30, 100, 20, -60);
 
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 150);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 90);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 60);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 30);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, 0);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -30);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -60);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -95);
-    down_cink_arrow(ctx, "rgba(0,255,0,0.5)", 200 , 150, 30, 30, 30, -100);
-    down_cink_arrow(ctx, "rgba(200,255,0,0.9)", 200 , 150, 30, 80, 30, -72);
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,255,255,0.5)", 500, 130, 70, 70, "/processing3");
+    down_arrow(ctx, "rgba(255,0,0,0.5)", 550, 150, 70);
 
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,255,0.5)", 400, 100, 50, 60)
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,0,255,0.5)", 600, 130, 70, 70, "/gws...");
+    down_arrow(ctx, "rgba(255,255,0,0.5)", 650, 150, 70);
 
+    machine_group(ctx, 560, 350, 150,100,  "rgba(200,200,100,0.6)",  "rgba(100,255,100,0.1)", "deposit", 5);
+    image_link(ctx, "deposit_mon.png", 565, 350, 105, 75, "https://archdash1.ceda.ac.uk/current/a_sum");
+
+
+    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 610 , 500, 20, 140, 230, -85);
+    down_cink_arrow(ctx, "rgba(255,0,0,0.5)", 610 , 500, 30, 50 , 210, -75);
+    down_cink_arrow(ctx, "rgba(255,255,0,0.5)", 610 , 500, 60, 30, 190, 75);
+
+
+    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 710 , 750, 20, 80, 130, -85);
+    down_cink_arrow(ctx, "rgba(255,0,0,0.5)", 610 , 750, 90, 50 , 20, -20);
+    down_cink_arrow(ctx, "rgba(255,255,0,0.5)", 450 , 750, 10, 110, 150, 90);
+
+
+    machine_group(ctx, 170, 350, 150,100,  "rgba(0,255,0,0.3)",  "rgba(0,255,0,0.1)",  "ingest", 5);
+    image_link(ctx, "ingest_mon.png", 175, 350, 105, 75, "http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=&owner=&reclen=30&ingest1=on&ingest2=on&ingest3=on&running=on&warn=on&fail=on&killed=on&died=on");
+    arrow_cink(ctx, 'black', 250, 130, 250, 250, 200, 250, 200, 350, 1);
+
+
+    machine(ctx, 350, 300, 150,200,  "rgba(0,255,0,0.3)",  "rgba(0,255,0,0.1)", "rbq");
+    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 380, 100, 20,  "deposit_rpc");
+    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 420, 100, 20,  "fast");
+    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 460, 100, 20,  "slow");
+    arrow_cink(ctx, 'black', 280, 380, 280, 380, 280, 380, 370, 380, 1);
+    arrow(ctx, 'black', 470, 380, 550, 380, 1);
+
+
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,255,0,0.5)", 550, 490, 80, 100, "/archive");
+    add_link(ctx, 550,480, 100, 10, "http://cedaarchiveapp.ceda.ac.uk/cedaarchiveapp/home/");
+
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,255,0,0.5)", 800, 100, 50, 60, "FBI");
+    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,0,0.5)", 900, 100, 50, 60, "DB1");
+
+    machine(ctx, 1040, 600, 150,100,  "rgba(0,255,255,1)",  "rgba(0,255,0,0.1)", "catalogue");
+    machine(ctx, 860, 600, 150,100,  "rgba(0,255,255,1)",  "rgba(0,255,255,1)", "data", "data_201911251517.ceda-web-S.jasmin.ac.uk");
+    machine(ctx, 680, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "dap");
+    machine(ctx, 500, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "ftp2", "ftp2-mgmt.ceda.ac.uk");
+    machine(ctx, 320, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "jasmin");
+
+    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 650, 750, "archive users", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
+    image_link(ctx, "helpscout.png", 660, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 400, 750, "jasmin user", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
+    image_link(ctx, "helpscout.png", 410, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+
+
+
+    link_listen(canvas);
 </script>
 
 <div id="deposits">
