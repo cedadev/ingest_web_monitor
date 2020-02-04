@@ -113,7 +113,11 @@
     user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 400, 750, "jasmin user", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
     image_link(ctx, "helpscout.png", 410, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
 
+    //deposit_nums(ctx, 20, 100, "filerate_2min", "files/s", 1);
+    //deposit_nums(ctx, 20, 60, "volrate_2min", "MB/s", 1e-6);
 
+    grab("http://localhost:8080/api", "a", 3000);
+    grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
 
     link_listen(canvas);
 </script>

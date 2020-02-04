@@ -151,6 +151,73 @@ function queue(ctx, colour1, colour2, x, y,  length, height, title){
 
 }
 
+var grabstore = {};
+function grab(url, name, timeout) {
+    $.getJSON(url,
+        function(result) {
+            console.log(result, name, timeout);
+            grabstore[name] = result;
+            setTimeout(function() {grab(url, name, timeout)}, timeout);
+        } );
+}
+
+
+function deposit_nums(ctx, x, y, parameter, unit, scale) {
+    $.getJSON("http://localhost:8080/api",
+        function(result) {
+            ctx.fillStyle = "#ccc";
+            ctx.rect(x,y,50,10);
+            ctx.fill();
+            ctx.fillStyle = "#000";
+            console.log(x, y, parameter, unit, scale, result[parameter]);
+            ctx.fillText((result[parameter]*scale).toFixed(2)+" "+unit, x, y+10);
+            setTimeout(function() {deposit_nums(ctx, x, y, parameter, unit, scale)}, 5000);
+        } );
+
+}
+
+
+
+function get_last_logs()
+{
+    var outut = {};
+    $.post({
+                url: ES_URL,
+                data: JSON.stringify(last_logs_query),
+                success: function (data) {
+                    for (i = 0; i < data.aggregations.stream.buckets.length; i++) {
+                        var stream = data.aggregations.stream.buckets[i].key;
+                        var last_log = data.aggregations.stream.buckets[i].recent_logs.hits.hits[0]._source;
+                        var nlogs = data.aggregations.stream.buckets[i].recent_logs.hits.hits.length;
+                        var counts = {};
+                        for (var j=0; j < nlogs; j++) {
+                            var doc = data.aggregations.stream.buckets[i].recent_logs.hits.hits[j]._source;
+                            if (doc.state in counts) {
+                                counts[doc.state]++;
+                            } else {
+                                counts[doc.state] = 1;
+                            }
+                        }
+                        last_log.counts = counts;
+                        last_log.nlogs = nlogs;
+
+                        outut[stream] = last_log;
+                    }
+                    outpt = outut; // set global var
+                    refresh_page_info(outut);
+                    setTimeout(get_last_logs, 5000);
+                },
+
+                error: function (data) {
+                    console.log(data)
+                },
+                contentType: "application/json"
+            }
+    );
+   // return outut;
+}
+
+
 
 function disk(ctx, colour1, colour2, x, y, length, width, title) {
     var w = width / 5.;
@@ -287,6 +354,4 @@ function on_click(e) {
     }
 }
 
-// Ready for use ! You are welcome !
-drawLink(95, 93, "http://www.facebook.com/", "Me at facebook");
-drawLink(95, 110, "http://plus.google.com/", "Me at G+");
+
