@@ -116,8 +116,13 @@
     //deposit_nums(ctx, 20, 100, "filerate_2min", "files/s", 1);
     //deposit_nums(ctx, 20, 60, "volrate_2min", "MB/s", 1e-6);
 
-    grab("http://localhost:8080/api", "a", 3000);
+    grab("https://archdash1.ceda.ac.uk/current/api", "a", 5000);
     grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
+
+    show_nums(ctx, 620, 400, "a", "filerate_2min", "files/s", 1);
+    show_nums(ctx, 620, 420, "a", "volrate_2min", "MB", 1e-6);
+    show_nums(ctx, 390, 420, "a", "fastq_len", "", 1);
+    show_nums(ctx, 390, 470, "a", "slowq_len", "", 1);
 
     link_listen(canvas);
 </script>

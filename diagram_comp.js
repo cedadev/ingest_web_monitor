@@ -162,18 +162,28 @@ function grab(url, name, timeout) {
 }
 
 
-function deposit_nums(ctx, x, y, parameter, unit, scale) {
-    $.getJSON("http://localhost:8080/api",
-        function(result) {
-            ctx.fillStyle = "#ccc";
-            ctx.rect(x,y,50,10);
-            ctx.fill();
-            ctx.fillStyle = "#000";
-            console.log(x, y, parameter, unit, scale, result[parameter]);
-            ctx.fillText((result[parameter]*scale).toFixed(2)+" "+unit, x, y+10);
-            setTimeout(function() {deposit_nums(ctx, x, y, parameter, unit, scale)}, 5000);
-        } );
+function show_nums(ctx, x, y, key1, key2, unit, scale) {
+    ctx.fillStyle = "rgba(250,255,250,0.9)";
+    ctx.strokeStyle = "rgba(0,0,0,1)";
+    var width = 60;
+    var height = 12;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 60, y);
+    ctx.lineTo(x + width, y + height);
+    ctx.lineTo(x, y + height);
+    ctx.closePath();
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.stroke();
 
+    //ctx.rect(x,y,60,12);
+    //ctx.fill();
+    ctx.fillStyle = "#000";
+    var value = 0 ;
+    if (grabstore[key1] != undefined) {value=grabstore[key1][key2]}
+    ctx.fillText((value*scale).toFixed(2)+" "+unit, x, y+10);
+    setTimeout(function() {show_nums(ctx, x, y, key1, key2, unit, scale)}, 1000+Math.random()*1000);
 }
 
 
