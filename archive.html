@@ -47,6 +47,8 @@
     <img id="cat.png" src="cat.png"/>
     <img id="archive.png" src="archive.png"/>
     <img id="data.png" src="data.png"/>
+    <img id="dap.png" src="dap.png"/>
+    <img id="arrivals.png" src="arrivals.png"/>
 </div>
 
 <div>
@@ -66,8 +68,7 @@
 
     user(ctx, c8, 250, 10, "data provider", "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
     image_link(ctx, "helpscout.png", 260, 15, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
-    machine(ctx, 220, 50, 150,100,  mcolour,  "arrivals", "arrivals1.ceda.ac.uk");
-    up(ctx, 230, 80, "arrivals");
+    web_machine(ctx, 220, 50, 150,100,  mcolour, "arrivals", "arrivals", "arrivals.png", "arrivals", "https://arrivals.ceda.ac.uk");
     disk(ctx, c5, 400, 130, 70, 70, "/arrivals");
     //down_cink_arrow(ctx, c7, 430 , 150, 30, 100, 20, -60);
     down_cink_arrow2(ctx, c10, 300, 20, 430, 150, 50, 50, dw);
@@ -140,13 +141,11 @@
 
     web_machine(ctx, 1040, 650, 150,100,  mcolour, "catalogue", "catalogue", "cat.png", "catalogue.ceda.ac.uk" ,"https://catalogue.ceda.ac.uk");
 
-    web_machine(ctx, 860, 720, 150,100,  mcolour, "archive", "archive", "archive.png", "archive.ceda.ac.uk", "https://archive.ceda.ac.uk");
+    web_machine(ctx, 860, 720, 150,100,  mcolour, "archive", "archive", "archive.png", "archive.ceda.ac.uk", "http://archive.ceda.ac.uk");
 
-    web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "data.png", "data.ceda.ac.uk", "https://data.ceda.ac.uk");
+    web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "data.png", "data.ceda.ac.uk", "http://data.ceda.ac.uk");
 
-
-    machine(ctx, 680, 620, 150,100,  mcolour, "dap");
-    up(ctx, 690, 640, "http://dap.ceda.ac.uk");
+    web_machine(ctx, 680, 620, 150,100,  mcolour, "dap", "dap", "dap.png", "http://dap.ceda.ac.uk", "http://dap.ceda.ac.uk");
 
     machine(ctx, 500, 620, 150,100,  mcolour, "ftp2", "ftp2-mgmt.ceda.ac.uk");
     up(ctx, 510, 640, "ftp.ceda.ac.uk");
@@ -154,6 +153,12 @@
 
     user(ctx, c10, 650, 750, "archive users", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
     image_link(ctx, "helpscout.png", 660, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+    arrow(ctx, 'black', 680, 750, 880, 770, 1, 5);
+    arrow(ctx, 'black', 950, 770, 1050, 730, 1, 5);
+    arrow(ctx, 'black', 1050, 710, 950, 680, 1, 5);
+    arrow(ctx, 'black', 880, 680, 760, 700, 1, 5);
+    arrow(ctx, 'black', 680, 750, 880, 770, 1, 5);
+
     user(ctx, c10, 400, 750, "jasmin user", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
     image_link(ctx, "helpscout.png", 410, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
 

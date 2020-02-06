@@ -75,32 +75,41 @@ function down_arrow(ctx, colour, x, y, length) {
     ctx.fill(p);
 }
 
-function arrow_cink(ctx, colour, x1, y1, x2, y2, x3, y3, x4, y4, width) {
+function arrow_cink(ctx, colour, x1, y1, x2, y2, x3, y3, x4, y4, width, dash) {
     ctx.strokeStyle = colour;
     ctx.lineWidth = width;
+    if (dash != undefined) {ctx.setLineDash([dash]);}
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.lineTo(x3, y3);
     ctx.lineTo(x4, y4);
+    ctx.stroke();
     var h = width * 5;
     var angle = Math.atan2(x4 - x3, y4 - y3);
     var a = 0.5;
+    ctx.setLineDash([0]);
+    ctx.beginPath();
     ctx.lineTo(x4 - h * Math.sin(angle + a), y4 - h * Math.cos(angle + a));
     ctx.moveTo(x4, y4);
     ctx.lineTo(x4 - h * Math.sin(angle - a), y4 - h * Math.cos(angle - a));
     ctx.stroke();
 }
 
-function arrow(ctx, colour, x1, y1, x2, y2, width) {
+function arrow(ctx, colour, x1, y1, x2, y2, width, dash) {
     ctx.strokeStyle = colour;
     ctx.lineWidth = width;
+    if (dash != undefined) {ctx.setLineDash([dash]);}
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
+    ctx.stroke();
     var h = width * 5;
     var angle = Math.atan2(x2 - x1, y2 - y1);
     var a = 0.5;
+    ctx.setLineDash([0]);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
     ctx.lineTo(x2 - h * Math.sin(angle + a), y2 - h * Math.cos(angle + a));
     ctx.moveTo(x2, y2);
     ctx.lineTo(x2 - h * Math.sin(angle - a), y2 - h * Math.cos(angle - a));
@@ -196,13 +205,24 @@ function queue(ctx, colour1, x, y, length, height, title) {
 
 var grabstore = {};
 function grab(url, name, timeout) {
-    $.getJSON(url,
-        function (result) {
-            grabstore[name] = result;
-            setTimeout(function () {
-                grab(url, name, timeout)
-            }, timeout);
-        });
+   // $.getJSON(url,
+   //     function (result) {
+   //         grabstore[name] = result;
+   //         setTimeout(function () {
+   //             grab(url, name, timeout)
+   //         }, timeout);
+   //     });
+    $.get({
+            url: url,
+            success: function (result) {
+                grabstore[name] = result;
+                setTimeout(function () {
+                    grab(url, name, timeout)
+                }, timeout);
+            },
+            error: function (data) {console.log(data); console.log(data.getAllResponseHeaders())},
+        }
+    );
 }
 
 
@@ -231,7 +251,7 @@ function ingest_sum(timeout)
                 },
 
                 error: function (data) {
-                    console.log(data)
+                    console.log(data);
                 },
                 contentType: "application/json"
             }
