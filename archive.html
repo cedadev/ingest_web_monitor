@@ -13,8 +13,8 @@
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <script src="lib.js"></script>
-<script src="deposits.js"></script>
 <script src="diagram_comp.js"></script>
+<script src="colour_blender.js"></script>
 
    <script>
         function network_plot(host, size, period, report) {
@@ -40,13 +40,13 @@
 
 
 <div hidden>
-
-    <img id="testimg" src="http://archive.ceda.ac.uk/static/media/uploads/slider/ukmo-charts_20180706_12t00.gif"/>
-    <img id="testimg2" src="http://mgmt.jc.rl.ac.uk/ganglia/graph.php?h=arrivals1.ceda.ac.uk&m=load_one&r=3day&s=by%20name&hc=4&mc=2&st=1561013641&g=load_report&z=medium&c=JASMIN%20Cluster"/>
     <img id="ganglia.png" src="ganglia.png"/>
     <img id="helpscout.png" src="helpscout.png"/>
     <img id="ingest_mon.png" src="ingest_mon.png"/>
     <img id="deposit_mon.png" src="deposit_mon.png"/>
+    <img id="cat.png" src="cat.png"/>
+    <img id="archive.png" src="archive.png"/>
+    <img id="data.png" src="data.png"/>
 </div>
 
 <div>
@@ -56,207 +56,132 @@
 <script>
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
+    var mcolour = "rgba(100,100,100,0.3)";
+    var c1 = "rgba(255,255,200,0.5)"; var c2 = "rgba(0,255,255,0.5)"; var c3 = "rgba(100,100,0,0.5)";
+    var c4 = "rgba(255,100,0,0.5)"; var c5 = "rgba(0,255,200,0.5)"; var c6 = "rgba(100,100,100,0.5)";
+    var c7 = "rgba(255,0,0,0.5)"; var c8 = "rgba(0,255,100,0.5)"; var c9 = "rgba(100,100,200,0.5)";
+    var c10 = "rgba(255,0,200,0.5)"; var c11 = "rgba(0,255,0,0.5)"; var c12 = "rgba(100,200,200,0.5)";
+    var dw = 20;
+    var iw = 2;
 
-    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 250, 10, "data provider", "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
+    user(ctx, c8, 250, 10, "data provider", "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
     image_link(ctx, "helpscout.png", 260, 15, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
-    machine(ctx, 220, 50, 150,100,  "rgba(255,0,255,0.2)",  "rgba(255,0,255,0.3)", "arrivals", "arrivals1.ceda.ac.uk");
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,255,0.5)", 400, 130, 70, 70, "/arrivals");
-    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 430 , 150, 30, 100, 20, -60);
+    machine(ctx, 220, 50, 150,100,  mcolour,  "arrivals", "arrivals1.ceda.ac.uk");
+    up(ctx, 230, 80, "arrivals");
+    disk(ctx, c5, 400, 130, 70, 70, "/arrivals");
+    //down_cink_arrow(ctx, c7, 430 , 150, 30, 100, 20, -60);
+    down_cink_arrow2(ctx, c10, 300, 20, 430, 150, 50, 50, dw);
 
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,255,255,0.5)", 500, 130, 70, 70, "/processing3");
-    down_arrow(ctx, "rgba(255,0,0,0.5)", 550, 150, 70);
+    disk(ctx, c8, 500, 130, 70, 70, "/processing3");
+    //down_arrow(ctx, c10, 550, 150, 70);
+    down_cink_arrow2(ctx, c12, 550, 20, 550, 150, 10, 30, dw);
 
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,0,255,0.5)", 600, 130, 70, 70, "/gws...");
-    down_arrow(ctx, "rgba(255,255,0,0.5)", 650, 150, 70);
+    disk(ctx, c11, 600, 130, 70, 70, "/gws...");
+    //down_arrow(ctx, c12, 650, 150, 70);
+    down_cink_arrow2(ctx, c12, 650, 20, 650, 150, 10, 30, dw);
 
-    machine_group(ctx, 560, 350, 150,100,  "rgba(200,200,100,0.6)",  "rgba(100,255,100,0.1)", "deposit", 5);
+    machine_group(ctx, 560, 350, 150,100,  mcolour, "deposit", 5);
     image_link(ctx, "deposit_mon.png", 565, 350, 105, 75, "https://archdash1.ceda.ac.uk/current/a_sum");
 
 
-    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 610 , 500, 20, 140, 230, -85);
-    down_cink_arrow(ctx, "rgba(255,0,0,0.5)", 610 , 500, 30, 50 , 210, -75);
-    down_cink_arrow(ctx, "rgba(255,255,0,0.5)", 610 , 500, 60, 30, 190, 75);
+    //down_cink_arrow(ctx, c4, 610 , 500, 20, 140, 230, -85);
+    //down_cink_arrow(ctx, c5, 610 , 500, 30, 50 , 210, -75);
+    //down_cink_arrow(ctx, c6, 610 , 500, 60, 30, 190, 75);
+    down_cink_arrow2(ctx, c12, 430, 200, 610, 480, 30, 200, dw);
+    down_cink_arrow2(ctx, c12, 550, 200, 610, 480, 30, 220, dw);
+    down_cink_arrow2(ctx, c12, 650, 200, 610, 480, 60, 200, dw);
 
 
-    down_cink_arrow(ctx, "rgba(0,255,255,0.5)", 710 , 750, 20, 80, 130, -85);
-    down_cink_arrow(ctx, "rgba(255,0,0,0.5)", 610 , 750, 90, 50 , 20, -20);
-    down_cink_arrow(ctx, "rgba(255,255,0,0.5)", 450 , 750, 10, 110, 150, 90);
+    //down_cink_arrow(ctx, c7, 710 , 750, 20, 80, 130, -85);
+    //down_cink_arrow(ctx, c8, 610 , 750, 90, 50 , 20, -20);
+    //down_cink_arrow(ctx, c9, 450 , 750, 10, 110, 150, 90);
+    down_cink_arrow2(ctx, c12, 610, 580, 710, 750, 20, 140, dw);
+    down_cink_arrow2(ctx, c12, 610, 580, 610, 750, 20, 140, dw);
+    down_cink_arrow2(ctx, c12, 610, 580, 450, 750, 20, 140, dw);
 
 
-    machine_group(ctx, 170, 350, 150,100,  "rgba(0,255,0,0.3)",  "rgba(0,255,0,0.1)",  "ingest", 5);
+    machine_group(ctx, 170, 350, 150,120,  mcolour,  "ingest", 5);
     image_link(ctx, "ingest_mon.png", 175, 350, 105, 75, "http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=&owner=&reclen=30&ingest1=on&ingest2=on&ingest3=on&running=on&warn=on&fail=on&killed=on&died=on");
-    arrow_cink(ctx, 'black', 250, 130, 250, 250, 200, 250, 200, 350, 1);
+    arrow_cink(ctx, 'black', 250, 130, 250, 250, 200, 250, 200, 350, iw);
 
 
-    machine(ctx, 350, 300, 150,200,  "rgba(0,255,0,0.3)",  "rgba(0,255,0,0.1)", "rbq");
-    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 380, 100, 20,  "deposit_rpc");
-    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 420, 100, 20,  "fast");
-    queue(ctx, "rgba(0,255,0,0.9)",  "rgba(200,255,0,0.4)", 370, 460, 100, 20,  "slow");
-    arrow_cink(ctx, 'black', 280, 380, 280, 380, 280, 380, 370, 380, 1);
-    arrow(ctx, 'black', 470, 380, 550, 380, 1);
+    machine(ctx, 350, 300, 150,200,  mcolour, "rbq");
+    queue(ctx, c8, 370, 370, 100, 20,  "deposit_rpc");
+    queue(ctx, c9, 370, 420, 100, 20,  "fast");
+    queue(ctx, c9, 370, 460, 100, 20,  "slow");
+    arrow_cink(ctx, 'black', 280, 380, 280, 380, 280, 380, 370, 380, iw);
+    arrow(ctx, 'black', 470, 380, 550, 380, iw);
+
+    arrow_cink(ctx, 'black', 470, 430, 520, 430, 520, 450, 750, 450, iw);
+    arrow_cink(ctx, 'black', 470, 470, 520, 470, 520, 450, 750, 450, iw);
+    arrow_cink(ctx, 'black', 550, 400, 330, 400, 330, 430, 370, 430, iw);
+    arrow_cink(ctx, 'black', 550, 400, 330, 400, 330, 470, 370, 470, iw);
+
+    //machine(ctx, 750, 390, 150,100,  c3,  "indexer");
+    machine_group2(ctx, 750, 390, 150,100,  mcolour,
+            [{title: "indexer - ingest4", name: "ingest4"}, {title: "indexer - ingest5", name: "ingest5"}]);
+    machine_group(ctx, 1000, 390, 150,100,  mcolour,  "jasmin-es", 8);
+    disk(ctx, c3, 1010, 450, 30, 50, "FBI");
+    up(ctx, 1020, 460, "FBI");
+    disk(ctx, c3, 1070, 450, 30, 50, "Haystack");
+    up(ctx, 1080, 460, "Haystack");
+    arrow(ctx, 'black', 900, 450, 1000, 450, iw);
+    arrow_cink(ctx, 'black', 1000, 470, 950, 470, 950, 470, 950, 600, iw);
 
 
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(0,255,0,0.5)", 550, 490, 80, 100, "/archive");
+    machine(ctx, 1040, 520, 150,100,  mcolour,  "db1");
+    disk(ctx, c2, 1050, 570, 30, 40, "Moles");
+    arrow(ctx, 'black', 1080, 480, 1080, 650, iw);
+    arrow(ctx, 'black', 1070, 600, 1070, 650, iw);
+
+    disk(ctx, c4, 540, 490, 80, 140, "/archive");
     add_link(ctx, 550,480, 100, 10, "http://cedaarchiveapp.ceda.ac.uk/cedaarchiveapp/home/");
 
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,255,0,0.5)", 800, 100, 50, 60, "FBI");
-    disk(ctx, "rgba(255,0,255,0.2)", "rgba(255,0,0,0.5)", 900, 100, 50, 60, "DB1");
 
-    machine(ctx, 1040, 600, 150,100,  "rgba(0,255,255,1)",  "rgba(0,255,0,0.1)", "catalogue");
-    machine(ctx, 860, 600, 150,100,  "rgba(0,255,255,1)",  "rgba(0,255,255,1)", "data", "data_201911251517.ceda-web-S.jasmin.ac.uk");
-    machine(ctx, 680, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "dap");
-    machine(ctx, 500, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "ftp2", "ftp2-mgmt.ceda.ac.uk");
-    machine(ctx, 320, 600, 150,100,  "rgba(0,255,0,0.6)",  "rgba(0,255,0,0.1)", "jasmin");
+    web_machine(ctx, 1040, 650, 150,100,  mcolour, "catalogue", "catalogue", "cat.png", "catalogue.ceda.ac.uk" ,"https://catalogue.ceda.ac.uk");
 
-    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 650, 750, "archive users", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
+    web_machine(ctx, 860, 720, 150,100,  mcolour, "archive", "archive", "archive.png", "archive.ceda.ac.uk", "https://archive.ceda.ac.uk");
+
+    web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "data.png", "data.ceda.ac.uk", "https://data.ceda.ac.uk");
+
+
+    machine(ctx, 680, 620, 150,100,  mcolour, "dap");
+    up(ctx, 690, 640, "http://dap.ceda.ac.uk");
+
+    machine(ctx, 500, 620, 150,100,  mcolour, "ftp2", "ftp2-mgmt.ceda.ac.uk");
+    up(ctx, 510, 640, "ftp.ceda.ac.uk");
+    machine(ctx, 320, 620, 150,100,  mcolour, "jasmin");
+
+    user(ctx, c10, 650, 750, "archive users", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
     image_link(ctx, "helpscout.png", 660, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
-    user(ctx, "rgba(255,0,255,1)", "rgba(255,0,255,0.5)", 400, 750, "jasmin user", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
+    user(ctx, c10, 400, 750, "jasmin user", "https://secure.helpscout.net/mailbox/8c6107481a61d1f4/");
     image_link(ctx, "helpscout.png", 410, 755, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
 
     //deposit_nums(ctx, 20, 100, "filerate_2min", "files/s", 1);
     //deposit_nums(ctx, 20, 60, "volrate_2min", "MB/s", 1e-6);
 
-    grab("https://archdash1.ceda.ac.uk/current/api", "a", 5000);
-    grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
+    grab("http://archdash1.ceda.ac.uk/current/api", "current_deposits", 5000);
+    //grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
+    ingest_sum(20000);
+    uptimerobot(60000);
 
-    show_nums(ctx, 620, 400, "a", "filerate_2min", "files/s", 1);
-    show_nums(ctx, 620, 420, "a", "volrate_2min", "MB", 1e-6);
-    show_nums(ctx, 390, 420, "a", "fastq_len", "", 1);
-    show_nums(ctx, 390, 470, "a", "slowq_len", "", 1);
+    show_nums(ctx, 580, 400, "current_deposits", "filerate_2min", "files/s", 1, 2);
+    show_nums(ctx, 580, 420, "current_deposits", "volrate_2min", "MB/s", 1e-6, 1);
+    show_nums(ctx, 390, 420, "current_deposits", "fastq_len", "files", 1, 0);
+    show_nums(ctx, 390, 470, "current_deposits", "slowq_len", "files", 1, 0);
+
+    show_nums(ctx, 240, 380, "ingest", "ok", "ok", 1, 0);
+    show_nums(ctx, 240, 395, "ingest", "fail", "fails", 1, 0);
+    show_nums(ctx, 240, 410, "ingest", "running", "running", 1, 0);
+    show_nums(ctx, 240, 425, "ingest", "killed", "killed", 1, 0);
+    show_nums(ctx, 240, 440, "ingest", "died", "died", 1, 0);
+
+
+
 
     link_listen(canvas);
 </script>
 
-<div id="deposits">
-
-
-<!--  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
-
-  <!-- Load our React component. -->
-<!--   <script src="like_button.js"></script> -->
-
-
-<svg width="1200" height="800" style="background-color:papayawhip" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <svg x="210" y="40" width="150" height="200">
-      <rect x="3" y="3" rx="20" ry="20" width="140" height="190"
-      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <a xlink:href=" http://mgmt.jc.rl.ac.uk/ganglia/?r=hour&cs=&ce=&m=load_one&s=by+name&c=JASMIN+Cluster&h=arrivals1.ceda.ac.uk&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4"
-           target="_blank">
-               <text x="30" y="30" fill="red">Arrivals</text></a>
-    </svg>
-
-    <svg x="60" y="550" width="150" height="200">
-      <rect x="3" y="3" rx="10" ry="10" width="140" height="190"
-      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <text x="10" y="30" fill="red">Catalogue</text>
-    </svg>
-
-    <svg x=250 y=550 width="150" height="200">
-      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
-      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <text x="60" y="30" fill="green">Data<script>document.write(Math.random())</script></text>
-    </svg>
-
-    <svg x=400 y=550 width="150" height="200">
-      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
-      style="fill:red;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <text x="60" y="30" fill="red">dap</text>
-    </svg>
-
-    <svg x=550 y=550 width="150" height="200">
-      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
-      style="fill:tan;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <text x="60" y="30" fill="red">FTP</text>
-    </svg>
-
-    <svg x=700 y=550 width="150" height="200">
-        <text x="80" y="30" fill="red">jasmin</text>
-      <rect x=3 y=3 rx="10" ry="10" width="140" height="190"
-      style="fill: blue;stroke:black;stroke-width:5;opacity:0.2"></rect>
-
-    </svg>
-
-    <svg x="540" y="300" width="200" height="200">
-      <rect x="3" y="3" rx="20" ry="20" width="190" height="140"
-      style="fill:blue;stroke:black;stroke-width:5;opacity:0.2"></rect>
-        <text x="60" y="30" fill="blue">deposit.ceda.ac.uk</text>
-        <a xlink:href=" http://mgmt.jc.rl.ac.uk/ganglia/?r=hour&cs=&ce=&m=load_one&s=by+name&c=JASMIN+Cluster&h=deposit1.ceda.ac.uk&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4"
-           target="_blank">
-               <text x="60" y="40" fill="red">1</text></a>
-    </svg>
-
-
-    <!-- down arrow -->
-    <svg  x=70 y="250" width="40" height="70">
-        <text x="0" y="50" fill="red" >Arrivals</text>
-        <path d="M20 70 l -20 -20 h10 v-50 h20 v50 h10 z" style="fill: green;opacity:0.5"/></svg>
-
-    <!-- down cink right arrow -->
-    <svg  x=285 y="0" width="140" height="170">
-        <path d="M100 170 l -20 -20 h10 v-35 l-50 -50 v-45 h20 v35 l50 50 v45 h10 z" style="fill: pink;opacity:0.5"/></svg>
-
-    <!-- down cink right arrow -->
-    <svg  x=20 y="20" width="140" height="170">
-        <path d="M100 170 l -20 -20 h10 v-45 l-50 -50 v-55 h20 v45 l50 50 v55 h10 z" style="fill:blue;opacity:0.1"/></svg>
-
-    <!-- down box right arrow -->
-    <svg  x=70 y="350" width="140" height="170" style="background-color: grey">
-        <text x="0" y="50" fill="red">Arrivals</text>
-        <path d="M100 170 l -20 -20 h10 v-40 h-50 v-70 h20 v50 h50 v60 h10 z" style="fill: orange;opacity:0.5"/></svg>
-
-    <!-- down cink left arrow -->
-    <svg  x=270 y="250" width="140" height="170">
-        <text x="0" y="50" fill="red">Arrivals</text>
-        <path d="M20 170 l -20 -20 h10 v-55 l50 -50 v-45 h20 v55 l-50 50 v45 h10 z" style="fill: lightblue;opacity:0.5"/></svg>
-
-    <!-- down left box arrow -->
-    <svg  x=370 y="250" width="140" height="170">
-        <text x="0" y="50" fill="red">Arrivals</text>
-        <path d="M20 170 l-20 -20 h10 v-60 h50 v-50 h20 v70 h-50 v40 h10 z" style="fill: lightblue;opacity:0.5"/></svg>
-
-
-    <!-- down funnel arrow -->
-    <svg  x=470 y="200" width="240" height="170">
-        <text x="0" y="50" fill="red">Arrivals</text>
-        <path d="M110 170 l -20 -20 h10 v-150 h20 v150 h10 z" style="fill: green;opacity:0.5"/>
-        <path d="M120 170 l -20 -20 h10 v-55 l50 -50 v-45 h20 v55 l-50 50 v45 h10 z" style="fill: lightblue;opacity:0.5"/>
-        <path d="M100 170 l -20 -20 h10 v-45 l-50 -50 v-55 h20 v45 l50 50 v55 h10 z" style="fill: orange;opacity:0.5"/>
-    </svg>
-
-    <!-- disk -->
-    <svg  x=370 y="90" width="100" height="160">
-        <text x="10" y="50" fill="red" style="font-size: 8pt;font-family: 'Courier New'">.../arrivals</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: purple;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: purple;opacity:0.3"/></svg>
-
-    <!-- disk -->
-    <svg  x=520 y="50" width="100" height="160">
-        <text x="0" y="50" fill="red">Processing</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: pink;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: pink;opacity:0.3"/></svg>
-    <!-- disk -->
-    <svg  x=670 y="50" width="100" height="160">
-        <text x="0" y="50" fill="red">GWS</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: red;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: red;opacity:0.3"/></svg>
-    <!-- disk -->
-    <svg  x=270 y="400" width="100" height="160" viewBox="0 0 100 200">
-        <text x="0" y="50" fill="red">DB1</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: darkgreen;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: darkgreen;opacity:0.3"/></svg>
-    <!-- disk -->
-    <svg  x=390 y="400" width="100" height="160" viewBox="0 0 100 200">
-        <text x="0" y="50" fill="red">FBI</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: green;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: green;opacity:0.3"/></svg>
-    <!-- disk -->
-    <svg  x=520 y="400" width="100" height="160">
-        <text x="0" y="50" fill="red">Archive</text>
-        <path d="M0 40 c0 -20 100 -20 100 0 c0 20 -100 20 -100 0z" style="fill: blue;opacity:0.5"/>
-        <path d="M0 40 v100 c0 20 100 20 100 0 v-100 c0 20 -100 20 -100 0z" style="fill: blue;opacity:0.3"/></svg>
-
-</svg>
 
 
 

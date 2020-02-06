@@ -41,7 +41,7 @@
           plots += '<a href="http://mgmt.jc.rl.ac.uk/ganglia/?r=2hr&cs=&ce=&c=JASMIN+Cluster&h=';
           plots += host + '.ceda.ac.uk&tab=m&vn=&mc=2&z=medium&metric_group=ALLGROUPS">' + host+ '</a>';
           plots += '</div></div>';
-          plots += '<div class="row">'
+          plots += '<div class="row">';
           plots += '<div class="col-sm">' + network_plot(host, 300, period, 'load_report') + '</div>';
           plots += '<div class="col-sm">' + network_plot(host, 300, period, 'network_report') + '</div>';
           plots += '<div class="col-sm">' + network_plot(host, 300, period, 'mem_report') + '</div>';

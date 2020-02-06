@@ -132,8 +132,10 @@ function icongen(s) {
   var back = ("000" + byte2.toString(16));
     back = back.substring(back.length - 3);
   var colour = byte2.toString(16);
-    if (colour.length == 2) {"0" + colour};
- // console.log(s, hash, byte1, byte2, byte3, back, colour) border border-dark
+    if (colour.length == 2) {
+        "0" + colour
+    }
+    // console.log(s, hash, byte1, byte2, byte3, back, colour) border border-dark
   // return  '<span class="mr-1 py-1" style="background-color: #' + back + '" title="'+ s +'">.</span>';
 
     return '<span class="border border-dark rounded-circle mr-1 p-1" '+
