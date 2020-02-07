@@ -165,21 +165,21 @@
     //deposit_nums(ctx, 20, 100, "filerate_2min", "files/s", 1);
     //deposit_nums(ctx, 20, 60, "volrate_2min", "MB/s", 1e-6);
 
-    grab("http://archdash1.ceda.ac.uk/current/api", "current_deposits", 5000);
+    grab("https://archdash1.ceda.ac.uk/current/api", "current_deposits", 5000);
     //grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
     ingest_sum(20000);
     uptimerobot(60000);
 
-    show_nums(ctx, 580, 400, "current_deposits", "filerate_2min", "files/s", 1, 2);
-    show_nums(ctx, 580, 420, "current_deposits", "volrate_2min", "MB/s", 1e-6, 1);
-    show_nums(ctx, 390, 420, "current_deposits", "fastq_len", "files", 1, 0);
-    show_nums(ctx, 390, 470, "current_deposits", "slowq_len", "files", 1, 0);
+    show_nums(ctx, 580, 400, "current_deposits", "filerate_2min", "files/s", 1, 2, 10, 30);
+    show_nums(ctx, 580, 420, "current_deposits", "volrate_2min", "MB/s", 1e-6, 1, 10000000, 1000000000);
+    show_nums(ctx, 390, 420, "current_deposits", "fastq_len", "files", 1, 0, 1000, 100000);
+    show_nums(ctx, 390, 470, "current_deposits", "slowq_len", "files", 1, 0, 200000, 1000000);
 
     show_nums(ctx, 240, 380, "ingest", "ok", "ok", 1, 0);
-    show_nums(ctx, 240, 395, "ingest", "fail", "fails", 1, 0);
-    show_nums(ctx, 240, 410, "ingest", "running", "running", 1, 0);
-    show_nums(ctx, 240, 425, "ingest", "killed", "killed", 1, 0);
-    show_nums(ctx, 240, 440, "ingest", "died", "died", 1, 0);
+    show_nums(ctx, 240, 395, "ingest", "fail", "fails", 1, 0, 5, 20);
+    show_nums(ctx, 240, 410, "ingest", "running", "running", 1, 0, 10, 30);
+    show_nums(ctx, 240, 425, "ingest", "killed", "killed", 1, 0, 2, 10);
+    show_nums(ctx, 240, 440, "ingest", "died", "died", 1, 0, 1, 3);
 
 
 

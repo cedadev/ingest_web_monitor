@@ -261,7 +261,7 @@ function ingest_sum(timeout)
 
 function uptimerobot(timeout) {
     var url = "https://api.uptimerobot.com/v2/getMonitors";
-    var query_data = {"api_key": "u668013-4d3c05d7e39cfab6b3408284", "logs": 0};
+    var query_data = {"api_key": "ur668013-4786377064a9ad449c09d1de", "logs": 0};
 
     $.post({
             url: url,
@@ -311,8 +311,15 @@ function up(ctx, x, y, key) {
 
 }
 
-function show_nums(ctx, x, y, key1, key2, unit, scale, fixed) {
-    ctx.fillStyle = "rgba(250,255,250,0.9)";
+function show_nums(ctx, x, y, key1, key2, unit, scale, fixed, warn_level, alert_level) {
+    var value = 0;
+    if (grabstore[key1] != undefined) {
+        value = grabstore[key1][key2]
+    }
+    ctx.fillStyle = "rgba(200,255,200,0.9)";
+    if (value > warn_level) {ctx.fillStyle = "rgba(250,255,0,0.9)"}
+    if (value > alert_level) {ctx.fillStyle = "rgba(250,0,0,0.9)"}
+
     ctx.strokeStyle = "rgba(0,0,0,1)";
     var width = 60;
     var height = 12;
@@ -329,13 +336,10 @@ function show_nums(ctx, x, y, key1, key2, unit, scale, fixed) {
     //ctx.rect(x,y,60,12);
     //ctx.fill();
     ctx.fillStyle = "#000";
-    var value = 0;
-    if (grabstore[key1] != undefined) {
-        value = grabstore[key1][key2]
-    }
+
     ctx.fillText((value * scale).toFixed(fixed) + " " + unit, x + 2, y + 10);
     setTimeout(function () {
-        show_nums(ctx, x, y, key1, key2, unit, scale, fixed)
+        show_nums(ctx, x, y, key1, key2, unit, scale, fixed, warn_level, alert_level)
     }, 1000 + Math.random() * 1000);
 }
 
@@ -511,8 +515,8 @@ function on_mousemove(ev) {
 // Link click
 function on_click(e) {
     if (hoverLink) {
-        window.open(hoverLink); // Use this to open in new tab
-        //window.location = hoverLink; // Use this to open in current window
+        //window.open(hoverLink); // Use this to open in new tab
+        window.location = hoverLink; // Use this to open in current window
     }
 }
 
