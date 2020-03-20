@@ -499,6 +499,8 @@ function make_params() {
     var ingest1 = urlParams.get("ingest1");
     var ingest2 = urlParams.get("ingest2");
     var ingest3 = urlParams.get("ingest3");
+    var ingest4 = urlParams.get("ingest4");
+    var ingest5 = urlParams.get("ingest5");
     var parameters = {};
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
