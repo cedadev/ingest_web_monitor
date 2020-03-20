@@ -33,6 +33,8 @@
         <label>Ingest1 </label><input type="checkbox" name="ingest1" id="ingest1">
         <label>Ingest2 </label><input type="checkbox" name="ingest2" id="ingest2">
         <label>Ingest3 </label><input type="checkbox" name="ingest3" id="ingest3">
+        <label>Ingest4 </label><input type="checkbox" name="ingest4" id="ingest4">
+        <label>Ingest5 </label><input type="checkbox" name="ingest5" id="ingest5">
 
 
 
@@ -164,6 +166,8 @@ function refresh_page_info(a) {
         if ( !(ingest1) && last_log.host == 'ingest1.ceda.ac.uk') {continue}
         if ( !(ingest2) && last_log.host == 'ingest2.ceda.ac.uk') {continue}
         if ( !(ingest3) && last_log.host == 'ingest3.ceda.ac.uk') {continue}
+        if ( !(ingest4) && last_log.host == 'ingest4.ceda.ac.uk') {continue}
+        if ( !(ingest5) && last_log.host == 'ingest5.ceda.ac.uk') {continue}
 
 
         // make button and add to the display
@@ -194,6 +198,8 @@ for (var i=0; i< states_filter.length; i++) {
 if (ingest1) {$('#ingest1').prop('checked', ingest1)}
 if (ingest2) {$('#ingest2').prop('checked', ingest2)}
 if (ingest3) {$('#ingest3').prop('checked', ingest3)}
+if (ingest4) {$('#ingest4').prop('checked', ingest4)}
+if (ingest5) {$('#ingest5').prop('checked', ingest5)}
 
 
 

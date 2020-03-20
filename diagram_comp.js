@@ -540,16 +540,9 @@ function on_click(e) {
 }
 
 
-function draw_diagram() {
+function draw() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
-    var mcolour = "rgba(100,100,100,0.3)";
-    var c1 = "rgba(255,255,200,0.5)"; var c2 = "rgba(0,255,255,0.5)"; var c3 = "rgba(100,100,0,0.5)";
-    var c4 = "rgba(255,100,0,0.5)"; var c5 = "rgba(0,255,200,0.5)"; var c6 = "rgba(100,100,100,0.5)";
-    var c7 = "rgba(255,0,0,0.5)"; var c8 = "rgba(0,255,100,0.5)"; var c9 = "rgba(100,100,200,0.5)";
-    var c10 = "rgba(255,0,200,0.5)"; var c11 = "rgba(0,255,0,0.5)"; var c12 = "rgba(100,200,200,0.5)";
-    var dw = 20;
-    var iw = 2;
 
     user(ctx, c8, 250, 10, "data provider", "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
     image_link(ctx, "helpscout.png", 260, 15, 20, 20, "https://secure.helpscout.net/mailbox/7b0c55db545d4969/1952553/");
@@ -674,3 +667,4 @@ function draw_diagram() {
 
     link_listen(canvas);
 }
+
