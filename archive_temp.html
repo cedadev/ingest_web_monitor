@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+    <script src="stats_grab.js"></script>
+</head>
+<body>
+
+ <h1>Hi thffffere</h1>
+
+ {{svg}}
+
+
+<script>
+
+
+
+function update_node_text(title_text, text) {
+    var node = get_node(title_text);
+    var t = node.getElementsByTagName("text")[0];
+    t.textContent = text;
+}
+
+function node_shapes(node) {
+    // file the main shape object for a node
+    var shapes = [];
+    for (var i of ["polygon", "rectangle", "path", "ellipse"]) {
+        for (j of node.getElementsByTagName(i)) {
+            shapes.push(j);
+        }
+    }
+    return shapes
+}
+
+function store_base_colours() {
+    var svg = document.getElementById("graph0");
+    var titleTags = svg.getElementsByTagName("title");
+    for (var i = 0; i < titleTags.length; i++) {
+        var p = titleTags[i].parentElement;
+        s = node_shapes(p)[0];
+        p.fill = s.getAttribute("fill");
+        p.stroke = s.getAttribute("stroke");
+    }
+}
+
+function update_node_colour(title_text, fill, stroke) {
+    var node = get_node(title_text);
+    for (var s of node_shapes(node)) {
+        s.setAttribute("fill", fill);
+        s.setAttribute("stroke", stroke);
+    }
+}
+
+function flag_error(title_text) {update_node_colour(title_text, "#ff9999", "#ff0000")}
+function flag_warning(title_text) {update_node_colour(title_text, "#ffcc55", "#ffcc00")}
+function flag_ok(title_text) {update_node_colour(title_text, "#77cc77", "#00ff00")}
+
+function flag_clear(title_text) {
+    var node = get_node(title_text);
+    for (var s of node_shapes(node)) {
+        s.setAttribute("fill", node.fill);
+        s.setAttribute("stroke", node.stroke);
+    }
+}
+
+function get_node(title_text) {
+    var svg = document.getElementById("graph0");
+    var titleTags = svg.getElementsByTagName("title");
+    var found;
+    for (var i = 0; i < titleTags.length; i++) {
+        if (titleTags[i].textContent == title_text) {
+            found = titleTags[i];
+            break;
+        }
+    }
+    return found.parentElement;
+}
+
+
+function up(title_text, test_name) {
+    var value = '-';
+    if (grabstore["uptimerobot"] != undefined) {
+        value = grabstore["uptimerobot"][test_name]
+    }
+    if (value == "-") {flag_warning(title_text)}
+    else if (value == 2) {flag_ok(title_text)}
+    else {flag_error(title_text)}
+
+    setTimeout(function () {up(title_text, test_name)}, 1000);
+
+}
+
+store_base_colours();
+    uptimerobot(60000);
+    up("arrivals", "arrivals");
+    up("dap", "http://dap.ceda.ac.uk");
+    up("archive_site", "archive.ceda.ac.uk");
+    up("ftp2", "ftp.ceda.ac.uk");
+    up("catalogue", "catalogue.ceda.ac.uk");
+    up("data", "data.ceda.ac.uk");
+    up("fbi", "FBI");
+    up("haystack", "Haystack");
+    ingest_sum(30000);
+
+</script>
+
+</body>
+</html>
