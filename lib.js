@@ -111,9 +111,9 @@ function test_icons() {
     return s
 }
 
-var blop = new Audio('blop.mp3');
-var clang = new Audio('clang.mp3');
-var snap = new Audio('snap.mp3');
+var blop = new Audio('sounds/blop.mp3');
+var clang = new Audio('sounds/clang.mp3');
+var snap = new Audio('sounds/snap.mp3');
 // sounds for states
 sounds = {"ok": blop, "ok-errors": blop, "fail": clang, "killed": clang, "new": blop,
            "warn": snap, "running": blop, "died": clang, "cleanup": blop, "re-running": blop,

@@ -172,3 +172,17 @@ function get_last_logs() {
 }
 
 
+function grab(url, name, timeout) {
+    console.log(url, name, timeout);
+    $.get({
+            url: url,
+            success: function (result) {
+                grabstore[name] = result;
+                setTimeout(function () {
+                    grab(url, name, timeout)
+                }, timeout);
+            },
+            error: function (data) {console.log(data); console.log(data.getAllResponseHeaders())},
+        }
+    );
+}

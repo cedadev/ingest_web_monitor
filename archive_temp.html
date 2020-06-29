@@ -10,20 +10,26 @@
 </head>
 <body>
 
- <h1>Hi thffffere</h1>
+ <h1>CEDA Archive Overview</h1>
 
  {{svg}}
 
 
 <script>
 
-
-
 function update_node_text(title_text, text) {
     var node = get_node(title_text);
     var t = node.getElementsByTagName("text")[0];
     t.textContent = text;
 }
+
+function append_node_text(title_text, text) {
+    var node = get_node(title_text);
+    var t = node.getElementsByTagName("text")[0];
+    t.textContent = node.title + text;
+}
+
+
 
 function node_shapes(node) {
     // file the main shape object for a node
@@ -36,14 +42,15 @@ function node_shapes(node) {
     return shapes
 }
 
-function store_base_colours() {
+function store_base() {
     var svg = document.getElementById("graph0");
     var titleTags = svg.getElementsByTagName("title");
     for (var i = 0; i < titleTags.length; i++) {
         var p = titleTags[i].parentElement;
-        s = node_shapes(p)[0];
+        var s = node_shapes(p)[0];
         p.fill = s.getAttribute("fill");
         p.stroke = s.getAttribute("stroke");
+        p.title = titleTags[i].textContent;
     }
 }
 
@@ -56,7 +63,7 @@ function update_node_colour(title_text, fill, stroke) {
 }
 
 function flag_error(title_text) {update_node_colour(title_text, "#ff9999", "#ff0000")}
-function flag_warning(title_text) {update_node_colour(title_text, "#ffcc55", "#ffcc00")}
+function flag_warning(title_text) {update_node_colour(title_text, "#ffcc55", "#ccaa00")}
 function flag_ok(title_text) {update_node_colour(title_text, "#77cc77", "#00ff00")}
 
 function flag_clear(title_text) {
@@ -65,6 +72,12 @@ function flag_clear(title_text) {
         s.setAttribute("fill", node.fill);
         s.setAttribute("stroke", node.stroke);
     }
+}
+
+function tooltip(title_text, text) {
+    var node = get_node(title_text);
+    var a = node.getElementsByTagName("a")[0];
+    a.setAttribute("xlink:title", text);
 }
 
 function get_node(title_text) {
@@ -86,16 +99,96 @@ function up(title_text, test_name) {
     if (grabstore["uptimerobot"] != undefined) {
         value = grabstore["uptimerobot"][test_name]
     }
-    if (value == "-") {flag_warning(title_text)}
+    if (value == "-") {flag_clear(title_text)}
     else if (value == 2) {flag_ok(title_text)}
     else {flag_error(title_text)}
-
     setTimeout(function () {up(title_text, test_name)}, 1000);
-
 }
 
-store_base_colours();
+function disk_full(title_text, test_name, warn_level, error_level) {
+    var value = '-';
+    if (grabstore["checks"] != undefined) {
+        value = grabstore["checks"][test_name]
+    }
+    if (value == "-") {flag_clear(title_text)}
+    else if (value > error_level) {flag_error(title_text)}
+    else if (value > warn_level) {flag_warning(title_text)}
+    else {flag_ok(title_text)}
+    tooltip(title_text, " [" + value +"%]")
+    setTimeout(function () {disk_full(title_text, test_name, warn_level, error_level)}, 2400);
+}
+
+function ingest_mon_update() {
+    title_text = "ingest_mon";
+    var error = false;
+    var warn = false;
+    var ok = false;
+    var text = '';
+    if (grabstore["ingest"] != undefined) {
+        var s = grabstore["ingest"];
+        error = s["running"] > 30 || s["warn"] > 30 || s["fail"] > 10 || s["died"] > 10 || s["killed"] > 10;
+        warn = s["running"] > 25 || s["warn"] > 10 || s["fail"] > 5 || s["died"] > 5 || s["killed"] > 5;
+        ok = true;
+        for (var k in s) { text += k + ": " + s[k] + "\n"}
+    }
+
+    if (error) {flag_error(title_text)}
+    else if (warn) {flag_warning(title_text)}
+    else if (ok) {flag_ok(title_text)}
+    else {flag_clear(title_text)}
+    tooltip(title_text, text);
+    console.log(error, warn, text);
+    setTimeout(function () {ingest_mon_update()}, 2400);
+}
+
+function currrent_deposits_update() {
+    title_text = "deposit_web";
+    var error = false;
+    var warn = false;
+    var ok = false;
+    var text = '';
+    if (grabstore["current_deposits"] != undefined) {
+        var s = grabstore["current_deposits"];
+        error = s["filerate_2min"] < 0.01;
+        warn = s["filerate_2min"] < 0.1;
+        ok = true;
+        for (var k in s) { text += k + ": " + s[k] + "\n"}
+    }
+
+    if (error) {flag_error(title_text)}
+    else if (warn) {flag_warning(title_text)}
+    else if (ok) {flag_ok(title_text)}
+    else {flag_clear(title_text)}
+    tooltip(title_text, text);
+    setTimeout(function () {currrent_deposits_update()}, 2100);
+}
+
+
+function queue_update(title_text, key, warn_limit, error_limit) {
+    var error = false;
+    var warn = false;
+    var ok = false;
+    if (grabstore["current_deposits"] != undefined) {
+        var s = grabstore["current_deposits"];
+        error = s["key"] < error_limit;
+        warn = s["key"] < warn_limit;
+        ok = true;
+    }
+
+    if (error) {flag_error(title_text)}
+    else if (warn) {flag_warning(title_text)}
+    else if (ok) {flag_ok(title_text)}
+    else {flag_clear(title_text)}
+    setTimeout(function () {queue_update(title_text, key, warn_limit, error_limit)}, 2300);
+}
+
+
+
+store_base();
     uptimerobot(60000);
+    grab("https://archdash.ceda.ac.uk/current/api", "current_deposits", 5000);
+    ingest_sum(30000);
+    simple_check_output(30000);
     up("arrivals", "arrivals");
     up("dap", "http://dap.ceda.ac.uk");
     up("archive_site", "archive.ceda.ac.uk");
@@ -104,7 +197,12 @@ store_base_colours();
     up("data", "data.ceda.ac.uk");
     up("fbi", "FBI");
     up("haystack", "Haystack");
-    ingest_sum(30000);
+    disk_full("processing_disk", "/datacentre/processing3", 80, 95);
+    disk_full("arrivals_disk", "/datacentre/arrivals", 70, 95);
+    ingest_mon_update();
+    currrent_deposits_update();
+    queue_update("fast_indexer_q", "fastq_len", 0, 1000);
+    queue_update("slow_indexer_q", "slowq_len", 0, 1000);
 
 </script>
 

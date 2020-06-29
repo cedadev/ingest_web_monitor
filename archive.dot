@@ -12,9 +12,9 @@ digraph G {
     style=filled;
     color="#ccccff";    
     node [style=filled,fillcolor="blue"];
-  arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="arrivals_s.png",fontsize=12];
+  arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="images/arrivals_s.png",fontsize=12];
   fileops;
-  arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray];   
+  arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
     node [style=striped,shape=rectangle,fillcolor="red;0.2:red;0.2:red;0.2:red;0.2:red"];
   arrivals -> arrivals_disk [penwidth=4];
   fileops -> arrivals_disk;
@@ -38,11 +38,11 @@ digraph G {
     style=filled;
     color=lightgrey;    
     
-   processing_disk  [style=filled,shape=cylinder,fillcolor=gray];
+   processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   ingest_control [style=filled,fillcolor="blue"];
   ingest_mon [fillcolor=white,shape=rectangle,
      href="http://stats.ceda.ac.uk/ingest_state/index.html?reclen=30&ingest1=on&ingest2=on&ingest3=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
-     image="ingest_mon_s.png",fontsize=12];
+     image="images/ingest_mon_s.png",fontsize=12];
   }
 
   ingest_control -> fileops;
@@ -70,8 +70,8 @@ digraph G {
 
   deposit [style=filled,fillcolor="blue"];
   archive   [style=filled,shape=cylinder,fillcolor=gray];
-    deposit_web [fillcolor=white,shape=rectangle,href="https://archdash1.ceda.ac.uk/current/a_sum",image="deposit_mon_s.png",
-                 fontsize=12, label="current\ndeposits"];
+    deposit_web [fillcolor=white,shape=rectangle,href="https://archdash1.ceda.ac.uk/current/a_sum",image="images/deposit_mon_s.png",
+                 fontsize=12];
     deposit_log -> deposit_web
   }
   
@@ -102,10 +102,10 @@ digraph G {
     jasmin;
     ftp2;
     node [fillcolor=white,shape=rectangle,fontsize=12];
-    dap [href="https://dap.ceda.ac.uk" image="dap_s.png",label="dap.ceda.ac.uk"];
-    data [href="http://data.ceda.ac.uk" image="data_s.png",label="data.ceda.ac.uk"];
-    catalogue [href="https://catalogue.ceda.ac.uk" image="cat_s.png",label="catalogue.ceda.ac.uk"];
-    archive_site [href="https://archive.ceda.ac.uk" image="archive_s.png",label="archive.ceda.ac.uk"];
+    dap [href="https://dap.ceda.ac.uk" image="images/dap_s.png",label="dap.ceda.ac.uk"];
+    data [href="http://data.ceda.ac.uk" image="images/data_s.png",label="data.ceda.ac.uk"];
+    catalogue [href="https://catalogue.ceda.ac.uk" image="images/cat_s.png",label="catalogue.ceda.ac.uk"];
+    archive_site [href="https://archive.ceda.ac.uk" image="images/archive_s.png",label="archive.ceda.ac.uk"];
     archive_site -> catalogue;
     catalogue -> data;
     data -> dap;
