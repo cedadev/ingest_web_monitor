@@ -123,21 +123,24 @@ function ingest_mon_update() {
     var error = false;
     var warn = false;
     var ok = false;
-    var text = '';
+    var tip = '';
+    var k = 0;
     if (grabstore["ingest"] != undefined) {
         var s = grabstore["ingest"];
         error = s["running"] > 30 || s["warn"] > 30 || s["fail"] > 10 || s["died"] > 10 || s["killed"] > 10;
         warn = s["running"] > 25 || s["warn"] > 10 || s["fail"] > 5 || s["died"] > 5 || s["killed"] > 5;
         ok = true;
-        for (var k in s) { text += k + ": " + s[k] + "\n"}
+        for (k in s) { tip += k + ": " + s[k] + "\n"}
+        var n = 0;
+        for (k of ["fail", "died", "killed"]) {if (s[k] != undefined) {n += s[k]}}
+        update_node_text(title_text, n + " Failed");
+        tooltip(title_text, tip);
     }
 
     if (error) {flag_error(title_text)}
     else if (warn) {flag_warning(title_text)}
     else if (ok) {flag_ok(title_text)}
     else {flag_clear(title_text)}
-    tooltip(title_text, text);
-    console.log(error, warn, text);
     setTimeout(function () {ingest_mon_update()}, 2400);
 }
 
@@ -147,19 +150,23 @@ function currrent_deposits_update() {
     var warn = false;
     var ok = false;
     var text = '';
+    var tip = '';
     if (grabstore["current_deposits"] != undefined) {
         var s = grabstore["current_deposits"];
         error = s["filerate_2min"] < 0.01;
-        warn = s["filerate_2min"] < 0.1;
+        warn = s["volrate_2min"] < 0.1;
+        text = s["filerate_2min"].toPrecision(2) + " files/s";
         ok = true;
-        for (var k in s) { text += k + ": " + s[k] + "\n"}
+        for (var k in s) { tip += k + ": " + s[k].toPrecision(3) + "\n"}
     }
 
     if (error) {flag_error(title_text)}
     else if (warn) {flag_warning(title_text)}
     else if (ok) {flag_ok(title_text)}
     else {flag_clear(title_text)}
-    tooltip(title_text, text);
+    tooltip(title_text, tip);
+    update_node_text(title_text, text);
+
     setTimeout(function () {currrent_deposits_update()}, 2100);
 }
 
@@ -170,9 +177,10 @@ function queue_update(title_text, key, warn_limit, error_limit) {
     var ok = false;
     if (grabstore["current_deposits"] != undefined) {
         var s = grabstore["current_deposits"];
-        error = s["key"] < error_limit;
-        warn = s["key"] < warn_limit;
+        error = s[key] > error_limit;
+        warn = s[key] > warn_limit;
         ok = true;
+        update_node_text(title_text, key + ": " + s[key])
     }
 
     if (error) {flag_error(title_text)}

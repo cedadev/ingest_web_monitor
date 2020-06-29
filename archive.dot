@@ -15,35 +15,41 @@ digraph G {
   arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="images/arrivals_s.png",fontsize=12];
   fileops;
   arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
-    node [style=striped,shape=rectangle,fillcolor="red;0.2:red;0.2:red;0.2:red;0.2:red"];
+    ingest_logs [shape=note,fillcolor="gray",style=filled];
   arrivals -> arrivals_disk [penwidth=4];
   fileops -> arrivals_disk;
-  }
-  
-    subgraph cluster_es {
-    label = "elastic search";
-    style=filled;
-    color="#ccffcc";    
-    node [style=filled,fillcolor="blue"];
-    haystack;
-    fbi;
-    ingest_logs;
-  }
+#  }
+#
+#    subgraph cluster_ingest {
+#    label = "Ingest";
+#    style=filled;
+#    color=lightgrey;
 
-  ingest_control -> ingest_logs;
-  ingest_logs -> ingest_mon;
-
-  subgraph cluster_ingest {
-    label = "Ingest";
-    style=filled;
-    color=lightgrey;    
-    
    processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   ingest_control [style=filled,fillcolor="blue"];
   ingest_mon [fillcolor=white,shape=rectangle,
      href="http://stats.ceda.ac.uk/ingest_state/index.html?reclen=30&ingest1=on&ingest2=on&ingest3=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
      image="images/ingest_mon_s.png",fontsize=12];
+
+
+  {rank=sink; gws; processing_disk; arrivals_disk}
+  {rankdir=LR; ingest_control; ingest_logs; }
   }
+
+
+
+    subgraph cluster_es {
+    label = "elastic search";
+    style=filled;
+    color="#ccffcc";    
+    node [style=filled,fillcolor="blue"];
+
+  }
+
+  ingest_control -> ingest_logs;
+  ingest_logs -> ingest_mon;
+
+
 
   ingest_control -> fileops;
 
@@ -53,28 +59,32 @@ digraph G {
     style=filled;
     color="#ffccff";
     rbq [style=filled,fillcolor="blue"];
-       deposit_rpc [style=striped,shape=rectangle,fillcolor="red;0.2:red;0.2:red;0.2:red;0.2:red"];
-         deposit_log [style=striped,shape=rectangle,fillcolor="red;0.2:red;0.2:red;0.2:red;0.2:red"];
-    node [style=striped,shape=rectangle,fillcolor="red;0.2:red;0.2:red;0.2:red;0.2:red"];
-    fast_indexer_q;
-    slow_indexer_q;
-    fast_indexer_q -> fbi;
-    slow_indexer_q -> fbi;
 
   }
+
+
 
   subgraph cluster_deposit {
       label = "Deposit server";
     style=filled;
     color=pink;  
-
+    rank=same;
   deposit [style=filled,fillcolor="blue"];
   archive   [style=filled,shape=cylinder,fillcolor=gray];
     deposit_web [fillcolor=white,shape=rectangle,href="https://archdash1.ceda.ac.uk/current/a_sum",image="images/deposit_mon_s.png",
                  fontsize=12];
+           deposit_rpc [shape=cds, fillcolor="gray", style=filled];
+         deposit_log [shape=cds, fillcolor="gray", style=filled];
+
     deposit_log -> deposit_web
+    {rank=sink; archive}
+    {rankdir=LR; deposit; deposit_log; deposit_rpc; archive; deposit_web}
+
+      deposit -> archive [penwidth=4];
   }
   
+
+
 
       deposit_log -> fast_indexer_q;
     deposit_log -> slow_indexer_q;
@@ -92,13 +102,18 @@ digraph G {
   
 
   
-  deposit -> archive [penwidth=4];
+
   
     subgraph cluster_access {
     label = "access";
     style=filled;
-    color="#ffffcc";    
-    node [style=filled,fillcolor="blue"];
+    color="#ffffcc";
+    fast_indexer_q [shape=cds, fillcolor="gray", style=filled];
+    slow_indexer_q [shape=cds, fillcolor="gray", style=filled];
+    fast_indexer_q -> fbi;
+    slow_indexer_q -> fbi;
+      haystack [shape=note,fillcolor="gray", style=filled];
+    fbi [shape=note,fillcolor="gray", style=filled];
     jasmin;
     ftp2;
     node [fillcolor=white,shape=rectangle,fontsize=12];
@@ -106,28 +121,36 @@ digraph G {
     data [href="http://data.ceda.ac.uk" image="images/data_s.png",label="data.ceda.ac.uk"];
     catalogue [href="https://catalogue.ceda.ac.uk" image="images/cat_s.png",label="catalogue.ceda.ac.uk"];
     archive_site [href="https://archive.ceda.ac.uk" image="images/archive_s.png",label="archive.ceda.ac.uk"];
-    archive_site -> catalogue;
-    catalogue -> data;
-    data -> dap;
+  #  archive_site -> catalogue;
+  #  catalogue -> data;
+  #  data -> dap;
+    {rank=same; data; catalogue; ftp2; archive_site; dap; jasmin}
   }
 
 
   user [shape=egg,style=filled,fillcolor=yellow];
+  jasmin_user [shape=egg,style=filled,fillcolor=yellow];
+  {rank=same; user; jasmin_user}
 
   haystack -> catalogue;
   fbi -> data;
+  archive_site -> user;
+  catalogue -> user;
+  data -> user;
 
   archive -> jasmin  [penwidth=4];
   archive -> ftp2  [penwidth=4];
   archive -> dap  [penwidth=4];
   
-  jasmin -> user [penwidth=4];
+  jasmin -> jasmin_user [penwidth=4];
   ftp2 -> user [penwidth=4];
   dap -> user [penwidth=4];
-  
+
+
   deposit -> deposit_log
   
   deposit_rpc -> deposit;
-  
+    {rank=same; ds; data_provider}
+
 }
 
