@@ -560,7 +560,7 @@ function draw() {
     down_cink_arrow2(ctx, c12, 650, 20, 650, 150, 10, 30, dw);
 
     machine_group(ctx, 560, 350, 150,100,  mcolour, "deposit", 5);
-    image_link(ctx, "deposit_mon.png", 565, 350, 105, 75, "https://archdash1.ceda.ac.uk/current/a_sum");
+    image_link(ctx, "image/deposit_mon.png", 565, 350, 105, 75, "https://archdash1.ceda.ac.uk/current/a_sum");
 
 
     //down_cink_arrow(ctx, c4, 610 , 500, 20, 140, 230, -85);
@@ -580,7 +580,7 @@ function draw() {
 
 
     machine_group(ctx, 170, 350, 150,120,  mcolour,  "ingest", 5);
-    image_link(ctx, "ingest_mon.png", 175, 350, 105, 75, "http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=&owner=&reclen=30&ingest1=on&ingest2=on&ingest3=on&running=on&warn=on&fail=on&killed=on&died=on");
+    image_link(ctx, "image/ingest_mon.png", 175, 350, 105, 75, "http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=&owner=&reclen=30&ingest1=on&ingest2=on&ingest3=on&running=on&warn=on&fail=on&killed=on&died=on");
     arrow_cink(ctx, 'black', 250, 130, 250, 250, 200, 250, 200, 350, iw);
 
 
@@ -617,13 +617,13 @@ function draw() {
     add_link(ctx, 550,480, 100, 10, "http://cedaarchiveapp.ceda.ac.uk/cedaarchiveapp/home/");
 
 
-    web_machine(ctx, 1040, 650, 150,100,  mcolour, "catalogue", "catalogue", "cat.png", "catalogue.ceda.ac.uk" ,"https://catalogue.ceda.ac.uk");
+    web_machine(ctx, 1040, 650, 150,100,  mcolour, "catalogue", "catalogue", "image/cat.png", "catalogue.ceda.ac.uk" ,"https://catalogue.ceda.ac.uk");
 
-    web_machine(ctx, 860, 720, 150,100,  mcolour, "archive", "archive", "archive.png", "archive.ceda.ac.uk", "http://archive.ceda.ac.uk");
+    web_machine(ctx, 860, 720, 150,100,  mcolour, "archive", "archive", "image/archive.png", "archive.ceda.ac.uk", "http://archive.ceda.ac.uk");
 
-    web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "data.png", "data.ceda.ac.uk", "http://data.ceda.ac.uk");
+    web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "image/data.png", "data.ceda.ac.uk", "http://data.ceda.ac.uk");
 
-    web_machine(ctx, 680, 620, 150,100,  mcolour, "dap", "dap", "dap.png", "http://dap.ceda.ac.uk", "http://dap.ceda.ac.uk");
+    web_machine(ctx, 680, 620, 150,100,  mcolour, "dap", "dap", "image/dap.png", "http://dap.ceda.ac.uk", "http://dap.ceda.ac.uk");
 
     machine(ctx, 500, 620, 150,100,  mcolour, "ftp2", "ftp2-mgmt.ceda.ac.uk");
     up(ctx, 510, 640, "ftp.ceda.ac.uk");
