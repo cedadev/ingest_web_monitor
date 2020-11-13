@@ -28,7 +28,7 @@ digraph G {
    processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   ingest_control [style=filled,fillcolor="blue"];
   ingest_mon [fillcolor=white,shape=rectangle,
-     href="http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=!test&reclen=30&ingest1=on&ingest6=on&ingest3=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
+     href="http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=!test&reclen=30&ingest6=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
      image="images/ingest_mon_s.png",fontsize=12];
 
 

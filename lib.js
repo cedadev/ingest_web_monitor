@@ -71,10 +71,6 @@ var reclen_date = new Date(new Date() - reclen*24*3600*1000);
 
 last_logs_query.query.range.logtime.gte = reclen_date;
 
-
-var ingest1 = urlParams.get("ingest1");
-var ingest2 = urlParams.get("ingest2");
-var ingest3 = urlParams.get("ingest3");
 var ingest4 = urlParams.get("ingest4");
 var ingest5 = urlParams.get("ingest5");
 var ingest6 = urlParams.get("ingest6");
@@ -498,9 +494,6 @@ function make_params() {
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
     var reclen = urlParams.get("reclen");
-    var ingest1 = urlParams.get("ingest1");
-    var ingest2 = urlParams.get("ingest2");
-    var ingest3 = urlParams.get("ingest3");
     var ingest4 = urlParams.get("ingest4");
     var ingest5 = urlParams.get("ingest5");
     var ingest6 = urlParams.get("ingest6");
@@ -508,9 +501,6 @@ function make_params() {
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
     if (reclen) {parameters["reclen"] = reclen}
-    if (ingest1) {parameters["ingest1"] = ingest1}
-    if (ingest2) {parameters["ingest2"] = ingest2}
-    if (ingest3) {parameters["ingest3"] = ingest3}
     if (ingest4) {parameters["ingest4"] = ingest4}
     if (ingest5) {parameters["ingest5"] = ingest5}
     if (ingest6) {parameters["ingest5"] = ingest6}
