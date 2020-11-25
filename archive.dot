@@ -13,7 +13,7 @@ digraph G {
     color="#ccccff";    
     node [style=filled,fillcolor="blue"];
   arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="images/arrivals_s.png",fontsize=12];
-  fileops [href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
+  fileops [href="stream.html?streamname=simple_checks"];
   arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
     ingest_logs [shape=note,fillcolor="gray",style=filled];
   arrivals -> arrivals_disk [penwidth=4];
