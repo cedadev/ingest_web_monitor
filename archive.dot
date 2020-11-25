@@ -25,10 +25,10 @@ digraph G {
 #    style=filled;
 #    color=lightgrey;
 
-   processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
-  ingest_control [style=filled,fillcolor="blue",href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
+   processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="stream.html?streamname=simple_checks"];
+  ingest_control [style=filled,fillcolor="blue",href="stream.html?streamname=simple_checks"];
   ingest_mon [fillcolor=white,shape=rectangle,
-     href="http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=!test&reclen=30&ingest6=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
+     href="index.html?namefilter=!test&reclen=30&ingest6=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
      image="images/ingest_mon_s.png",fontsize=12];
 
 
@@ -68,7 +68,7 @@ digraph G {
     style=filled;
     color=pink;  
     rank=same;
-  deposit [style=filled,fillcolor="blue",href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
+  deposit [style=filled,fillcolor="blue",href="stream.html?streamname=simple_checks"];
   archive   [style=filled,shape=cylinder,fillcolor=gray];
     deposit_web [fillcolor=white,shape=rectangle,href="https://archdash1.ceda.ac.uk/current/a_sum",image="images/deposit_mon_s.png",
                  fontsize=12];
