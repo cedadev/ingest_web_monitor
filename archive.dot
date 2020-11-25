@@ -13,7 +13,7 @@ digraph G {
     color="#ccccff";    
     node [style=filled,fillcolor="blue"];
   arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="images/arrivals_s.png",fontsize=12];
-  fileops;
+  fileops [href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
     ingest_logs [shape=note,fillcolor="gray",style=filled];
   arrivals -> arrivals_disk [penwidth=4];
@@ -26,7 +26,7 @@ digraph G {
 #    color=lightgrey;
 
    processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
-  ingest_control [style=filled,fillcolor="blue"];
+  ingest_control [style=filled,fillcolor="blue",href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   ingest_mon [fillcolor=white,shape=rectangle,
      href="http://stats.ceda.ac.uk/ingest_state/index.html?namefilter=!test&reclen=30&ingest6=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
      image="images/ingest_mon_s.png",fontsize=12];
@@ -54,13 +54,12 @@ digraph G {
   ingest_control -> fileops;
 
 
-  subgraph cluster_rabbitmq {
-      label = "RabbitMQ";
-    style=filled;
-    color="#ffccff";
-    rbq [style=filled,fillcolor="blue"];
-
-  }
+#  subgraph cluster_rabbitmq {
+#      label = "RabbitMQ";
+#    style=filled;
+#    color="#ffccff";
+#    rbq [style=filled,fillcolor="blue"];
+#  }
 
 
 
@@ -69,7 +68,7 @@ digraph G {
     style=filled;
     color=pink;  
     rank=same;
-  deposit [style=filled,fillcolor="blue"];
+  deposit [style=filled,fillcolor="blue",href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
   archive   [style=filled,shape=cylinder,fillcolor=gray];
     deposit_web [fillcolor=white,shape=rectangle,href="https://archdash1.ceda.ac.uk/current/a_sum",image="images/deposit_mon_s.png",
                  fontsize=12];

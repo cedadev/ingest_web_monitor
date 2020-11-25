@@ -93,12 +93,16 @@ function get_node(title_text) {
     return found.parentElement;
 }
 
+function get_from_grabstore(groupkey, checkkey) {
+    var value = '-';
+    if (grabstore[groupkey] != undefined) {
+        value = grabstore[groupkey][checkkey]
+    }
+    return value
+}
 
 function up(title_text, test_name) {
-    var value = '-';
-    if (grabstore["uptimerobot"] != undefined) {
-        value = grabstore["uptimerobot"][test_name]
-    }
+    var value = get_from_grabstore("uptimerobot", test_name);
     if (value == "-") {flag_clear(title_text)}
     else if (value == 2) {flag_ok(title_text)}
     else {flag_error(title_text)}
@@ -106,16 +110,35 @@ function up(title_text, test_name) {
 }
 
 function disk_full(title_text, test_name, warn_level, error_level) {
-    var value = '-';
-    if (grabstore["checks"] != undefined) {
-        value = grabstore["checks"][test_name]
-    }
+    var value = get_from_grabstore("checks", test_name);
     if (value == "-") {flag_clear(title_text)}
     else if (value > error_level) {flag_error(title_text)}
     else if (value > warn_level) {flag_warning(title_text)}
     else {flag_ok(title_text)}
-    tooltip(title_text, " [" + value +"%]")
+    tooltip(title_text, " [" + value +"%]");
     setTimeout(function () {disk_full(title_text, test_name, warn_level, error_level)}, 2400);
+}
+
+function warn_from_simple(title_text, test_name, just_warn) {
+    var value = get_from_grabstore("checks", test_name);
+    if (value == "-") {flag_clear(title_text)}
+    else if (just_warn && !value) {flag_warning(title_text)}
+    else if (!value) {flag_error(title_text)}
+    else {flag_ok(title_text)}
+    tooltip(title_text, test_name + " = " + value);
+    setTimeout(function () {warn_from_simple(title_text, test_name, just_warn)}, 2400);
+}
+
+function warn_from_simple2(title_text, test_name, warn_level, error_level, lessthan) {
+    var value = get_from_grabstore("checks", test_name);
+    if (value == "-") {flag_clear(title_text)}
+    else if (lessthan == undefined && value > error_level) {flag_error(title_text)}
+    else if (lessthan == undefined && value > warn_level) {flag_warning(title_text)}
+    else if (lessthan != undefined && value < warn_level) {flag_warning(title_text)}
+    else if (lessthan != undefined && value < error_level) {flag_error(title_text)}
+    else {flag_ok(title_text)}
+    tooltip(title_text, test_name + " = " + value);
+    setTimeout(function () {warn_from_simple2(title_text, test_name, warn_level, error_level, lessthan)}, 2400);
 }
 
 function ingest_mon_update() {
@@ -207,10 +230,14 @@ store_base();
     up("haystack", "Haystack");
     disk_full("processing_disk", "/datacentre/processing3", 80, 95);
     disk_full("arrivals_disk", "/datacentre/arrivals", 70, 95);
+    warn_from_simple("fileops", "arrivals_deleter_ok");
+    warn_from_simple("deposit", "deposit_client_ok");
+    warn_from_simple2("ingest_control", "crontab_lines", 100, 10, true);
     ingest_mon_update();
     currrent_deposits_update();
     queue_update("fast_indexer_q", "fastq_len", 0, 1000);
     queue_update("slow_indexer_q", "slowq_len", 0, 1000);
+    queue_update("deposit_rpc", "rcpq_len", 0, 10);
 
 </script>
 
