@@ -48,6 +48,7 @@ function append_node_text(title_text, text) {
 
 
 
+
 function node_shapes(node) {
     // file the main shape object for a node
     var shapes = [];
@@ -79,8 +80,8 @@ function update_node_colour(title_text, fill, stroke) {
     }
 }
 
-function flag_error(title_text) {update_node_colour(title_text, "#ff9999", "#ff0000")}
-function flag_warning(title_text) {update_node_colour(title_text, "#ffcc55", "#ccaa00")}
+function flag_error(title_text) {update_node_colour(title_text, "#ff9999", "#ff0000"); warn_sounds("error")}
+function flag_warning(title_text) {update_node_colour(title_text, "#ffcc55", "#ccaa00"); warn_sounds("warn")}
 function flag_ok(title_text) {update_node_colour(title_text, "#77cc77", "#00ff00")}
 
 function flag_clear(title_text) {
@@ -228,6 +229,23 @@ function queue_update(title_text, key, warn_limit, error_limit) {
     else if (ok) {flag_ok(title_text)}
     else {flag_clear(title_text)}
     setTimeout(function () {queue_update(title_text, key, warn_limit, error_limit)}, 2300);
+}
+
+var lastlplayed_warn = Date.now();
+var lastlplayed_error = Date.now();
+
+function warn_sounds(sound) {
+    var clang = new Audio("sounds/clang.mp3");
+    var snap = new Audio("sounds/snap.mp3");
+    if (sound=="warn" && Date.now() - lastlplayed_warn > 200000) {
+        clang.play();
+        lastlplayed_warn = Date.now()
+    }
+    if (sound=="error" && Date.now() - lastlplayed_error > 100000) {
+        snap.play();
+        lastlplayed_error = Date.now()
+    }
+
 }
 
 

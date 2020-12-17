@@ -13,6 +13,7 @@
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <script src="lib.js"></script>
+<script src="date_utils.js"></script>
 
 </head>
 <body>
@@ -73,7 +74,7 @@
                         }
                         var total = data.hits.total;
                         render_logs(logs, total);
-                        setTimeout(get_last_logs, 5000);
+                        setTimeout(get_last_logs, 50000);
                     },
 
                     error: function (data) {

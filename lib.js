@@ -224,7 +224,7 @@ function periodbadge(start_time, end_time) {
 
     var logp = Math.round(Math.pow((p/1000+0.01), 0.3)*3);
     if (logp <= 1) {logp=1}
-    var svg = '<svg width="'+logp+'" height="5"></svg>';
+    var svg = '<svg width="'+logp+'" height="50"></svg>';
     p = p/1000;
     if (p < 20) {return '<span class="badge badge-secondary">'+svg+' '+Math.round(p)+" s "+svg+"</span>"}
     if (p < 120) {return '<span class="badge badge-primary">'+svg+' '+Math.round(p)+" s "+svg+"</span>"}
@@ -265,6 +265,7 @@ function periodbar(start_time, job_end, next_time) {
         s += '<div class="progress-bar bg-'+periodtextcolour(job_length).colour+'" role="progressbar" style="width: '+ (dis_job_length + 40) +'">'+periodtextcolour(job_length).text+'</div> </div>';
     return s
 }
+
 
 function tooltip(log) {
     var ttip = log.errors || log.output;
@@ -386,8 +387,7 @@ function job_button(log, last_log) {
 
     var b = log_periodbadge(log);
 
-    var boot_class = "mb-1 btn";
-    boot_class += " btn-outline-" + colours[state];
+    var boot_class = "mb-1 btn btn-outline-" + colours[state];
     if (recent || state == "running") {
         boot_class += " active"
     }
@@ -397,11 +397,10 @@ function job_button(log, last_log) {
     var space = last_job_start - job_start;
     var label;
 
-    if (space > 12*3600000) {
-        label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0" + (start_time.getMonth() + 1)).slice(-2) + "-" +
-            start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+    if (job_start.diff_day(last_job_start)) {
+        label = start_time.time_icon(30) + start_time.calender_icon(30);
     } else {
-        label = ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
+        label = start_time.time_icon(30)
     }
 
     var p = make_params();
@@ -412,15 +411,81 @@ function job_button(log, last_log) {
     var s = '<div style="float: right">' + periodbadge(log.start_time, last_log.start_time) + '</div>';
     var ttip = tooltip(log);
 
-    var w = '<div style="float: left" class="mb-3 mr-1">';
-    w += '<div style="float: right"><a href="'+url+'" class="' + boot_class + '"' +
-         ' title="' + ttip + '">' +
-         '<small>' + label + ' ' + icons(log) + '</small></a></div>';
-
-    w += '<br/><div style="float: right; clear:both">'+ periodbar(job_start, end_time, last_job_start) +'</div>';
-    w += '</div>';
+    var w = '<div style="float: left;" title="' + ttip + '">'+ job_bar(log, last_log) +'</div>';
     return w;
 }
+
+function job_bar(log, last_log) {
+    var state = log.state;
+    var job_name = log.jobname;
+    var start_time = new Date(log.start_time.substring(0, 19));
+    var end_time;
+    if (log.end_time == null) {end_time = new Date()}
+    else {end_time = new Date(log.end_time.substring(0, 19))};
+    var last_job_start;
+    if (last_log.start_time == null) {last_job_start = new Date()}
+    else {last_job_start = new Date(last_log.start_time.substring(0, 19))};
+    if (state == "running") {end_time = new Date()}
+    var recent = (Math.floor((new Date() - end_time) / (1000 * 60)) < 5);
+    var job_length = end_time - start_time;
+    var period_length = last_job_start - start_time;
+    var idle_length = period_length - job_length;
+    var height = 40;
+    var dis_period_length = Math.round(Math.pow((period_length/1000+0.01), 0.3)*6);
+    var dis_job_length = height *1.5 + dis_period_length * job_length/period_length;
+    var dis_idle_length = height*1.5 + dis_period_length - dis_job_length;
+
+    const colours = {"running": "blue", "ok": "green", "warn": "yellow", "fail": "red", "killed": "darkred",
+                     "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
+                     "cleanup": "lightblue", "re-running": "lightgreen"};
+    var opacity =0.3;
+    if (recent) {opacity=1.0}
+    var state_colour = colours[state];
+
+    var p = make_params();
+    p["job"] = job_name;
+    var url = 'job.html?' + $.param(p);
+    var ttip = tooltip(log);
+
+    // staart bar
+    console.log(dis_period_length);
+    var svg = '<svg width="'+ (dis_idle_length + dis_job_length + 2*height*0.5 + 5)+'" height="'+(height+5)+'"';
+    svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+
+    // the idle period
+    svg += '<svg width="' + dis_idle_length + '" height="'+height+'">';
+    svg += '<rect x="0" y="0" width="100%" height="100%" fill="grey"/>';
+    svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
+    svg += '   fill="black" style="font-size:' +height*0.3+ '">'
+    svg += start_time.format_period(last_job_start) + '</text></svg>';
+
+    // add the end time first
+    svg += '<svg x="'+dis_idle_length+'">'
+    svg += end_time.time_end_icon(height);
+    if (last_job_start.diff_day(end_time)) {svg += end_time.calender_icon(height)}
+    svg += '</svg>'
+
+    // the job block
+    svg += '<a xlink:href="' + url + '">';
+    svg += '<svg x="'+ (dis_idle_length + height*0.5) +'" width="'+dis_job_length+'" height="'+height+'">';
+    svg += '<rect x="0" y="0" width="100%" height="100%" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
+    svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
+    svg += '   fill="black" style="font-size:' +height*0.3+ '">'
+    svg += start_time.format_period(end_time) + '</text></svg>';
+    svg += '</a>'
+
+    // the start time
+    svg += '<svg x="'+ (dis_idle_length + dis_job_length + height*0.5) + '">'
+    svg += start_time.time_start_icon(height);
+    if (end_time.diff_day(start_time)) {svg += start_time.calender_icon(height)}
+    svg += '</svg>'
+
+
+    //end block
+    svg += '</svg>';
+    return svg
+}
+
 
 
 function output_box(log) {
@@ -489,6 +554,9 @@ function job_out_button(log, last_log) {
     return w;
 }
 
+
+
+
 function make_params() {
     var urlParams = new URLSearchParams(window.location.search);
     var name_filter = urlParams.get("namefilter");
@@ -503,7 +571,7 @@ function make_params() {
     if (reclen) {parameters["reclen"] = reclen}
     if (ingest4) {parameters["ingest4"] = ingest4}
     if (ingest5) {parameters["ingest5"] = ingest5}
-    if (ingest6) {parameters["ingest5"] = ingest6}
+    if (ingest6) {parameters["ingest6"] = ingest6}
     for (var i=0; i<states_filter.length; i++){
         parameters[states_filter[i]] = "on"
     }
