@@ -416,6 +416,7 @@ function job_button(log, last_log) {
 }
 
 function job_bar(log, last_log) {
+    var height = 40;
     var state = log.state;
     var job_name = log.jobname;
     var start_time = new Date(log.start_time.substring(0, 19));
@@ -427,10 +428,20 @@ function job_bar(log, last_log) {
     else {last_job_start = new Date(last_log.start_time.substring(0, 19))};
     if (state == "running") {end_time = new Date()}
     var recent = (Math.floor((new Date() - end_time) / (1000 * 60)) < 5);
+    var user = '<text x="50%" y="80%">xxxxx</text>';
+    if ("config" in log && "when" in log.config) {
+        user = '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
+        user += ' fill="gray" style="font-size:' +height*0.2+ '">CRON</text>';
+    }
+    if ("user" in log && log.user) {
+        user =  '<rect y="70%" width="100%" fill="black" height="' +height*0.2+ '"/>'
+        user += '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
+        user += ' fill="white" style="font-size:' +height*0.2+ '">'+log.user+'</text>';
+    }
+
     var job_length = end_time - start_time;
     var period_length = last_job_start - start_time;
     var idle_length = period_length - job_length;
-    var height = 40;
     var dis_period_length = Math.round(Math.pow((period_length/1000+0.01), 0.3)*6);
     var dis_job_length = dis_period_length * job_length/period_length;
     var dis_idle_length = dis_period_length - dis_job_length;
@@ -448,41 +459,36 @@ function job_bar(log, last_log) {
     var ttip = tooltip(log);
     var gap = 3;
 
-    // staart bar
-    var svg = '<svg width="'+ (dis_period_length + 3*height*0.5 + 5)+'" height="'+(height+5)+'"';
-    svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
 
     // the idle period
-    svg += '<svg width="' + dis_idle_length + '" height="'+height+'">';
-    svg += '<rect x="0" y="0" width="100%" height="100%" fill="grey"/>';
+    var svg = '<span class="p-1">';
+    svg += '<svg width="' + (dis_idle_length +height) + '" height="'+height+'">';
+    svg += '<rect x="0" y="0" width="100%" height="100%" fill="lightgrey" stroke="black" />';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
-    svg += '   fill="black" style="font-size:' +height*0.3+ '">'
+    svg += '   fill="black" style="font-size:' +height*0.3+ '">';
     svg += start_time.format_period(last_job_start) + '</text></svg>';
 
     // add the end time first
-    svg += '<svg x="'+(dis_idle_length+gap)+'">';
     svg += end_time.time_end_icon(height);
-    if (last_job_start.diff_day(end_time)) {svg += '<svg x="' +height*0.5+ '">' + end_time.calender_icon(height) + '</svg>'}
-    svg += '</svg>';
+    if (last_job_start.diff_day(end_time)) {svg += end_time.calender_icon(height)};
 
     // the job block
+    svg += '<svg width="'+(dis_job_length + height)+'" height="'+height +'"';
+    svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
     svg += '<a xlink:href="' + url + '">';
-    svg += '<svg x="'+ (dis_idle_length + height*0.5 + 3*gap) +'" width="'+dis_job_length+'" height="'+height+'">';
-    svg += '<rect x="0" y="0" width="100%" height="100%" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
+    svg += '<rect x="0" y="0" width="100%" height="100%" stroke="black" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
-    svg += '   fill="black" style="font-size:' +height*0.3+ '">'
-    svg += start_time.format_period(end_time) + '</text></svg>';
-    svg += '</a>'
+    svg += '   fill="black" style="font-size:' +height*0.3+ '">';
+    svg += start_time.format_period(end_time) + '</text>';
+    svg += user + '</a></svg>';
+
 
     // the start time
-    svg += '<svg x="'+ (dis_period_length + height*0.5 +4*gap) + '">'
     svg += start_time.time_start_icon(height);
     if (end_time.diff_day(start_time)) {svg += start_time.calender_icon(height)}
-    svg += '</svg>'
 
+    svg += '</span>';
 
-    //end block
-    svg += '</svg>';
     return svg
 }
 
