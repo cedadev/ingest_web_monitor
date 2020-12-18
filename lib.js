@@ -432,8 +432,8 @@ function job_bar(log, last_log) {
     var idle_length = period_length - job_length;
     var height = 40;
     var dis_period_length = Math.round(Math.pow((period_length/1000+0.01), 0.3)*6);
-    var dis_job_length = height *1.5 + dis_period_length * job_length/period_length;
-    var dis_idle_length = height*1.5 + dis_period_length - dis_job_length;
+    var dis_job_length = dis_period_length * job_length/period_length;
+    var dis_idle_length = dis_period_length - dis_job_length;
 
     const colours = {"running": "blue", "ok": "green", "warn": "yellow", "fail": "red", "killed": "darkred",
                      "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
@@ -446,10 +446,10 @@ function job_bar(log, last_log) {
     p["job"] = job_name;
     var url = 'job.html?' + $.param(p);
     var ttip = tooltip(log);
+    var gap = 3;
 
     // staart bar
-    console.log(dis_period_length);
-    var svg = '<svg width="'+ (dis_idle_length + dis_job_length + 2*height*0.5 + 5)+'" height="'+(height+5)+'"';
+    var svg = '<svg width="'+ (dis_period_length + 3*height*0.5 + 5)+'" height="'+(height+5)+'"';
     svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
 
     // the idle period
@@ -460,14 +460,14 @@ function job_bar(log, last_log) {
     svg += start_time.format_period(last_job_start) + '</text></svg>';
 
     // add the end time first
-    svg += '<svg x="'+dis_idle_length+'">'
+    svg += '<svg x="'+(dis_idle_length+gap)+'">';
     svg += end_time.time_end_icon(height);
-    if (last_job_start.diff_day(end_time)) {svg += end_time.calender_icon(height)}
-    svg += '</svg>'
+    if (last_job_start.diff_day(end_time)) {svg += '<svg x="' +height*0.5+ '">' + end_time.calender_icon(height) + '</svg>'}
+    svg += '</svg>';
 
     // the job block
     svg += '<a xlink:href="' + url + '">';
-    svg += '<svg x="'+ (dis_idle_length + height*0.5) +'" width="'+dis_job_length+'" height="'+height+'">';
+    svg += '<svg x="'+ (dis_idle_length + height*0.5 + 3*gap) +'" width="'+dis_job_length+'" height="'+height+'">';
     svg += '<rect x="0" y="0" width="100%" height="100%" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
     svg += '   fill="black" style="font-size:' +height*0.3+ '">'
@@ -475,7 +475,7 @@ function job_bar(log, last_log) {
     svg += '</a>'
 
     // the start time
-    svg += '<svg x="'+ (dis_idle_length + dis_job_length + height*0.5) + '">'
+    svg += '<svg x="'+ (dis_period_length + height*0.5 +4*gap) + '">'
     svg += start_time.time_start_icon(height);
     if (end_time.diff_day(start_time)) {svg += start_time.calender_icon(height)}
     svg += '</svg>'
