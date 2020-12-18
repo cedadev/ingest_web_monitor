@@ -446,7 +446,7 @@ function job_bar(log, last_log) {
     var dis_job_length = dis_period_length * job_length/period_length;
     var dis_idle_length = dis_period_length - dis_job_length;
 
-    const colours = {"running": "blue", "ok": "green", "warn": "yellow", "fail": "red", "killed": "darkred",
+    const colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
                      "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
                      "cleanup": "lightblue", "re-running": "lightgreen"};
     var opacity =0.3;
@@ -477,6 +477,9 @@ function job_bar(log, last_log) {
     svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
     svg += '<a xlink:href="' + url + '">';
     svg += '<rect x="0" y="0" width="100%" height="100%" stroke="black" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
+    svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
+    svg += '   fill="'+ state_colour +'" style="opacity:0.2;font-size:' +height*0.9+ '">';
+    svg += state + '</text>';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
     svg += '   fill="black" style="font-size:' +height*0.3+ '">';
     svg += start_time.format_period(end_time) + '</text>';
