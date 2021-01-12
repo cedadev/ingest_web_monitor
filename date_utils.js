@@ -12,27 +12,28 @@ Date.prototype.calender_icon = function(size) {
         var month = this.toLocaleString('default', { month: 'short' });
         var weekday = this.toLocaleString('default', { weekday: 'short' });
         var day = this.getDate();
-        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '">';
+        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '" title="' + this + '">';
         var stroke_width = size/50;
         const wcolours = {"Sun": "red", "Sat": "red", "Mon": "grey", "Tue": "grey", "Wed": "grey", "Thu": "grey", "Fri": "grey" };
         var day_colour = wcolours[weekday];
+        var box_colour = day ==1 ? "slateblue":"black";
 
         // white box
-        svg_str += '<rect x="4%" y="4%" rx="10%" ry="10%" width="96%" height="96%"';
-        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
+        svg_str += '<rect x="4%" y="4%" rx="15%" ry="15%" width="94%" height="94%"';
+        svg_str += ' style="fill:white;stroke:' + box_colour + ';stroke-width:'+stroke_width+'" />';
 
         // red box
-        svg_str += '<rect x="4%" y="4%"  width="96%" height="25%"';
-        svg_str += ' style="fill:black;stroke:black;stroke-width:'+stroke_width+'" />';
+        svg_str += '<rect x="4%" y="4%"  width="94%" height="25%"';
+        svg_str += ' style="fill:' + box_colour + ';stroke:' + box_colour + ';stroke-width:'+stroke_width+'" />';
 
         // month
-        svg_str += '<text x="50%" y="25%" dominant-baseline="middle" text-anchor="middle"';
+        svg_str += '<text x="50%" y="20%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="white" style="font-family:Verdana;font-size:' +size/5+ '">' +month+ '</text>';
         // day
         svg_str += '<text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="black" style="font-family:Verdana;font-size:' +size/3+ '">' +day+ '</text>';
         // week day
-        svg_str += '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
+        svg_str += '<text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="' +day_colour+ '" style="font-family:Verdana;font-size:' +size/5+ '">' +weekday+ '</text>';
 
         svg_str += '</svg>';
@@ -42,10 +43,14 @@ Date.prototype.calender_icon = function(size) {
 
 Date.prototype.diff_day = function(d) {return this.getDate() != d.getDate()};
 
+Date.prototype.time_floor = function(ms_res) {return new Date(Math.floor(this.getTime() / ms_res) * ms_res)};
+
+Date.prototype.time_ceil = function(ms_res) {return new Date(Math.ceil(this.getTime() / ms_res) * ms_res)};
+
 Date.prototype.time_icon = function(size) {
         var svg_str = '<svg width="' +size*1.8+ '" height="' +size+ '">';
         var stroke_width = size/50;
-        var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2)
+        var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2);
         // white box
         svg_str += '<rect x="5%" y="20%"  width="95%" height="80%"';
         svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';

@@ -13,6 +13,8 @@
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <script src="lib.js"></script>
+    <script src="date_utils.js"></script>
+<script src="timeline.js"></script>
 
 </head>
 
@@ -55,56 +57,21 @@
 
 
 
+
 <script>
-    function calender(date, size) {
-        var month = date.toLocaleString('default', { month: 'short' });
-        var weekday = date.toLocaleString('default', { weekday: 'short' });
-        var day = date.getDate();
-        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '">';
-        var stroke_width = size/50;
-        const wcolours = {"Sun": "red", "Sat": "red", "Mon": "grey", "Tue": "grey", "Wed": "grey", "Thu": "grey", "Fri": "grey" };
-        var day_colour = wcolours[weekday];
 
-        // white box
-        svg_str += '<rect x="10%" y="10%" rx="10%" ry="10%" width="80%" height="80%"';
-        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
-
-        // red box
-        svg_str += '<rect x="10%" y="10%"  width="80%" height="25%"';
-        svg_str += ' style="fill:black;stroke:black;stroke-width:'+stroke_width+'" />';
-
-        // month
-        svg_str += '<text x="50%" y="25%" dominant-baseline="middle" text-anchor="middle"';
-        svg_str += ' fill="white" style="font-family:Verdana;font-size:' +size/5+ '">' +month+ '</text>';
-        // day
-        svg_str += '<text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"';
-        svg_str += ' fill="black" style="font-family:Verdana;font-size:' +size/3+ '">' +day+ '</text>';
-        // week day
-        svg_str += '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
-        svg_str += ' fill="' +day_colour+ '" style="font-family:Verdana;font-size:' +size/5+ '">' +weekday+ '</text>';
-
-        svg_str += '</svg>';
-
-        return svg_str;
+    for (let h of [10, 20, 30, 40, 50, 70]) {
+        var current_date = new Date();
+        for (var i = 0; i < 40; i++) {
+            var dd = current_date.addDays(i);
+            var d = document.createElement('span');
+            d.innerHTML = dd.calender_icon(h);
+            document.body.append(d);
         }
-    </script>
-
-<script>
-
-    Date.prototype.addDays = function(days) {
-    var date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-    }
-
-    var current_date = new Date();
-    for (var i=0; i<400; i++) {
-        var dd = current_date.addDays(i);
-       var d = document.createElement('span');
-       d.innerHTML = calender(dd, 50);
-       document.body.append(d);
     }
 </script>
+
+
 
 
 <svg height="100" width="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
