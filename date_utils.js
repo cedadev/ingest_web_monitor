@@ -12,7 +12,7 @@ Date.prototype.calender_icon = function(size) {
         var month = this.toLocaleString('default', { month: 'short' });
         var weekday = this.toLocaleString('default', { weekday: 'short' });
         var day = this.getDate();
-        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '" title="' + this + '">';
+        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '"><title>'+this+'</title>';
         var stroke_width = size/50;
         const wcolours = {"Sun": "red", "Sat": "red", "Mon": "grey", "Tue": "grey", "Wed": "grey", "Thu": "grey", "Fri": "grey" };
         var day_colour = wcolours[weekday];
@@ -44,6 +44,8 @@ Date.prototype.calender_icon = function(size) {
 Date.prototype.diff_day = function(d) {return this.getDate() != d.getDate()};
 
 Date.prototype.time_floor = function(ms_res) {return new Date(Math.floor(this.getTime() / ms_res) * ms_res)};
+Date.prototype.time_month_floor = function() {return new Date(this.getFullYear(), this.getMonth(), 1, 0, 0, 0, 0)};
+Date.prototype.time_year_floor = function() {return new Date(this.getFullYear(), 0, 1, 0, 0, 0, 0)};
 
 Date.prototype.time_ceil = function(ms_res) {return new Date(Math.ceil(this.getTime() / ms_res) * ms_res)};
 
@@ -53,7 +55,7 @@ Date.prototype.time_icon = function(size) {
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2);
         // white box
         svg_str += '<rect x="5%" y="20%"  width="95%" height="80%"';
-        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
+        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'"><title>'+this+'</title></rect>';
 
         // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
@@ -64,17 +66,65 @@ Date.prototype.time_icon = function(size) {
         return svg_str;
 };
 
+
+Date.prototype.year_icon = function(size) {
+        var year = this.getFullYear()
+        var svg_str = '<svg width="' +size*0.7+ '" height="' +size+ '">';
+        var stroke_width = size/50;
+        var box_colour = "green";
+
+        // red box
+        svg_str += '<rect x="4%" y="4%"  width="94%" height="25%"';
+        svg_str += ' style="fill:' + box_colour + ';stroke:' + box_colour + ';stroke-width:'+stroke_width+'" />';
+        // year
+        svg_str += '<text x="50%" y="20%" dominant-baseline="middle" text-anchor="middle"';
+        svg_str += ' fill="white" style="font-family:Verdana;font-size:' +size/5+ '">' +year+ '</text>';
+        svg_str += '</svg>';
+
+        return svg_str;
+};
+
+
+Date.prototype.icon = function(size) {
+  if (this.time_year_floor().getTime() == this.getTime()) {return this.year_icon(size)}
+  if (this.time_month_floor().getTime() == this.getTime()) {return this.calender_icon(size)}
+  if (this.time_floor(24*3600*1000).getTime() == this.getTime()) {return this.calender_icon(size)}
+  if (this.time_floor(3600*1000).getTime() == this.getTime()) {return this.time_vicon(size)}
+  if (this.time_floor(60*1000).getTime() == this.getTime()) {return this.time_vicon(size)}
+  if (this.time_floor(1000).getTime() == this.getTime()) {return this.seconds_vicon(size)}
+  return this.seconds_vicon(size);
+};
+
 Date.prototype.time_vicon = function(size) {
-        var svg_str = '<svg width="' +size*0.5+ '" height="' +size+ '">';
+        var svg_str = '<svg width="' +size*0.5+ '" height="' +size+ '"><title>'+this+'</title>';
         var stroke_width = size/50;
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2)
+        // white box
+        svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
+        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'">';
+        svg_str += '</rect>';
+
+        // time
+        svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
+        svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.25+ '">' +time_str+ '</text>';
+
+        svg_str += '</svg>';
+
+        return svg_str;
+};
+
+Date.prototype.seconds_vicon = function(size) {
+        var svg_str = '<svg width="' +size*0.5+ '" height="' +size+ '">';
+        var stroke_width = size/50;
+        var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2) +
+                         ":" + ("0" + this.getSeconds()).slice(-2);
         // white box
         svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
         svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
 
         // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
-        svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.25+ '">' +time_str+ '</text>';
+        svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.2+ '">' +time_str+ '</text>';
 
         svg_str += '</svg>';
 

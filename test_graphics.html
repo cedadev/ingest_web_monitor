@@ -72,15 +72,22 @@
 </script>
 
 
+<script>
 
+            var d = document.createElement('div');
+            d.innerHTML = timeline(test_data, 1500, 1000, 1000*3600*24, 1000*3600*24*3000);
+            document.body.append(d);
+            var d = document.createElement('div');
+            d.innerHTML = timeline(test_data, 1500, 60*1000, 1000*3600*24, 1000*3600*24*3000);
+            document.body.append(d);
+            var d = document.createElement('div');
+            d.innerHTML = timeline(test_data, 1500, 3600*1000, 1000*3600*24, 1000*3600*24*3000);
+            document.body.append(d);
+            var d = document.createElement('div');
+            d.innerHTML = timeline(test_data, 1500, 15*60*1000, 1000*3600, 1000*3600*24*3000);
+            document.body.append(d);
+</script>
 
-<svg height="100" width="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <a xlink:href="job.html">
-        <svg width="80" height="80">
-    <rect height="50%" width="50%" fill="blue"></rect>
-            </svg>
-        </a>
-</svg>
 
 </body>
 </html>
