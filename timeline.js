@@ -9,7 +9,8 @@ var test_data = [{"start_time": new Date("2021-01-11 12:06:02"), "end_time": new
     {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:02"), "Label": "D"},
     {"start_time": new Date("2021-01-12 12:06:02"), "end_time": new Date("2021-01-12 13:06:02"), "Label": "E"},
     {"start_time": new Date("2021-01-12 12:06:02"), "end_time": new Date("2021-01-12 13:06:02"), "Label": "F"},
-    {"start_time": new Date("2021-01-13 03:06:02"), "end_time": new Date("2021-01-13 03:50:02"), "Label": "G"}
+    {"start_time": new Date("2021-01-13 03:06:02"), "end_time": new Date("2021-01-13 03:50:02"), "Label": "G"},
+    {"start_time": new Date("2021-01-12 05:50:08"), "end_time": new Date("2021-01-13 03:50:30"), "Label": "H"}
                 ];
 
 
@@ -21,10 +22,14 @@ time_res = 1000*60;
 for (var i in test_data) {
     times.push(test_data[i]["start_time"].time_floor(time_res));
     times.push(test_data[i]["end_time"].time_floor(time_res));
-    times3.push({"time": test_data[i]["start_time"].time_floor(time_res),
-                 "type": "interval_start", "data": test_data[i]});
-    times3.push({"time": test_data[i]["end_time"].time_floor(time_res),
-                 "type": "interval_end", "data": test_data[i]});
+    var start_event = {"time": test_data[i]["start_time"].time_floor(time_res), "type": "interval_start",
+                      "data": test_data[i]};
+    var end_event = {"time": test_data[i]["end_time"].time_floor(time_res), "type": "interval_end",
+                      "data": test_data[i]};
+    start_event["end"] = end_event;
+    end_event["start"] = start_event;
+    times3.push(start_event);
+    times3.push(end_event);
 }
 
 times.sort();
@@ -45,7 +50,7 @@ for (var i=1; i<l; i++) {
     }
 }
 
-// ticks from srat to end
+// ticks from start to end
 var ticks =[];
 tick_res = 1000*3600 *24;
 tick_start = new Date(times3[0]["time"].time_floor(tick_res));
@@ -67,15 +72,50 @@ while (tick < tick_end) {
 // step find "same times", if times are the same to a specified resolution.
 var times2 = times.concat(boundaries, ticks);
 
-
-times3.sort(function(a, b) {return a.time - b.time});
-
-
-
-
 // make display lengeths x = c + d(period length)
+times3.sort(function(a, b) {return a.time - b.time});
+var x = 0;
+var d = 5;
+last_time = times3[0]["time"];
+var nmark = 0;
+for (i in times3) {
+    this_time = times3[i]["time"];
+    if (last_time.getTime() < this_time.getTime()) {
+        nmark += 1;
+        x += d + Math.pow(this_time.getTime() - last_time.getTime(), 0.3) * 0.5;
+    }
+    times3[i]["x"] = x;
+    last_time = this_time;
+}
+
+
 
 // find the row for each interval. Go through each interval in order of start time. mark each interval with a row.
+var row;
+var rows = new Array(test_data.length).fill(undefined);
+for (i in times3) {
+    if (times3[i]["type"] == "boundary") {times3[i]["row"] = 0}
+    if (times3[i]["type"] == "tick") {times3[i]["row"] = 0}
+    if (times3[i]["type"] == "interval_start") {
+        row = rows.indexOf(undefined);
+        rows[row] = i;
+        times3[i]["row"] = row;
+    }
+    for (row in rows) {
+
+    }
+    if (times3[i]["type"] == "interval_end") {
+        row = rows.find()
+    }
+    this_time = times3[i]["time"];
+    if (last_time.getTime() < this_time.getTime()) {
+        nmark += 1;
+        x += d + Math.pow(this_time.getTime() - last_time.getTime(), 0.3) * 0.5;
+    }
+    times3[i]["x"] = x;
+    last_time = this_time;
+}
+
 
 // scale the time and display
 
