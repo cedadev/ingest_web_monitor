@@ -96,13 +96,13 @@ Date.prototype.icon = function(size) {
 };
 
 Date.prototype.time_vicon = function(size) {
-        var svg_str = '<svg width="' +size*0.5+ '" height="' +size+ '"><title>'+this+'</title>';
+        var svg_str = '<svg width="' +size*0.3+ '" height="' +size+ '"><title>'+this+'</title>';
         var stroke_width = size/50;
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2)
         // white box
-        svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
-        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'">';
-        svg_str += '</rect>';
+        //svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
+        //svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'">';
+        //svg_str += '</rect>';
 
         // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
@@ -114,13 +114,13 @@ Date.prototype.time_vicon = function(size) {
 };
 
 Date.prototype.seconds_vicon = function(size) {
-        var svg_str = '<svg width="' +size*0.5+ '" height="' +size+ '">';
+        var svg_str = '<svg width="' +size*0.3+ '" height="' +size+ '">';
         var stroke_width = size/50;
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2) +
                          ":" + ("0" + this.getSeconds()).slice(-2);
         // white box
-        svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
-        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
+        //svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
+        //svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
 
         // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';

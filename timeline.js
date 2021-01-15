@@ -6,6 +6,7 @@
 var test_data = [{"start_time": new Date("2021-01-11 12:06:02"), "end_time": new Date("2021-01-11 13:06:00"), "label": "A"},
     {"start_time": new Date("2021-01-11 12:20:02"), "end_time": new Date("2021-01-11 13:06:04"), "label": "B"},
     {"start_time": new Date("2020-12-25 06:00:02"), "end_time": new Date("2021-01-11 15:06:00"), "label": "B0"},
+    {"start_time": new Date("2020-12-26 08:00:00"), "end_time": new Date("2020-12-26 08:00:00"), "label": "Bxxxxxxxxxxxxxxxxxxxxx"},
     {"start_time": new Date("2021-01-11 12:06:02"), "end_time": new Date("2021-01-11 13:06:02"), "label": "C"},
     {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
     {"start_time": new Date("2021-01-12 12:06:00"), "end_time": new Date("2021-01-12 13:00:00"), "label": "E"},
@@ -17,14 +18,14 @@ var test_data = [{"start_time": new Date("2021-01-11 12:06:02"), "end_time": new
 function timeline(data, wwidth, time_res, boundary_res, tick_res) {
     // step 1 find all sig times for intervals. record intervals  start and end. Index and reorder.
     var times = [];
-    for (var i in test_data) {
+    for (var i in data) {
         var start_event = {
-            "time": test_data[i]["start_time"].time_floor(time_res), "type": "interval_start",
-            "data": test_data[i]
+            "time": data[i]["start_time"].time_floor(time_res), "type": "interval_start",
+            "data": data[i]
         };
         var end_event = {
-            "time": test_data[i]["end_time"].time_floor(time_res), "type": "interval_end",
-            "data": test_data[i]
+            "time": data[i]["end_time"].time_floor(time_res), "type": "interval_end",
+            "data": data[i]
         };
         start_event["end"] = end_event;
         end_event["start"] = start_event;
@@ -120,23 +121,28 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
     var w;
     var x_mid;
     var row_h = 30;
-    var tl_svg = '<svg height="' + (max_rows * row_h + 60) + '" width="' + (wwidth + 50) + '">';
+    var tl_svg = '<svg height="' + ((max_rows+1) * row_h + 50) + '" width="' + (wwidth + 50) + '">';
     for (i in times) {
         x = times[i]["x"] * wwidth;
         x_mid = times[i]["x_mid"] * wwidth;
+        period = times[i].period;
 
-        tl_svg += '<circle cx="' + x + '" cy="5" r="4" stroke="black" stroke-width="1" fill="red" />';
-            console.log(i, times[i], times[i+1]);
+        if (period != '0 ms') {
+            tl_svg += '<circle cx="' + x + '" cy="5" r="4" stroke="black" stroke-width="1" fill="red" />';
+            console.log(i, times[i], times[i + 1]);
 
-            tl_svg += '<text dominant-baseline="middle" text-anchor="middle" x="'+ x_mid +'" y="60">'+times[i].period+'</text>';
+            tl_svg += '<text dominant-baseline="middle" text-anchor="middle" x="' + x_mid + '" y="5"';
+            tl_svg += 'style="font-size:' + 10 + '">' + times[i].period + '</text>';
 
-        tl_svg += '<line x1="' + x + '" y1="5" x2="' + x + '" y2="100% "stroke="black" stroke-width="1" stroke-dasharray="1 4"/>';
-        var icon = times[i]["time"].icon(40);
-        tl_svg += '<svg x="' + x + '" y="5" width="40" height="40">' + icon + '</svg>';
+            tl_svg += '<line x1="' + x + '" y1="5" x2="' + x + '" y2="100% "stroke="black" stroke-width="1" stroke-dasharray="1 4"/>';
+            var icon = times[i]["time"].icon(40);
+
+            tl_svg += '<svg x="' + x + '" y="5" width="40" height="40">' + icon + '</svg>';
+        }
 
 
         if (times[i]["type"] == "interval_start") {
-            y = times[i]["row"] * row_h + 40;
+            y = (times[i]["row"]) * row_h + 50;
             w = times[i]["end"]["x"]* wwidth - x;
             if (w < 1) {
             tl_svg += '<svg x="' + x + '" y="' + y + '" width="20" height="25">';
@@ -150,7 +156,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
             tl_svg += '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="20">';
             tl_svg += '<rect height="100%" width="100%" fill="blue"></rect>';
             tl_svg += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
-            tl_svg += ' fill="black" style="font-family:courier, courier new, serif;;font-size:' + 10 + '">';
+            tl_svg += ' fill="white" style="font-family:courier, courier new, serif;;font-size:' + 10 + '">';
             tl_svg += times[i]["data"]["label"] + '</text>';
             tl_svg += '</svg>'
         }

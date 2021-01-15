@@ -1,0 +1,117 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<title>Stream</title>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="lib.js"></script>
+<script src="date_utils.js"></script>
+<script src="timeline.js"></script>
+
+</head>
+<body>
+<div id="main" class="container-fluid">
+
+<div id="z">
+
+</div>
+
+</div>
+
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var streamname = urlParams.get("streamname");
+    var name_filter = urlParams.get("namefilter");
+    var owner_filter = urlParams.get("owner");
+
+    var main = $("#main");
+    var z = $("#z");
+
+    main.prepend("<div><h1>Job timeline for "+streamname+"</h1></div>");
+    main.prepend("<p>"+top_button()+"</p>");
+
+    function get_last_logs()
+    {
+
+        var query = {
+           // "query": {
+            //    "match": {
+             //       "stream.keyword":  "mst"
+              //  }
+            //},
+            "sort": [
+                {
+                    "logtime": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            "size": 10000
+        };
+
+        var logs = [];
+        var job_names = [];
+        $.post({
+                    url: ES_URL,
+                    data: JSON.stringify(query),
+                    success: function (data) {
+                        for (var i = 0; i < data.hits.hits.length; i++) {
+                            var doc = data.hits.hits[i]._source;
+
+                            if (doc.state == "running") {
+                                if (!(job_names.includes(doc.jobname))) {
+                                    logs.push(doc);   // only add running jobs the have no matching finished log
+                                }
+                            } else {
+                                logs.push(doc);   // always add jobs if not running
+                                job_names.push(doc.jobname);
+                            }
+                        }
+                        var total = data.hits.total;
+                        render_logs(logs, total);
+                        setTimeout(get_last_logs, 50000);
+                    },
+
+                    error: function (data) {
+                        console.log(data)
+                    },
+                    contentType: "application/json"
+                }
+        );
+        return logs;
+    }
+
+    llogs = get_last_logs();
+
+    function render_logs(logs, total) {
+
+        var timeline_logs = [];
+        var job_start, job_end;
+        z.empty();
+        z.append("<p>Total log records: "+total+"</p>");
+
+        for (var i=0; i < logs.length; i++){
+            job_start = new Date(logs[i].start_time.substring(0, 19));
+            if (logs[i].end_time == undefined) {job_end =  new Date()}
+            else {job_end =  new Date(logs[i].end_time.substring(0, 19))};
+            var label = logs[i].jobname;
+            timeline_logs.push({"start_time": job_start, "end_time": job_end, "label": label});
+
+        }
+            z.append(timeline(timeline_logs, 15000, 60*1000, 1000*3600*24, 100000*3600*24*3000));
+        //z.append(JSON.stringify(logs, null, 4))
+    }
+
+
+</script>
+
+</body>
+</html>
