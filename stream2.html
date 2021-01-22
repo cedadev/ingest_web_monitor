@@ -20,6 +20,20 @@
 <body>
 <div id="main" class="container-fluid">
 
+   <form>Filters:
+        <label>Stream name </label><input type="text" name="namefilter" id="name_filter"/>
+        <label>Owner </label><input type="text" name="owner" id="owner_filter"/>
+
+        <input type="submit" value="filter">
+
+        <label>Timeline res in secs</label><input type="text" name="timeline_res" id="timeline_res"/>
+
+        <label>Ingest4 </label><input type="checkbox" name="ingest4" id="ingest4">
+        <label>Ingest5 </label><input type="checkbox" name="ingest5" id="ingest5">
+        <label>Ingest6 </label><input type="checkbox" name="ingest6" id="ingest6">
+</form>
+
+
 <div id="z">
 
 </div>
@@ -31,6 +45,7 @@
     var streamname = urlParams.get("streamname");
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
+    var timeline_res = urlParams.get("timeline_res");
 
     var main = $("#main");
     var z = $("#z");
@@ -42,19 +57,20 @@
     {
 
         var query = {
-           // "query": {
-            //    "match": {
-             //       "stream.keyword":  "mst"
-              //  }
-            //},
-            "sort": [
-                {
-                    "logtime": {
-                        "order": "desc"
-                    }
-                }
-            ],
-            "size": 10000
+             "query": {
+                     "bool" : {
+      "must" :  { "terms" : { "state" : ["fail", "warn", "died"] }},
+      "filter": { "range": {"logtime": {"lte": "2021-01-16"}}}
+    }
+ //     "range": {
+  //        "logtime": {
+   //           "lte": "2021-01-16"
+    //      }
+   //   },
+    //    "match" : { "state" : "fail" }
+             },
+            "sort": [{"logtime": {"order": "desc"}}],
+            "size": 1000
         };
 
         var logs = [];
@@ -76,7 +92,7 @@
                             }
                         }
                         var total = data.hits.total;
-                        render_logs(logs, total);
+                        render_logs(logs, total, timeline_res);
                         setTimeout(get_last_logs, 50000);
                     },
 
@@ -91,24 +107,46 @@
 
     llogs = get_last_logs();
 
-    function render_logs(logs, total) {
+    function render_logs(logs, total, timeline_res) {
 
         var timeline_logs = [];
         var job_start, job_end;
         z.empty();
         z.append("<p>Total log records: "+total+"</p>");
+        var p = make_params();
 
         for (var i=0; i < logs.length; i++){
             job_start = new Date(logs[i].start_time.substring(0, 19));
             if (logs[i].end_time == undefined) {job_end =  new Date()}
             else {job_end =  new Date(logs[i].end_time.substring(0, 19))};
+            if (job_start.getTime() > job_end.getTime()) {job_end =  new Date()}
             var label = logs[i].jobname;
-            timeline_logs.push({"start_time": job_start, "end_time": job_end, "label": label});
+            var colour = state_colours[logs[i]["state"]];
+            p["job"] = label;
+            var url = 'job.html?' + $.param(p);
+            timeline_logs.push({"start_time": job_start, "end_time": job_end, "label": label, "colour": colour, "url":url});
 
         }
-            z.append(timeline(timeline_logs, 15000, 60*1000, 1000*3600*24, 100000*3600*24*3000));
+            z.append(timeline(timeline_logs, 1500, timeline_res*1000, 1000*3600*24, 100000*3600*24*3000));
         //z.append(JSON.stringify(logs, null, 4))
     }
+
+    // populate form from url
+var urlParams = new URLSearchParams(window.location.search);
+$('#name_filter').attr("value", name_filter);
+    $('#timeline_res').attr("value", timeline_res);
+$('#owner_filter').attr("value", owner_filter);
+
+$('#reclen_'+reclen).prop("checked", true);
+
+for (var i=0; i< states_filter.length; i++) {
+    $('#'+states_filter[i]+' :input').prop("checked", states_filter[i]);
+}
+
+if (ingest4) {$('#ingest4').prop('checked', ingest4)}
+if (ingest5) {$('#ingest5').prop('checked', ingest5)}
+if (ingest6) {$('#ingest6').prop('checked', ingest6)}
+
 
 
 </script>

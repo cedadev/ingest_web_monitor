@@ -16,22 +16,31 @@ Date.prototype.calender_icon = function(size) {
         var stroke_width = size/50;
         const wcolours = {"Sun": "red", "Sat": "red", "Mon": "grey", "Tue": "grey", "Wed": "grey", "Thu": "grey", "Fri": "grey" };
         var day_colour = wcolours[weekday];
-        var box_colour = day ==1 ? "slateblue":"black";
 
         // white box
         svg_str += '<rect x="4%" y="4%" rx="15%" ry="15%" width="94%" height="94%"';
-        svg_str += ' style="fill:white;stroke:' + box_colour + ';stroke-width:'+stroke_width+'" />';
+        svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
 
         // red box
         svg_str += '<rect x="4%" y="4%"  width="94%" height="25%"';
-        svg_str += ' style="fill:' + box_colour + ';stroke:' + box_colour + ';stroke-width:'+stroke_width+'" />';
+        svg_str += ' style="fill:black;stroke:black;stroke-width:'+stroke_width+'" />';
+
+        // red box
+        if (day ==1) {
+            svg_str += '<rect x="20%" y="38%"  width="60%" height="30%"';
+            svg_str += ' style="fill:red;stroke:red;stroke-width:' + stroke_width + '" />';
+            svg_str += '<text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"';
+            svg_str += ' fill="white" style="font-family:Verdana;font-size:' +size/3+ '">' +day+ '</text>';
+        }
+        else {
+            svg_str += '<text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"';
+            svg_str += ' fill="black" style="font-family:Verdana;font-size:' +size/3+ '">' +day+ '</text>';
+        }
 
         // month
         svg_str += '<text x="50%" y="20%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="white" style="font-family:Verdana;font-size:' +size/5+ '">' +month+ '</text>';
-        // day
-        svg_str += '<text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"';
-        svg_str += ' fill="black" style="font-family:Verdana;font-size:' +size/3+ '">' +day+ '</text>';
+
         // week day
         svg_str += '<text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="' +day_colour+ '" style="font-family:Verdana;font-size:' +size/5+ '">' +weekday+ '</text>';

@@ -3,11 +3,18 @@
  */
 
 
+
 var test_data = [{"start_time": new Date("2021-01-11 12:06:02"), "end_time": new Date("2021-01-11 13:06:00"), "label": "A"},
     {"start_time": new Date("2021-01-11 12:20:02"), "end_time": new Date("2021-01-11 13:06:04"), "label": "B"},
     {"start_time": new Date("2020-12-25 06:00:02"), "end_time": new Date("2021-01-11 15:06:00"), "label": "B0"},
     {"start_time": new Date("2020-12-26 08:00:00"), "end_time": new Date("2020-12-26 08:00:00"), "label": "Bxxxxxxxxxxxxxxxxxxxxx"},
     {"start_time": new Date("2021-01-11 12:06:02"), "end_time": new Date("2021-01-11 13:06:02"), "label": "C"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
+    {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
     {"start_time": new Date("2021-01-12 14:06:02"), "end_time": new Date("2021-01-12 22:06:00"), "label": "D"},
     {"start_time": new Date("2021-01-12 12:06:00"), "end_time": new Date("2021-01-12 13:00:00"), "label": "E"},
     {"start_time": new Date("2021-01-12 12:06:00"), "end_time": new Date("2021-01-12 13:06:02"), "label": "F"},
@@ -92,7 +99,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
     // find the row for each interval. Go through each interval in order of start time. mark each interval with a row.
     var row;
     var max_rows = 0;
-    var rows = new Array(test_data.length).fill(undefined);
+    var rows = new Array(data.length).fill(undefined);
     for (i in times) {
         if (times[i]["type"] == "interval_start") {
             row = rows.indexOf(undefined);
@@ -101,6 +108,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
                 max_rows = row
             }
             times[i]["row"] = row;
+            console.log(i, row, max_rows);
         }
         for (row in rows) {
             if (rows[row] == undefined) {
@@ -121,7 +129,8 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
     var w;
     var x_mid;
     var row_h = 30;
-    var tl_svg = '<svg height="' + ((max_rows+1) * row_h + 50) + '" width="' + (wwidth + 50) + '">';
+    var tl_svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+        tl_svg += 'height="' + ((max_rows+1) * row_h + 50) + '" width="' + (wwidth + 50) + '">';
     for (i in times) {
         x = times[i]["x"] * wwidth;
         x_mid = times[i]["x_mid"] * wwidth;
@@ -129,7 +138,6 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
 
         if (period != '0 ms') {
             tl_svg += '<circle cx="' + x + '" cy="5" r="4" stroke="black" stroke-width="1" fill="red" />';
-            console.log(i, times[i], times[i + 1]);
 
             tl_svg += '<text dominant-baseline="middle" text-anchor="middle" x="' + x_mid + '" y="5"';
             tl_svg += 'style="font-size:' + 10 + '">' + times[i].period + '</text>';
@@ -144,21 +152,30 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
         if (times[i]["type"] == "interval_start") {
             y = (times[i]["row"]) * row_h + 50;
             w = times[i]["end"]["x"]* wwidth - x;
+            var label = times[i]["data"]["label"];
+            var colour = times[i]["data"]["colour"];
+            if (colour == undefined) {colour = "blue"}
+            var url = times[i]["data"]["url"];
+            tl_svg += '<a xlink:href="' + url + '">';
             if (w < 1) {
             tl_svg += '<svg x="' + x + '" y="' + y + '" width="20" height="25">';
-            tl_svg += '<rect height="100%" width="100%" fill="pink"></rect>';
+                tl_svg += '<title>' +label+ '</title>';
+            tl_svg += '<rect height="100%" width="100%" fill="'+ colour +'"></rect>';
             tl_svg += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
             tl_svg += ' fill="black" style="font-family:courier, courier new, serif;;font-size:' + 10 + '">';
             tl_svg += times[i]["data"]["label"] + '</text>';
             tl_svg += '</svg>'
 
+            } else {
+                tl_svg += '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="20">';
+                tl_svg += '<title>' + label + '</title>';
+                tl_svg += '<rect height="100%" width="100%" fill="' + colour + '"></rect>';
+                tl_svg += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
+                tl_svg += ' fill="white" style="font-family:courier, courier new, serif;;font-size:' + 10 + '">';
+                tl_svg += times[i]["data"]["label"] + '</text>';
+                tl_svg += '</svg>'
             }
-            tl_svg += '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="20">';
-            tl_svg += '<rect height="100%" width="100%" fill="blue"></rect>';
-            tl_svg += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
-            tl_svg += ' fill="white" style="font-family:courier, courier new, serif;;font-size:' + 10 + '">';
-            tl_svg += times[i]["data"]["label"] + '</text>';
-            tl_svg += '</svg>'
+            tl_svg += '</a>';
         }
 
     }

@@ -21,7 +21,7 @@ last_logs_query = {
     "stream": {
       "terms": {
         "field": "stream.keyword",
-        size: 1000
+        "size": 1000
       },
       "aggs": {
         "recent_logs": {
@@ -42,6 +42,47 @@ last_logs_query = {
   "size": 0
 };
 
+
+last_logs_query2 = {
+  "query": {
+    "range": {
+      "logtime": {
+        "gte": "2021-01-09"
+      }
+    }
+  },
+  "aggs": {
+    "stream": {
+      "terms": {
+        "field": "stream.keyword",
+        "size": 1000
+      },
+      "aggs": {
+        "state_count": {
+          "terms": {
+            "field": "state.keyword",
+            "size": 10
+          }
+        },
+        "last_log": {
+          "top_hits": {
+            "size": 1,
+            "sort": [
+              {
+                "logtime": {
+                  "order": "desc"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "size": 0
+};
+
+
 // icons for states
 state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
     "warn": "exclamation-triangle", "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
@@ -51,6 +92,10 @@ state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run
 colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "info",
            "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
            "do_not_run": "secondary"};
+
+const state_colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
+                     "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
+                     "cleanup": "lightblue", "re-running": "lightgreen"};
 
 // get parameters from url and set to global variables
 var urlParams = new URLSearchParams(window.location.search);
@@ -423,6 +468,7 @@ function job_bar(log, last_log) {
     var end_time;
     if (log.end_time == null) {end_time = new Date()}
     else {end_time = new Date(log.end_time.substring(0, 19))};
+    if (end_time.getTime() < start_time.getTime()) {end_time = new Date()}
     var last_job_start;
     if (last_log.start_time == null) {last_job_start = new Date()}
     else {last_job_start = new Date(last_log.start_time.substring(0, 19))};
@@ -446,12 +492,10 @@ function job_bar(log, last_log) {
     var dis_job_length = dis_period_length * job_length/period_length;
     var dis_idle_length = dis_period_length - dis_job_length;
 
-    const colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
-                     "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
-                     "cleanup": "lightblue", "re-running": "lightgreen"};
+
     var opacity =0.3;
     if (recent) {opacity=1.0}
-    var state_colour = colours[state];
+    var state_colour = state_colours[state];
 
     var p = make_params();
     p["job"] = job_name;
@@ -466,7 +510,7 @@ function job_bar(log, last_log) {
     svg += '<rect x="0" y="0" width="100%" height="100%" fill="lightgrey" stroke="black" />';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
     svg += '   fill="black" style="font-size:' +height*0.3+ '">';
-    svg += start_time.format_period(last_job_start) + '</text></svg>';
+    svg += end_time.format_period(last_job_start) + '</text></svg>';
 
     // add the end time first
     svg += end_time.time_end_icon(height);
@@ -571,6 +615,7 @@ function make_params() {
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
     var reclen = urlParams.get("reclen");
+    var timeline_res = urlParams.get("timeline_res");
     var ingest4 = urlParams.get("ingest4");
     var ingest5 = urlParams.get("ingest5");
     var ingest6 = urlParams.get("ingest6");
@@ -578,6 +623,7 @@ function make_params() {
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
     if (reclen) {parameters["reclen"] = reclen}
+    if (timeline_res) {parameters["timeline_res"] = timeline_res}
     if (ingest4) {parameters["ingest4"] = ingest4}
     if (ingest5) {parameters["ingest5"] = ingest5}
     if (ingest6) {parameters["ingest6"] = ingest6}
