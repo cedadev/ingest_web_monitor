@@ -114,7 +114,7 @@ var reclen = urlParams.get("reclen");
 
 var reclen_date = new Date(new Date() - reclen*24*3600*1000);
 
-last_logs_query.query.range.logtime.gte = reclen_date;
+last_logs_query2.query.range.logtime.gte = reclen_date;
 
 var ingest4 = urlParams.get("ingest4");
 var ingest5 = urlParams.get("ingest5");
