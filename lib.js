@@ -84,18 +84,30 @@ last_logs_query2 = {
 
 
 // icons for states
-state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
-    "warn": "exclamation-triangle", "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
-    "re-running": "cog"};
+//state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
+//    "warn": "exclamation-triangle", "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
+//    "re-running": "cog"};
+
+//function state_icon(state) {
+//    // icons for states
+//    const state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "re-running": "cog",
+//                         "do_not_run": "ban", "warn": "exclamation-triangle",
+//                         "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom"};
+//    if (state_icons.hasOwnProperty(state)) {
+//        return '<i class="fas fa-' + state_icons[state] + '"></i>'
+//    } else {
+//        return ''
+//    }
+//}
 
 // colours for states
-colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "info",
-           "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
-           "do_not_run": "secondary"};
+//colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "info",
+ //          "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
+  //         "do_not_run": "secondary"};
 
-const state_colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
-                     "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
-                     "cleanup": "lightblue", "re-running": "lightgreen"};
+//const state_colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
+  //                   "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
+    //                 "cleanup": "lightblue", "re-running": "lightgreen"};
 
 // get parameters from url and set to global variables
 var urlParams = new URLSearchParams(window.location.search);
@@ -220,9 +232,7 @@ function icons(log) {
     if (long_job) {
         w += ' <i class="fas fa-stopwatch"></i>'
     }
-    if (state_icons.hasOwnProperty(state)) {
-        w += ' <i class="fas fa-' + state_icons[state] + '"></i>'
-    }
+    w += state_icon(state);
     return w
 }
 
@@ -382,14 +392,12 @@ function stream_button(log) {
     // counts not running that are not this state
     var b = '';
     for (var c in log.counts) {
-        if (c == "running") {
-            continue
-        }
-        b += ' <span class="badge badge-' + colours[c] + '" title="'+ c +'">' + log.counts[c] + '</span>';
+        if (c == "running") {continue}
+        b += ' <span class="badge badge-' + state_bootstrap_colours[c] + '" title="'+ c +'">' + log.counts[c] + '</span>';
     }
 
     var boot_class = "mb-1 btn btn-sm";
-    boot_class += " btn-outline-" + colours[state];
+    boot_class += " btn-outline-" + state_bootstrap_colours[state];
     if (recent || state == "running") {
         boot_class += " active"
     }
@@ -405,7 +413,7 @@ function stream_button(log) {
 
     w += icons(log);
     w += '</a> ';
-
+    console.log(' *** ', streamname);
     //console.log(streamname, end_time, new Date - end_time, "ff");
     if (((new Date - end_time) < 5000) && (state != "running")) {
         console.log("****** End  ****", streamname, end_time, new Date - end_time);
@@ -464,15 +472,23 @@ function job_bar(log, last_log) {
     var height = 40;
     var state = log.state;
     var job_name = log.jobname;
+
+    // start time
     var start_time = new Date(log.start_time.substring(0, 19));
+
+    // end time
     var end_time;
     if (log.end_time == null) {end_time = new Date()}
     else {end_time = new Date(log.end_time.substring(0, 19))};
-    if (end_time.getTime() < start_time.getTime()) {end_time = new Date()}
+    if (end_time.getTime() < start_time.getTime()) {end_time = start_time}
+    if (state == "running") {end_time = new Date()}
+
+    // start of last job
     var last_job_start;
     if (last_log.start_time == null) {last_job_start = new Date()}
     else {last_job_start = new Date(last_log.start_time.substring(0, 19))};
-    if (state == "running") {end_time = new Date()}
+    if (last_job_start.getTime() < end_time.getTime()) {last_job_start = end_time}
+
     var recent = (Math.floor((new Date() - end_time) / (1000 * 60)) < 5);
     var user = '<text x="50%" y="80%">xxxxx</text>';
     if ("config" in log && "when" in log.config) {
@@ -513,7 +529,7 @@ function job_bar(log, last_log) {
     svg += end_time.format_period(last_job_start) + '</text></svg>';
 
     // add the end time first
-    svg += end_time.time_end_icon(height);
+    svg += end_time.time_vicon(height);
     if (last_job_start.diff_day(end_time)) {svg += end_time.calender_icon(height)};
 
     // the job block
@@ -531,7 +547,7 @@ function job_bar(log, last_log) {
 
 
     // the start time
-    svg += start_time.time_start_icon(height);
+    svg += start_time.time_vicon(height);
     if (end_time.diff_day(start_time)) {svg += start_time.calender_icon(height)}
 
     svg += '</span>';

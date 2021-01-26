@@ -14,6 +14,7 @@
 
 <script src="lib.js"></script>
 <script src="date_utils.js"></script>
+<script src="job_state_visulisation.js"></script>
 
 </head>
 <body>
@@ -79,11 +80,11 @@
         var cron = ' (Manualy run)';
         if (last_log.config && last_log.config.when) {cron = " (Cron: "+ last_log.config.when + ")" }
         if (last_log.state == "new"){
-            z.append("<div class='alert alert-"+colours[last_log.state]+"' role='alert'>" +
+            z.append("<div class='alert alert-"+state_bootstrap_colours[last_log.state]+"' role='alert'>" +
                     "<p>Script: <kbd>"+last_log.script+"</kbd></p>" +
                     "<p>Times: Never run" + cron + "</p></div>");
         } else {
-            z.append("<div class='alert alert-"+colours[last_log.state]+"' role='alert'>" +
+            z.append("<div class='alert alert-"+state_bootstrap_colours[last_log.state]+"' role='alert'>" +
                     "<p>Script: <kbd>" + last_log.script + "</kbd></p>" +
                     "<p>Times: " + last_log.start_time + " &rarr; " + last_log.end_time + " " + log_periodbadge(last_log) +
                     cron +

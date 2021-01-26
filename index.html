@@ -13,6 +13,7 @@
        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <script src="lib.js"></script>
+<script src="job_state_visulisation.js"></script>
 
 </head>
 <body>
@@ -30,34 +31,20 @@
         <label>last X days </label><input type="text" name="reclen" id="reclen"/>
         <label>host</label><input type="text" name="host" id="host"/>
 
-
-
-<div class="alert alert-light" role="alert" id="states">
+<div id="states">
     State filters:
-    <input type="checkbox" name="running" id="running">
-    <button class="btn btn-outline-primary active">
-         Running</button>
-    <button class="btn btn-outline-success">
-        <input type="checkbox" name="ok" id="ok"> Ran OK</button>
-    <button class="btn btn-outline-warning">
-        <input type="checkbox" name="warn" id="warn"> Errors <i class="fas fa-exclamation-triangle"></i></button>
-    <button class="btn btn-outline-danger">
-        <input type="checkbox" name="fail" id="fail"> Failed <i class="fas fa-bell"></i></button>
-    <button class="btn btn-outline-dark">
-        <input type="checkbox" name="killed" id="killed"> Killed <i class="fas fa-skull"></i></button>
-    <button class="btn btn-outline-dark">
-        <input type="checkbox" name="died" id="died"> Died <i class="fas fa-bomb"></i></button>
-     <button class="btn btn-outline-secondary">
-        <input type="checkbox" name="do_not_run" id="do_not_run"> do_not_run <i class="fas fa-ban"></i></button>
-     <button class="btn btn-outline-success">
-        <input type="checkbox" name="ok-errors" id="ok-errors"> ok-errors <i class="fas fa-exclamation-triangle"></i></button>
-     <button class="btn btn-outline-info">
-        <input type="checkbox" name="new" id="new"> new <i class="fas fa-asterisk"></i></button>
-     <button class="btn btn-outline-info">
-        <input type="checkbox" name="cleanup" id="cleanup"> cleanup <i class="fas fa-broom"></i></button>
-     <button class="btn btn-outline-info">
-        <input type="checkbox" name="re-running" id="re-running"> re-running <i class="fas fa-cog"></i></button>
+ <script>
+     for (var state of state_names) {
+         var bootstrape_colour = state_bootstrap_colours[state];
+        // <span class="badge rounded-pill bg-primary">Primary</span>
+         console.log(state);
+         document.write('<input type="checkbox" name="' + state + '" id="' + state + '"> ');
+         document.write('<span class="badge rounded-pill text-light bg-' + bootstrape_colour + '">' + state);
+         document.write(' ' + state_icon(state) + '</span> ');
+     }
+ </script>
 </div>
+
     <div class="alert alert-light" role="alert" id="key">
     Key:
     <span class="btn btn-success" id="recent">Recently finished</span>
@@ -69,19 +56,19 @@
 </form>
 
 <div id="streams">
-<image src="Loading_icon.gif"></image>
+<div class="spinner-border" role="status">
+  <span >Loading...</span>
+</div>
 </div>
 
     </div>
 </body>
 
+
 <script>
-
-
-
 function get_last_logs()
 {
-    var outut = {};
+    var last_logs = {};
     $.post({
                 url: ES_URL,
                 data: JSON.stringify(counts_and_last_query),
@@ -98,11 +85,10 @@ function get_last_logs()
                         }
                         last_log.counts = counts;
 
-                        outut[stream] = last_log;
+                        last_logs[stream] = last_log;
                     }
-                    outpt = outut; // set global var
-                    refresh_page_info(outut);
-                    console.log(outut);
+            //
+                    refresh_page_info(last_logs);
                     setTimeout(get_last_logs, 50000);
                 },
 
@@ -112,11 +98,9 @@ function get_last_logs()
                 contentType: "application/json"
             }
     );
-   // return outut;
 }
 
 
-//
 function refresh_page_info(a) {
     // function to refresh the stream info on the page
     streams_div.empty();
@@ -126,7 +110,7 @@ function refresh_page_info(a) {
         sorted_stream_names[sorted_stream_names.length] = s;
     }
     sorted_stream_names.sort();
-
+    console.log(selected_states);
     for (var i=0; i < sorted_stream_names.length; i++) {
 
         var stream = sorted_stream_names[i];
@@ -142,20 +126,16 @@ function refresh_page_info(a) {
         streams_div.append(w);
     }
     streams_div.html("<div>"+ streams_div.html()+"</div>");
-
 }
 
 
 streams_div = $("#streams");
-z = $("#z");
-
 
 var urlParams = new URLSearchParams(window.location.search);
 
 // set form from url parameters
 function set_form(value, name) {
     var input = $("#"+name);
-    console.log(value, name, input, input.attr('type'));
     if (input.attr('type') == "checkbox") {
         input.prop('checked', value)
     }
@@ -179,7 +159,7 @@ var counts_and_last_query = {
   "size": 0
 };
 
-//counts_and_last_query.query.bool.must[1].simple_query_string.query = name_filter;
+// add query clauses
 if (urlParams.get("reclen")) {
     var reclen_date = new Date(new Date() - reclen*24*3600*1000);
     counts_and_last_query.query.bool.must.push({"range": {"logtime": {"gte": reclen_date}}})
@@ -197,29 +177,12 @@ if (urlParams.get("owner")) {
     counts_and_last_query.query.bool.must.push({"term": {"config.owner": {"value": urlParams.get("owner")}}});
 }
 
-
 var selected_states = [];
-for (var state in colours) {
+for (var state of state_names) {
     if (urlParams.get(state)) {selected_states.push(state)}
 }
 
-outpt = get_last_logs();
-
-// populate form from url
-var urlParams = new URLSearchParams(window.location.search);
-//$('#name_filter').attr("value", name_filter);
-//$('#owner_filter').attr("value", owner_filter);
-
-//$('#reclen_'+reclen).prop("checked", true);
-
-//for (var i=0; i< states_filter.length; i++) {
-//    $('#'+states_filter[i]+' :input').prop("checked", states_filter[i]);
-//}
-
-
-
-
+get_last_logs();
 
 </script>
-
 </html>
