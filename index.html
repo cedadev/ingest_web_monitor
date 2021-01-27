@@ -37,7 +37,6 @@
      for (var state of state_names) {
          var bootstrape_colour = state_bootstrap_colours[state];
         // <span class="badge rounded-pill bg-primary">Primary</span>
-         console.log(state);
          document.write('<input type="checkbox" name="' + state + '" id="' + state + '"> ');
          document.write('<span class="badge rounded-pill text-light bg-' + bootstrape_colour + '">' + state);
          document.write(' ' + state_icon(state) + '</span> ');
@@ -78,7 +77,6 @@ function get_last_logs()
                         var stream = streams[i].key;
                         var last_log = streams[i].last_log.hits.hits[0]._source;
                         var counts = {};
-                        console.log(streams[i]);
                         for (var j=0; j < streams[i].state_count.buckets.length; j++){
                             var state = streams[i].state_count.buckets[j];
                             counts[state.key] = state.doc_count;
@@ -110,7 +108,6 @@ function refresh_page_info(a) {
         sorted_stream_names[sorted_stream_names.length] = s;
     }
     sorted_stream_names.sort();
-    console.log(selected_states);
     for (var i=0; i < sorted_stream_names.length; i++) {
 
         var stream = sorted_stream_names[i];

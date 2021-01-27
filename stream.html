@@ -90,27 +90,15 @@
     llogs = get_last_logs();
 
     function render_logs(logs, total) {
-
         z.empty();
         z.append("<p>Total log records: "+total+"</p>");
-        var last_job_start = new Date();
-        var last_space = 0;
         var last_log = {"start_time": new Date().toISOString(), "end_time": null};
 
         for (var i=0; i < logs.length; i++){
-            var job_start = new Date(logs[i].start_time.substring(0, 19));
-            var space = last_job_start - job_start;
-            var s = spacer(space, last_space);
-            //var logb = job_out_button(logs[i], last_log);
             var logb = job_bar(logs[i], last_log);
-            //z.append(s);
             z.append(logb);
-            last_space = space;
-
-            last_job_start = job_start;
             last_log = logs[i];
         }
-
     }
 
 

@@ -83,37 +83,10 @@ last_logs_query2 = {
 };
 
 
-// icons for states
-//state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "do_not_run": "ban",
-//    "warn": "exclamation-triangle", "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom",
-//    "re-running": "cog"};
-
-//function state_icon(state) {
-//    // icons for states
-//    const state_icons = {"killed": "skull", "died": "bomb", "new": "asterisk", "re-running": "cog",
-//                         "do_not_run": "ban", "warn": "exclamation-triangle",
-//                         "ok-errors": "exclamation-triangle", "fail": "bell", "cleanup": "broom"};
-//    if (state_icons.hasOwnProperty(state)) {
-//        return '<i class="fas fa-' + state_icons[state] + '"></i>'
-//    } else {
-//        return ''
-//    }
-//}
-
-// colours for states
-//colours = {"ok": "success", "ok-errors": "success", "fail": "danger", "killed": "dark", "new": "info",
- //          "warn": "warning", "running": "primary", "died": "dark", "cleanup": "info", "re-running": "info",
-  //         "do_not_run": "secondary"};
-
-//const state_colours = {"running": "blue", "ok": "green", "warn": "orange", "fail": "red", "killed": "darkred",
-  //                   "died": "indigo", "do_not_run": "lightblue", "ok-errors": "lightgreen", "new": "lightblue",
-    //                 "cleanup": "lightblue", "re-running": "lightgreen"};
 
 // get parameters from url and set to global variables
 var urlParams = new URLSearchParams(window.location.search);
-var name_filter = urlParams.get("namefilter");
 
-var owner_filter = urlParams.get("owner");
 var states_filter = [];
 var sfilter_button_names = ["running", "ok", "warn", "fail", "killed", "died", "do_not_run", "new", "ok-errors", "cleanup", "re-running"];
 for (var i=0; i< sfilter_button_names.length; i++) {
@@ -132,20 +105,7 @@ var ingest4 = urlParams.get("ingest4");
 var ingest5 = urlParams.get("ingest5");
 var ingest6 = urlParams.get("ingest6");
 
-var icon_list = ["ambulance", "anchor", "apple-alt", "archway", "atom", "bath", "bone", "beer", "bicycle",
-                 "book",
-                 "bus", "car", "car-side", "cloud", "couch",
-                 "broom", "chess-bishop", "chess-king", "chess-knight", "flask", "gavel", "gem",
-                 "glass-martini", "helicopter", "marker",
-                 "chess-pawn", "chess-rook", "cookie", "crow",
-                 "dove", "feather", "fish", "frog",
-                 "hotel", "kiwi-bird",
-                 "lemon", "motorcycle", "oil-can", "paw",
-                 "seedling", "shuttle-van", "truck", "truck-monster",
-                 "truck-pickup", "university"];
-icon_list = icon_list.concat(icon_list);
-icon_list = icon_list.concat(icon_list);
-icon_list = icon_list.concat(icon_list);
+
 
 
 function escapeHtml(unsafe) {
@@ -160,53 +120,62 @@ function escapeHtml(unsafe) {
 
 function test_icons() {
     var s = '';
-    for (var i=0; i < icon_list.length; i++) {
-        s +=  i+ ' <i class="fas fa-'+icon_list[i]+'"></i> '
+    for (var i=0; i < 256; i++) {
+        s +=  i+  icongen(i)
     }
     return s
 }
 
-var blop = new Audio('sounds/blop.mp3');
-var clang = new Audio('sounds/clang.mp3');
-var snap = new Audio('sounds/snap.mp3');
-// sounds for states
-sounds = {"ok": blop, "ok-errors": blop, "fail": clang, "killed": clang, "new": blop,
-           "warn": snap, "running": blop, "died": clang, "cleanup": blop, "re-running": blop,
-           "do_not_run": blop};
-
 
 function icongen(s) {
-    if (s == undefined) {return ''}
-    var hash = 0, i, chr;
-    for (i = 0; i < s.length; i++) {
-    chr   = s.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  var byte1 = (hash & 0xfff00000) >> 20;
-  var byte2 = (hash & 0x000fff00) >> 8;
-  var byte3 = hash & 0x000000ff;
-  var back = ("000" + byte2.toString(16));
-    back = back.substring(back.length - 3);
-  var colour = byte2.toString(16);
-    if (colour.length == 2) {
-        "0" + colour
+    // generate a random icon form a string
+
+    const icon_list = ["ambulance","anchor","archive","balance-scale","bath","bed","beer","bicycle",
+        "binoculars","birthday-cake", "bolt","book","bookmark","briefcase","bug","building","bullhorn","bullseye",
+        "bus","calculator","camera","camera-retro","car", "certificate","child","clipboard","cloud","coffee","cog",
+        "cogs","compass","crosshairs","cube","cubes","cut","database","desktop",
+        "envelope","envelope-open","eye","female","fighter-jet","film","fire","fire-extinguisher","flag",
+        "flag-checkered","flask", "gamepad","gavel","gift","globe","graduation-cap","headphones","heart","heartbeat",
+        "home","hotel","hourglass","hourglass-half", "image","inbox","industry","lock","magic","magnet","male","map",
+        "map-marker","map-pin","map-signs","medkit","microchip","microphone", "mobile","motorcycle","music",
+        "paint-brush","paper-plane","paperclip","paw","phone","plane","plug","podcast","puzzle-piece","recycle",
+        "road","rocket","save","search","server","ship","shopping-bag","shopping-basket","shopping-cart","shower",
+        "space-shuttle","star", "stethoscope","subway","suitcase","tablet","tag","tags","taxi","thermometer",
+        "thermometer-empty","thermometer-full", "thermometer-half","tint","train","trash","tree","trophy","truck","tv",
+        "umbrella","universal-access","university","unlock","user-md", "user-secret","wrench","apple-alt","archway",
+        "atom","bone","basketball-ball","bowling-ball","brush","broom","car-side","couch",
+        "chess-bishop","chess-king","chess-knight","gem","glass-martini","helicopter","marker","chess-pawn",
+        "chess-rook","cookie", "crow","dove","feather","fish","frog","kiwi-bird","lemon","oil-can","seedling",
+        "shuttle-van","truck-monster","truck-pickup",
+
+        "ambulance","anchor","archive","balance-scale","bath","bed","beer","bicycle",
+        "binoculars","birthday-cake", "bolt","book","bookmark","briefcase","bug","building","bullhorn","bullseye",
+        "bus","calculator","camera","camera-retro","car", "certificate","child","clipboard","cloud","coffee","cog",
+        "cogs","compass","crosshairs","cube","cubes","cut","database","desktop",
+        "envelope","envelope-open","eye","female","fighter-jet","film","fire","fire-extinguisher","flag",
+        "flag-checkered","flask", "gamepad","gavel","gift","globe","graduation-cap","headphones","heart","heartbeat",
+        "home","hotel","hourglass","hourglass-half", "image","inbox","industry","lock","magic","magnet","male","map",
+        "map-marker","map-pin","map-signs","medkit","microchip","microphone", "mobile","motorcycle","music",
+        "paint-brush","paper-plane","paperclip","paw","phone","plane","plug","podcast","puzzle-piece","recycle",
+        "road","rocket","save","search","server","ship","shopping-bag","shopping-basket","shopping-cart","shower",
+        "space-shuttle","star", "stethoscope"
+    ];
+
+    if (s == undefined) {n=0}
+    else if (Number.isInteger(s)) {n = Math.abs(s) % 256}
+    else {
+        var hash = 0, i, chr;
+        for (i = 0; i < s.length; i++) {
+            chr = s.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        var n = hash & 0x000000ff;
     }
-    // console.log(s, hash, byte1, byte2, byte3, back, colour) border border-dark
-  // return  '<span class="mr-1 py-1" style="background-color: #' + back + '" title="'+ s +'">.</span>';
-
-    return '<span class="border border-dark rounded-circle mr-1 p-1" '+
-                 'title="' + s +'">' +
-                 '<i class="fas fa-' + icon_list[byte3] + '"></i></span>'
+    return '<span title="' + s +'"><i class="fas fa-' + icon_list[n] + '"></i></span> '
 }
 
 
-// if name filter then change query
-if (name_filter) {
- //     last_logs_query.query= {"bool": {"must": {"match": {"stream": "test"}}}};
-
-//    last_logs_query.query = {"match": {"stream": name_filter}};
-}
 
 // icons
 function icons(log) {
@@ -244,13 +213,6 @@ function utc_from_str(s) {
     return new Date(s);
 }
 
-// make now
-function now() {
-    var now = new Date;
-    var utc_timestamp = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
-        now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds()));
-    return utc_timestamp;
-}
 
 // period job display
 function log_periodbadge(log) {
@@ -291,36 +253,6 @@ function periodbadge(start_time, end_time) {
     return '<span class="badge badge-danger" style="float: left">'+svg+' '+Math.round(p)+" days "+svg+"</span>"
 }
 
-//period text and color from period
-function periodtextcolour(p) {
-    if (p < 0) {return {text: "-" + " ms", colour: "danger", unit: "ms", number: p}}
-    if (p < 1000) {return {text: p.toFixed() + " ms", colour: "success", unit: "ms", number: p}}
-    p = p/1000;  // miliseconds to seconds
-    if (p < 120) {return {text: p.toFixed() + " s", colour: "primary", unit: "s", number: p}}
-    p = p/60;    // seconds to minutes
-    if (p < 90) {return {text: p.toFixed() + " min", colour: "info", unit: "mins", number: p}}
-    p = p/60;    // mins to hours
-    if (p < 50) {return {text: p.toFixed()+ " hrs", colour: "warning", unit: "hrs", number: p}}
-    p = p/24;     // hours to days
-    return {text: p.toFixed() + " days", colour: "danger", unit: "days", number: p}
-}
-
-// period job display
-function periodbar(start_time, job_end, next_time) {
-    var job_length = job_end - start_time;
-    var period_length = next_time - start_time;
-    var idle_length = period_length - job_length;
-    var dis_period_length = Math.round(Math.pow((period_length/1000+0.01), 0.3)*6);
-    var dis_job_length = dis_period_length * job_length/period_length;
-
-    var dis_idle_length = dis_period_length - dis_job_length;
-
-    var s = '<div class="progress" style="float: right; height: 20px; width: ' + (dis_period_length + 80) + '">';
-        s += '<div class="progress-bar bg-secondary" role="progressbar" style="width: '+ (dis_idle_length + 40) +'">'+periodtextcolour(idle_length).text+'</div>';
-        s += '<div class="progress-bar bg-'+periodtextcolour(job_length).colour+'" role="progressbar" style="width: '+ (dis_job_length + 40) +'">'+periodtextcolour(job_length).text+'</div> </div>';
-    return s
-}
-
 
 function tooltip(log) {
     var ttip = log.errors || log.output;
@@ -329,47 +261,6 @@ function tooltip(log) {
     return ttip;
 }
 
-// spacer
-function spacer(p, last_p) {
-    var c = '';
-    if (p < last_p*1.01 && p > last_p*0.99) {c = "white"} else {c = "#220"}
-
-    var s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'" stroke="black"/>';
-    s += '<text x=7 y=11 fill="gray" style="font-family: monospace, Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
-    var unit;
-
-    if (p < 2000) {return ''}
-    p = p/1000; unit = "s";   // miliseconds to seconds
-    if (p < 120) {return ''}
-    p = p/60; unit = "min";     // seconds to minutes
-    if (p < 90) {return s + Math.round(p) + " " + unit + "</text></svg>"}
-    p = p/60; unit = "hrs";     // mins to hours
-    if (p < 50) {return s + Math.round(p) + " " + unit + "</text></svg>"}
-    p = p/24; unit = "days";     // hours to days
-    return s + Math.round(p) + " " + unit + "</text></svg>";
-
-}
-
-// spacer
-function spacer2(p, last_p) {
-    var c = '';
-    if (p < last_p*1.01 && p > last_p*0.99) {c = "white"} else {c = "#220"}
-
-    var s = '<svg height="15" width="50"> <path d="M0 7 L7 0 L45 0 L45 15 L7 15 L0 7" fill="'+c+'" stroke="black"/>';
-    s += '<text x=7 y=11 fill="gray" style="font-family: monospace, Courier New; font-weight: bold; font-style: normal; font-size: 10px">';
-    var unit;
-
-    if (p < 2000) {return ''}
-    p = p/1000; unit = "s";   // miliseconds to seconds
-    if (p < 120) {return ''}
-    p = p/60; unit = "min";     // seconds to minutes
-    if (p < 90) {return s + Math.round(p) + " " + unit + "</text></svg>"}
-    p = p/60; unit = "hrs";     // mins to hours
-    if (p < 50) {return s + Math.round(p) + " " + unit + "</text></svg>"}
-    p = p/24; unit = "days";     // hours to days
-    return s + Math.round(p) + " " + unit + "</text></svg>";
-
-}
 
 function top_button() {
     var p = make_params();
@@ -413,60 +304,20 @@ function stream_button(log) {
 
     w += icons(log);
     w += '</a> ';
-    console.log(' *** ', streamname);
+
     //console.log(streamname, end_time, new Date - end_time, "ff");
     if (((new Date - end_time) < 5000) && (state != "running")) {
         console.log("****** End  ****", streamname, end_time, new Date - end_time);
-        sounds[state].play();
+        state_sounds[state].play();
     }
     if ((new Date - start_time) < 5000) {
         console.log("***** Start **", streamname, end_time, new Date - end_time);
-        sounds[state].play();
+        state_sounds[state].play();
     }
     return w;
 }
 
 
-function job_button(log, last_log) {
-    var state = log.state;
-    var job_name = log.jobname;
-    var start_time = new Date(log.start_time.substring(0, 19));
-    var end_time = new Date(log.end_time.substring(0, 19));
-    if (state == "running") {
-        end_time = new Date()
-    }
-    var ago = Math.floor((new Date() - end_time) / (1000 * 60));
-    var recent = (ago < 5);
-
-    var b = log_periodbadge(log);
-
-    var boot_class = "mb-1 btn btn-outline-" + colours[state];
-    if (recent || state == "running") {
-        boot_class += " active"
-    }
-
-    var job_start = new Date(log.start_time.substring(0, 19));
-    var last_job_start = new Date(last_log.start_time.substring(0, 19));
-    var space = last_job_start - job_start;
-    var label;
-
-    if (job_start.diff_day(last_job_start)) {
-        label = start_time.time_icon(30) + start_time.calender_icon(30);
-    } else {
-        label = start_time.time_icon(30)
-    }
-
-    var p = make_params();
-    p["job"] = job_name;
-    var url = 'job.html?' + $.param(p);
-
-    //var s = spacer(space, 0);
-    var s = '<div style="float: right">' + periodbadge(log.start_time, last_log.start_time) + '</div>';
-    var ttip = tooltip(log);
-
-    var w = '<div style="float: left;" title="' + ttip + '">'+ job_bar(log, last_log) +'</div>';
-    return w;
-}
 
 function job_bar(log, last_log) {
     var height = 40;
@@ -557,72 +408,6 @@ function job_bar(log, last_log) {
 
 
 
-function output_box(log) {
-    var box = "";
-    if (log.output) {
-            box = "<div class='alert alert-info' role='alert'><small><small><p>Output log: <kbd>" +
-                  log.output_log + "</kbd></p><pre><code>"+
-                     log.output+"</code></pre></small></small></div>";
-    }
-    return box;
-}
-
-function error_box(log) {
-    var box = '';
-    if (log.errors) {
-            box = "<div class='alert alert-warning' role='alert'><small><p>Error log: <kbd>" +
-                  log.error_log + "</kbd></p><pre><code>"+
-                     log.errors+"</code></pre></small></div>";
-    }
-    return box;
-}
-
-function job_out_button(log, last_log) {
-    var state = log.state;
-    var job_name = log.jobname;
-    var start_time = new Date(log.start_time.substring(0, 19));
-    var end_time = new Date(log.end_time.substring(0, 19));
-    if (state == "running") {
-        end_time = new Date()
-    }
-    var ago = Math.floor((new Date() - end_time) / (1000 * 60));
-    var recent = (ago < 5);
-
-    var b = log_periodbadge(log);
-
-    var boot_class = "mb-1 btn";
-    boot_class += " btn-outline-" + colours[state];
-    if (recent || state == "running") {
-        boot_class += " active"
-    }
-
-    var job_start = new Date(log.start_time.substring(0, 19));
-    var last_job_start = new Date(last_log.start_time.substring(0, 19));
-    var space = last_job_start - job_start;
-    var label;
-
-    if (space > 12*3600000) {
-        label = ("0" + start_time.getDate()).slice(-2) + "-" + ("0" + (start_time.getMonth() + 1)).slice(-2) + "-" +
-            start_time.getFullYear() + " " + ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
-    } else {
-        label = ("0" + start_time.getHours()).slice(-2) + ":" + ("0" + start_time.getMinutes()).slice(-2);
-    }
-
-    var p = make_params();
-    p["job"] = job_name;
-    var url = 'job.html?' + $.param(p);
-
-    //var s = spacer(space, 0);
-    var s = '<div>' + periodbadge(log.start_time, last_log.start_time) + '</div>';
-
-    var w = '<div class="mb-3 mr-1">';
-    w += '<div><a href="'+url+'" class="' + boot_class + '"><small>' + label + ' ' + icons(log) + '</small></a></div>';
-    w += output_box(log);
-    w += error_box(log);
-    w += '</div>';
-    return w;
-}
-
 
 
 
@@ -649,9 +434,5 @@ function make_params() {
     return parameters;
 }
 
-function button_filter(f) {
-    var checkbox = $('#'+ f.id+' :input');
-    checkbox.prop("checked", !checkbox.prop("checked"));
-}
 
 //C7B9X6W4L6
