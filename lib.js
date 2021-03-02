@@ -346,6 +346,10 @@ function job_bar(log, last_log) {
         user = '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
         user += ' fill="gray" style="font-size:' +height*0.2+ '">CRON</text>';
     }
+    if ("params" in log && ! "user" in log) {
+        user = '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
+        user += ' fill="gray" style="font-size:' +height*0.2+ '">ARRIVALS</text>';
+    }
     if ("user" in log && log.user) {
         user =  '<rect y="70%" width="100%" fill="black" height="' +height*0.2+ '"/>'
         user += '<text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle"';
@@ -433,6 +437,16 @@ function make_params() {
     }
     return parameters;
 }
+
+
+var soundPlayer = new Audio();
+function playLowerNote(src, rate) {
+    soundPlayer.src = src;
+    soundPlayer.mozPreservesPitch = false;
+    soundPlayer.playbackRate = rate;
+    soundPlayer.play();
+}
+
 
 
 //C7B9X6W4L6
