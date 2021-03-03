@@ -7,42 +7,6 @@
 var ES_URL = "https://elasticsearch.ceda.ac.uk/ingest-log/_search";
 
 
-// query for last logs
-last_logs_query = {
-  "query": {
-      "range": {
-          "logtime": {
-              "gte": "2018-06"
-          }
-      }
-  },
-
-  "aggs": {
-    "stream": {
-      "terms": {
-        "field": "stream.keyword",
-        "size": 1000
-      },
-      "aggs": {
-        "recent_logs": {
-          "top_hits": {
-            "size": 100,
-            "sort": [
-              {
-                "logtime": {
-                  "order": "desc"
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  },
-  "size": 0
-};
-
-
 last_logs_query2 = {
   "query": {
     "range": {
@@ -96,16 +60,8 @@ for (var i=0; i< sfilter_button_names.length; i++) {
 }
 
 var reclen = urlParams.get("reclen");
-
 var reclen_date = new Date(new Date() - reclen*24*3600*1000);
-
 last_logs_query2.query.range.logtime.gte = reclen_date;
-
-var ingest4 = urlParams.get("ingest4");
-var ingest5 = urlParams.get("ingest5");
-var ingest6 = urlParams.get("ingest6");
-
-
 
 
 function escapeHtml(unsafe) {
@@ -128,8 +84,7 @@ function test_icons() {
 
 
 function icongen(s) {
-    // generate a random icon form a string
-
+    // generate an icon form a hash of a string or number
     const icon_list = ["ambulance","anchor","archive","balance-scale","bath","bed","beer","bicycle",
         "binoculars","birthday-cake", "bolt","book","bookmark","briefcase","bug","building","bullhorn","bullseye",
         "bus","calculator","camera","camera-retro","car", "certificate","child","clipboard","cloud","coffee","cog",
@@ -213,15 +168,6 @@ function utc_from_str(s) {
     return new Date(s);
 }
 
-
-// period job display
-function log_periodbadge(log) {
-    if (log.state == "running") {
-        return periodbadge(log.start_time);
-    } else {
-        return periodbadge(log.start_time, log.end_time);
-    }
-}
 
 // period job display
 function periodbadge(start_time, end_time) {
@@ -411,27 +357,17 @@ function job_bar(log, last_log) {
 }
 
 
-
-
-
-
 function make_params() {
     var urlParams = new URLSearchParams(window.location.search);
     var name_filter = urlParams.get("namefilter");
     var owner_filter = urlParams.get("owner");
     var reclen = urlParams.get("reclen");
     var timeline_res = urlParams.get("timeline_res");
-    var ingest4 = urlParams.get("ingest4");
-    var ingest5 = urlParams.get("ingest5");
-    var ingest6 = urlParams.get("ingest6");
     var parameters = {};
     if (name_filter) {parameters["namefilter"] = name_filter}
     if (owner_filter) {parameters["owner"] = owner_filter}
     if (reclen) {parameters["reclen"] = reclen}
     if (timeline_res) {parameters["timeline_res"] = timeline_res}
-    if (ingest4) {parameters["ingest4"] = ingest4}
-    if (ingest5) {parameters["ingest5"] = ingest5}
-    if (ingest6) {parameters["ingest6"] = ingest6}
     for (var i=0; i<states_filter.length; i++){
         parameters[states_filter[i]] = "on"
     }
