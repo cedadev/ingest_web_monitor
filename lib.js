@@ -251,15 +251,6 @@ function stream_button(log) {
     w += icons(log);
     w += '</a> ';
 
-    //console.log(streamname, end_time, new Date - end_time, "ff");
-    if (((new Date - end_time) < 5000) && (state != "running")) {
-        console.log("****** End  ****", streamname, end_time, new Date - end_time);
-        state_sounds[state].play();
-    }
-    if ((new Date - start_time) < 5000) {
-        console.log("***** Start **", streamname, end_time, new Date - end_time);
-        state_sounds[state].play();
-    }
     return w;
 }
 
@@ -334,9 +325,10 @@ function job_bar(log, last_log) {
     if (last_job_start.diff_day(end_time)) {svg += end_time.calender_icon(height)};
 
     // the job block
-    svg += '<svg width="'+(dis_job_length + height)+'" height="'+height +'"';
+    svg += '<svg  width="'+(dis_job_length + height)+'" height="'+height +'"';
     svg += ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
     svg += '<a xlink:href="' + url + '">';
+    svg += '<title>' + ttip + '</title>';
     svg += '<rect x="0" y="0" width="100%" height="100%" stroke="black" fill="'+ state_colour +'" style="opacity:'+opacity+'"/>';
     svg += '  <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
     svg += '   fill="'+ state_colour +'" style="opacity:0.2;font-size:' +height*0.9+ '">';

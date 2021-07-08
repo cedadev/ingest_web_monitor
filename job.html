@@ -90,18 +90,19 @@
                     cron +
                     "</p></div>");
         }
+   
         if (last_log.config) {
             z.append("<div class='alert alert-secondary' role='alert'><h4>Config</h4><pre><code>"+
-                     JSON.stringify(last_log.config, null, 4)+"</code></pre></div>")}
+                     JSON.stringify(last_log.config, null, 4).replace(/\</g,"&lt;")+"</code></pre></div>")}
         if (last_log.output) {
             z.append("<div class='alert alert-info' role='alert'><h4>Output</h4><pre><code>"+
-                     last_log.output+"</code></pre></div>")}
+                     last_log.output.replace(/\</g,"&lt;")+"</code></pre></div>")}
         if (last_log.errors) {
             z.append("<div class='alert alert-warning' role='alert'><h4>Errors</h4><pre><code>"+
-                     last_log.errors+"</code></pre></div>")}
+                     last_log.errors.replace(/\</g,"&lt;")+"</code></pre></div>")}
 
         z.append("<div class='alert alert-light' role='alert'><h4>Full set of records for this job</h4><pre>"+
-                JSON.stringify(logs, null, 4) + "</pre></div>");
+                JSON.stringify(logs, null, 4).replace(/\</g,"&lt;") + "</pre></div>");
     }
 
 
