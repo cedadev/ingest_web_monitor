@@ -14,7 +14,7 @@ digraph G {
     node [style=filled,fillcolor="blue"];
   arrivals [fillcolor=white,shape=rectangle,href="https://arrivals.ceda.ac.uk" image="images/arrivals_s.png",fontsize=12];
   fileops [href="stream.html?streamname=simple_checks"];
-  arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="http://stats.ceda.ac.uk/ingest_state/stream.html?streamname=simple_checks"];
+  arrivals_disk  [style=filled,shape=cylinder,fillcolor=gray,href="stream.html?streamname=simple_checks"];
     ingest_logs [shape=note,fillcolor="gray",style=filled];
   arrivals -> arrivals_disk [penwidth=4];
   fileops -> arrivals_disk;
@@ -25,18 +25,16 @@ digraph G {
 #    style=filled;
 #    color=lightgrey;
 
-   processing_disk  [style=filled,shape=cylinder,fillcolor=gray,href="stream.html?streamname=simple_checks"];
+   processing_disk  [style=filled,shape=cylinder,fillcolor=gray, href="stream.html?streamname=simple_checks"];
   ingest_control [style=filled,fillcolor="blue",href="stream.html?streamname=simple_checks"];
   ingest_mon [fillcolor=white,shape=rectangle,
-     href="index.html?namefilter=!test&reclen=30&ingest6=on&ingest4=on&ingest5=on&running=on&warn=on&fail=on&killed=on&died=on",
+     href="index.html?namefilter=&reclen=30&running=on&warn=on&fail=on&killed=on&died=on",
      image="images/ingest_mon_s.png",fontsize=12];
 
 
   {rank=sink; gws; processing_disk; arrivals_disk}
   {rankdir=LR; ingest_control; ingest_logs; }
   }
-
-
 
     subgraph cluster_es {
     label = "elastic search";
@@ -98,9 +96,6 @@ digraph G {
   data_provider -> gws [penwidth=4];
   
   ingest_control -> deposit_rpc;
-  
-
-  
 
   
     subgraph cluster_access {
