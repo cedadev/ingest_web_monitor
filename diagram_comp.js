@@ -623,7 +623,7 @@ function draw() {
 
     web_machine(ctx, 860, 600, 150,100,  mcolour, "data", "data_201911251517.ceda-web-S.jasmin.ac.uk", "image/data.png", "data.ceda.ac.uk", "http://data.ceda.ac.uk");
 
-    web_machine(ctx, 680, 620, 150,100,  mcolour, "dap", "dap", "image/dap.png", "http://dap.ceda.ac.uk", "http://dap.ceda.ac.uk");
+    web_machine(ctx, 680, 620, 150,100,  mcolour, "dap", "dap", "image/dap.png", "https://dap.ceda.ac.uk", "http://dap.ceda.ac.uk");
 
     machine(ctx, 500, 620, 150,100,  mcolour, "ftp2", "ftp2-mgmt.ceda.ac.uk");
     up(ctx, 510, 640, "ftp.ceda.ac.uk");
