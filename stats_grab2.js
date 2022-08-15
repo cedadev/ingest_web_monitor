@@ -63,6 +63,7 @@ function grab(url, name, timeout) {
 
 
 function ingest_sum(timeout)
+//ingest summary
 {
     last_logs_query.query.range.logtime.gte = new Date(new Date() - 30*24*3600*1000);
     console.log(ES_URL, timeout);
@@ -188,6 +189,7 @@ function grab(url, name, timeout) {
     );
 }
 
-
-uptimerobot(60000);
+ingest_sum(30000);
+uptimerobot(120000);
 simple_check_output(30000);
+grab("https://archdash.ceda.ac.uk/current/api", "current_deposits", 5000);
