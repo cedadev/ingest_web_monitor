@@ -121,26 +121,25 @@ function simple_check_output(timeout)
 
 function uptimerobot(timeout) {
     var url = "https://api.uptimerobot.com/v2/getMonitors";
-    var query_data = {"api_key": "ur668013-4786377064a9ad449c09d1de", "logs": 0};
+    var query_data = {"api_key": "ur668013-4786377064a9ad449c09d1de", "logs": 0, "limit": 50};
+    grabstore["uptimerobot"] = {};
+    Object.keys(grabstore["uptimerobot"]).length
+    var offset = 0;
+    for (var offset = 0; offset < 200; offset += 50) {
+        query_data["offset"] = offset;
+        $.post({url: url,
+                data: JSON.stringify(query_data),
+                success: function (data) {
+                    for (var i=0; i < data.monitors.length; i++) {
+                        m = data.monitors[i];
+                        grabstore["uptimerobot"][m.friendly_name] = m.status;}
+                },
+                error: function (data) {console.log(data)},
+                contentType: "application/json"
+            });
+    }
+    setTimeout(function () {uptimerobot(timeout)}, timeout);
 
-    $.post({
-            url: url,
-            data: JSON.stringify(query_data),
-            success: function (data) {
-                grabstore["uptimerobot"] = {};
-                for (var i=0; i < data.monitors.length; i++) {
-                    m = data.monitors[i];
-                    grabstore["uptimerobot"][m.friendly_name] = m.status;
-                }
-                setTimeout(function () {uptimerobot(timeout)}, timeout);
-            },
-
-            error: function (data) {
-                console.log(data)
-            },
-            contentType: "application/json"
-        }
-    );
 }
 
 

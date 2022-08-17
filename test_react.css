@@ -1,0 +1,51 @@
+.unknown {
+    color: black;
+    padding: "5px";
+    background-color: grey;
+  }
+  
+  .ok {
+    color: white;
+    padding: "5px";
+    background-color: green;
+  }
+
+.warn {
+    color: white;
+    padding: "5px";
+    background-color: orange;
+  }
+
+.alert {
+    padding: "5px";
+    background-color: red;
+  }
+
+ .metrics_table {
+    font-family: "Courier";
+    font-size:smaller;
+ } 
+
+ th {
+    font-weight: bold;
+ }
+
+.light {
+    padding: 3px;
+    font-family: "Courier";
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    font-size: 10px;
+    opacity: 0.8;
+    border-style:double;
+    box-shadow: 5px 5px 10px grey;
+}
+
+.disk {
+    color: "white";
+    padding: 4px;
+    font-family: "Courier";
+    font-size: 12px;
+    opacity: 0.7;
+}

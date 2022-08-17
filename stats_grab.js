@@ -119,7 +119,7 @@ function simple_check_output(timeout)
 
 function uptimerobot(timeout) {
     var url = "https://api.uptimerobot.com/v2/getMonitors";
-    var query_data = {"api_key": "ur668013-4786377064a9ad449c09d1de", "logs": 0};
+    var query_data = {"api_key": "ur668013-4786377064a9ad449c09d1de", "logs": 0, "limit": 10};
 
     $.post({
             url: url,

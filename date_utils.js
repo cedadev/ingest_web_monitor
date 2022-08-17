@@ -108,17 +108,9 @@ Date.prototype.time_vicon = function(size) {
         var svg_str = '<svg width="' +size*0.3+ '" height="' +size+ '"><title>'+this+'</title>';
         var stroke_width = size/50;
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2)
-        // white box
-        //svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
-        //svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'">';
-        //svg_str += '</rect>';
-
-        // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.25+ '">' +time_str+ '</text>';
-
         svg_str += '</svg>';
-
         return svg_str;
 };
 
@@ -127,16 +119,9 @@ Date.prototype.seconds_vicon = function(size) {
         var stroke_width = size/50;
         var time_str = ("0" + this.getHours()).slice(-2) + ":" + ("0" + this.getMinutes()).slice(-2) +
                          ":" + ("0" + this.getSeconds()).slice(-2);
-        // white box
-        //svg_str += '<rect x="0%" y="0%"  width="100%" height="100%"';
-        //svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
-
-        // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.2+ '">' +time_str+ '</text>';
-
         svg_str += '</svg>';
-
         return svg_str;
 };
 
@@ -149,13 +134,10 @@ Date.prototype.time_start_icon = function(size) {
         svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
         svg_str += '<rect x="0%" y="0%"  width="85%" height="100%"';
         svg_str += ' style="fill:white;stroke:black;stroke-width:'+stroke_width+'" />';
-
         // time
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +size*0.25+ '">' +time_str+ '</text>';
-
         svg_str += '</svg>';
-
         return svg_str;
 };
 
@@ -172,9 +154,7 @@ Date.prototype.time_end_icon = function(size) {
         svg_str += '<text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"';
         svg_str += ' fill="black" style="font-family:courier, courier new, serif;writing-mode: tb;font-size:' +
                     size*0.25+ '">' +time_str+ '</text>';
-
         svg_str += '</svg>';
-
         return svg_str;
 };
 
