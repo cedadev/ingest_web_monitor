@@ -31,7 +31,7 @@
  }
 
 .light {
-    padding: 3px;
+    padding: 5px;
     font-family: "Courier";
     border-width: 1px;
     border-color: black;
@@ -40,6 +40,7 @@
     opacity: 0.8;
     border-style:double;
     box-shadow: 5px 5px 10px grey;
+    margin: 2px;
 }
 
 .disk {
@@ -48,4 +49,10 @@
     font-family: "Courier";
     font-size: 12px;
     opacity: 0.7;
+}
+
+.group {
+    background-color: purple;
+    padding: 5px;
+    position: absolute;
 }
