@@ -86,6 +86,8 @@ class Light extends GrabStoreComponent {
     else {return "ok"}
   }
 
+ 
+
   render() {
       var alert_level = "";
       if (this.props.method == undefined) {alert_level = this.above()}
@@ -112,8 +114,8 @@ class Light extends GrabStoreComponent {
     );
   }
 }
-  
-  
+
+
 
 //------------------------------------------------------------------
   class Deposit extends GrabStoreComponent {
@@ -158,14 +160,34 @@ class Light extends GrabStoreComponent {
       <div className="group" style={posstyle}>
          <h4>Access</h4>
         <Upmon name="catalogue.ceda.ac.uk" img="images/cat_s.png"/>
-        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack"/>
+        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" alert="2" method="notequals"/>
         <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png"/>
         <Upmon name="data.ceda.ac.uk" img="images/data_s.png"/>     
         <Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" />   
-        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk"/>
+        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk" alert="2" method="notequals"/>
+        <Light icon="download" name="anon-ftp" groupname="uptimerobot"  keyname="anon-ftp.ceda.ac.uk" alert="2" method="notequals"/>
+        <Light name="Artefacts" groupname="uptimerobot"  keyname="artefacts server"  alert="2" method="notequals"/>
       </div>
     );
   }
+
+  //---------------------
+  function ExtraAccess(props) {
+    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
+    return (
+      <div className="group" style={posstyle}>
+         <h4>Access</h4>
+        <Upmon name="catalogue.ceda.ac.uk" img="images/cat_s.png"/>
+        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" alert="2" method="notequals"/>
+        <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png"/>
+        <Upmon name="data.ceda.ac.uk" img="images/data_s.png"/>     
+        <Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" />   
+        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk" alert="2" method="notequals"/>
+      </div>
+    );
+  }
+
+
 
  //---------------------
  function FBI(props) {
@@ -173,11 +195,11 @@ class Light extends GrabStoreComponent {
   return (
     <div className="group" style={posstyle}>
        <h4>FBI</h4>
-      <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"/>
+      <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"  alert="2" method="notequals"/>
       <Light icon="inbox" name="Slow Q" groupname="current_deposits" show_value="yes" keyname="slowq_len" warn="1" alert="10000"/>
       <Light icon="inbox" name="Fast Q" groupname="current_deposits" show_value="yes" keyname="fastq_len" warn="1" alert="10000"/>
-      <Light name="/badc items" groupname="/badc" keyname="count" show_value="on" method="below" alert="10000000"/>  
-      <Light name="/neodc items" groupname="/neodc" keyname="count" show_value="on" method="below" alert="10000000"/>  
+      <Light name="Files last 24 hrs" groupname="fbi" keyname="files_in_24hrs" show_value="on" method="below" warn="10000" alert="1000"/>  
+      <Light name="Total files" groupname="fbi" keyname="total_files" show_value="on" method="below" alert="100000000"/>  
     </div>
   );
 }
@@ -190,9 +212,9 @@ class Light extends GrabStoreComponent {
       <div className="group" style={posstyle}>
          <h4>Arrivals</h4>
         <Upmon name="arrivals" img="images/arrivals_s.png" link="https://arrivals.ceda.ac.uk"/>
-        <Light icon="upload" name="ftp" groupname="uptimerobot"  keyname="arrivals-ftp" x={100}/>
-        <Light icon="upload" name="rsync" groupname="uptimerobot"  keyname="arrivals-rsync" x={100} y={30}/>
-        <Light icon="eraser" name="deleter" groupname="checks"  keyname="arrivals_deleter_ok" x={100} y={60}/>
+        <Light icon="upload" name="ftp" groupname="uptimerobot"  keyname="arrivals-ftp" x={100} alert="2" method="notequals"/>
+        <Light icon="upload" name="rsync" groupname="uptimerobot"  keyname="arrivals-rsync" x={100} y={30} alert="2" method="notequals"/>
+        <Light icon="eraser" name="deleter" groupname="checks"  keyname="arrivals_deleter_ok" x={100} y={60} alert="true" method="notequals"/>
         <Light icon="hdd" name="processing3" groupname="checks"  keyname="/datacentre/processing3" x={100} y={90}
              alert="90" warn="50" show_value="on"/>
         <Light icon="hdd" name="arrivals" groupname="checks"  keyname="/datacentre/arrivals" x={100} y={120}
@@ -298,9 +320,9 @@ function DownnBlockArrow(props) {
 <Arrivals x="180" y="120"/> 
 <Ingest x="400" y="120"/>
 <Deposit x="630" y="120"/>
-<Storage x="630" y="400"/>
+<Storage x="400" y="500"/>
 <Access x="850" y="120"/>
-<FBI x="700" y="600"/>
+<FBI x="630" y="450"/>
 
       
       </div>
