@@ -43,6 +43,86 @@ last_logs_query = {
 };
 
 
+function file_size(timeout)
+//archive size summary
+{
+
+    var paths = ["/badc", "/neodc", "/bodc"];
+    grabstore["fbi_size"] = {};
+    for (var i = 0; i < paths.length; i++) {
+        var path = paths[i];
+        var fbi_size_query = {"query": {"term": {"directory.tree": path}},
+        "size": 0,
+        "aggs":{"size_stats":{"stats":{"field":"size"}, "meta": {"path": path}},
+                "types": {"terms": {"field": "type", "size": 10}}}
+    };
+    
+        const ES_URL_FBI = "https://elasticsearch.ceda.ac.uk/fbi-2022/_search";
+
+        console.log(i, path, ES_URL_FBI, timeout, fbi_size_query);
+        $.post({
+            url: ES_URL_FBI,
+            data: JSON.stringify(fbi_size_query),
+            success: function (data) {
+                // need to do this as async workflow makes path not match up.
+                var query_path = data.aggregations.size_stats.meta.path;   
+                
+                grabstore[query_path] = data.aggregations.size_stats;
+                console.log(path, "******", grabstore, );
+                console.log(data);
+            },
+
+            error: function (data) {
+                console.log(data);
+            },
+            contentType: "application/json"
+        });
+    }
+    setTimeout(function () { file_size(timeout) }, timeout);
+}
+
+
+function fbi_item_count(timeout)
+//archive size summary
+{
+    const onedayago = new Date(Date.now() - 86400 * 1000).toISOString()
+    var file_count_query = {
+        "query": {
+            "bool": {
+                "must": [
+                    { "term": { "type": { "value": "file" } } },
+                ]
+            }
+        }
+    };
+    
+    grabstore["fbi"] = {};
+    const ES_URL_FBI = "https://elasticsearch.ceda.ac.uk/fbi-2022/_count";
+    $.post({
+        url: ES_URL_FBI,
+        data: JSON.stringify(file_count_query),
+        success: function (data) {
+            grabstore["fbi"]["files_in_24hrs"] = data.count;
+        },
+        error: function (data) {console.log(data);},
+        contentType: "application/json"
+    });
+
+    file_count_query.query.bool.must.push({ "range": { "last_modified": { "gt": onedayago } } });
+    $.post({
+        url: ES_URL_FBI,
+        data: JSON.stringify(file_count_query),
+        success: function (data) {
+            grabstore["fbi"]["total_files"] = data.count;
+        },
+        error: function (data) {console.log(data);},
+        contentType: "application/json"
+    });
+
+    setTimeout(function () { fbi_item_count(timeout) }, timeout);
+}
+
+
 
 
 var grabstore = {};
@@ -192,3 +272,5 @@ ingest_sum(30000);
 uptimerobot(120000);
 simple_check_output(30000);
 grab("https://archdash.ceda.ac.uk/current/api", "current_deposits", 5000);
+file_size(120000);
+fbi_item_count(30000);

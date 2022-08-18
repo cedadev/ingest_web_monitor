@@ -176,6 +176,8 @@ class Light extends GrabStoreComponent {
       <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"/>
       <Light icon="inbox" name="Slow Q" groupname="current_deposits" show_value="yes" keyname="slowq_len" warn="1" alert="10000"/>
       <Light icon="inbox" name="Fast Q" groupname="current_deposits" show_value="yes" keyname="fastq_len" warn="1" alert="10000"/>
+      <Light name="/badc items" groupname="/badc" keyname="count" show_value="on" method="below" alert="10000000"/>  
+      <Light name="/neodc items" groupname="/neodc" keyname="count" show_value="on" method="below" alert="10000000"/>  
     </div>
   );
 }
@@ -247,6 +249,7 @@ function Ingest(props) {
 }
 
 
+
   //----------
 function DownnBlockArrow(props) {
   const x = parseInt(props.x);
@@ -298,7 +301,6 @@ function DownnBlockArrow(props) {
 <Storage x="630" y="400"/>
 <Access x="850" y="120"/>
 <FBI x="700" y="600"/>
-
 
       
       </div>
