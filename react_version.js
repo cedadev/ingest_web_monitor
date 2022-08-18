@@ -27,20 +27,16 @@ class Upmon extends GrabStoreComponent {
     tick() {this.setState({up: grabstore.uptimerobot[this.props.name]})} 
   
     render() {
-        var colour;
-        if (this.state.up == 2) {colour="green"} 
-        else if (this.state.up == undefined){colour="gray"}
-        else {colour = "red"}
+        var alert_level = "unknown";
+        if (this.state.up == 2) {alert_level = "ok"} 
+        else if (this.state.up == undefined) {alert_level = "unknown"}
+        else {alert_level = "alert"}
         const mystyle = {
-            color: "white",
-            backgroundColor: colour,
             top: this.props.y + "px", 
             left: this.props.x + "px",
-            padding: "5px",
-            fontFamily: "Arial"
           };
       return (
-        <div style={mystyle}>
+        <div className={"upmon " + alert_level} style={mystyle}>
             <a href={this.props.link}>
           <h5>{this.props.name}</h5>  
           <img src={this.props.img}></img></a>
@@ -118,44 +114,6 @@ class Light extends GrabStoreComponent {
 }
   
   
-//-----------------------------------------------------------
-class  UptimerobotLights extends GrabStoreComponent {
-
-  tick() {
-    //console.log(this.props)
-    this.setState({"values": grabstore.uptimerobot});
-  }
-
-  render() {
-      var colour; var radius;
-      if (this.state.value == undefined) {colour="gray"}
-      else if (this.state.value === false || this.state.value > this.props.alert) {colour="red"; radius=10} 
-      else if (this.state.value > this.props.warn) {colour="orange"; radius=7}
-      else {colour = "green"; radius=5}
-      
-      const mystyle = {
-          color: "black",
-          backgroundColor: "white",
-          top: this.props.y + "px", 
-          left: this.props.x + "px",
-          position: "relative",
-          padding: "5px",
-          fontFamily: "Arial"
-        };  
-        
-        var lights = [];
-        for (let key in this.state.values) {
-          lights.push(<Light key={key} name={key} groupname="uptimerobot"  keyname={key}/>)
-        } 
-    return (
-      <div style={mystyle}>
-        {lights}
-      </div>
-    );
-  }
-}
-
-
 
 //------------------------------------------------------------------
   class Deposit extends GrabStoreComponent {
@@ -177,8 +135,8 @@ class  UptimerobotLights extends GrabStoreComponent {
           };
       return (
         <div className="group" style={mystyle}>
-            <a href={this.props.link}>
             <h4>Deposit Server</h4>
+            <a href="https://archdash.ceda.ac.uk/current/a_sum">current deposits</a>
             <table className="metrics_table">
               <tbody>
               <tr><td>Period</td><td>Files/s</td><td>MB/s</td></tr>
@@ -188,39 +146,47 @@ class  UptimerobotLights extends GrabStoreComponent {
               </tbody>
           </table>
           <Light icon="inbox" name="RPCQ length" groupname="current_deposits" show_value="yes" keyname="rcpq_len" warn="1" alert="100"/>
-          </a>
         </div>
       );
     }
   }
 
   //---------------------
-  function Catalogue(props) {
-    var x = parseInt(props.x);
-    var y = parseInt(props.y);
-
-    const mystyle = {
-      top: y + "px", 
-      left: x + "px",
-    };
+  function Access(props) {
+    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={mystyle}>
+      <div className="group" style={posstyle}>
+         <h4>Access</h4>
         <Upmon name="catalogue.ceda.ac.uk" img="images/cat_s.png"/>
-        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" x="100"/>
+        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack"/>
+        <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png"/>
+        <Upmon name="data.ceda.ac.uk" img="images/data_s.png"/>     
+        <Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" />   
+        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk"/>
       </div>
     );
   }
 
+ //---------------------
+ function FBI(props) {
+  const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
+  return (
+    <div className="group" style={posstyle}>
+       <h4>FBI</h4>
+      <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"/>
+      <Light icon="inbox" name="Slow Q" groupname="current_deposits" show_value="yes" keyname="slowq_len" warn="1" alert="10000"/>
+      <Light icon="inbox" name="Fast Q" groupname="current_deposits" show_value="yes" keyname="fastq_len" warn="1" alert="10000"/>
+    </div>
+  );
+}
+
+
   //---------------------
   function Arrivals(props) {
-    var x = parseInt(props.x);
-    var y = parseInt(props.y);
-    const mystyle = {
-      top: parseInt(props.y) + "px", 
-      left: parseInt(props.x) + "px",
-    };
+    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={mystyle}>
+      <div className="group" style={posstyle}>
+         <h4>Arrivals</h4>
         <Upmon name="arrivals" img="images/arrivals_s.png" link="https://arrivals.ceda.ac.uk"/>
         <Light icon="upload" name="ftp" groupname="uptimerobot"  keyname="arrivals-ftp" x={100}/>
         <Light icon="upload" name="rsync" groupname="uptimerobot"  keyname="arrivals-rsync" x={100} y={30}/>
@@ -237,14 +203,9 @@ class  UptimerobotLights extends GrabStoreComponent {
 
   //---------------------
   function Storage(props) {
-    var x = parseInt(props.x);
-    var y = parseInt(props.y);
-    const mystyle = {
-      top: parseInt(props.y) + "px", 
-      left: parseInt(props.x) + "px",
-    };
+    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={mystyle}>
+      <div className="group" style={posstyle}>
         <h4>Storage</h4>
         <Upmon name="cedaarchiveapp" link="https://cedaarchiveapp.ceda.ac.uk"/>
         <Light icon="hdd" name="archive" groupname="checks"  keyname="archive" x="100" y={10}
@@ -253,7 +214,6 @@ class  UptimerobotLights extends GrabStoreComponent {
              alert="95" warn="90" show_value="on"/>             
         <Light icon="hdd" name="home" groupname="checks"  keyname="/home/badc" x="100" y={70}
              alert="90" warn="50" show_value="on"/>
-           
       </div>
     );
   }
@@ -267,17 +227,14 @@ function isEmptyObject(obj) {
 
 //------------------------------------------------------------------
 function Ingest(props) {
-
-      const mystyle = {
-          top: props.y + "px", 
-          left: props.x + "px",
-        }; 
-      
+  const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};   
     return (
-      <div className="group" style={mystyle}>
+      <div className="group" style={posstyle}>
         <h4>Ingest control</h4>
-    <Light name="Crontab populated" groupname="checks" keyname="crontab_lines" 
+        <Light name="Crontab populated" groupname="checks" keyname="crontab_lines" 
    warn="100" alert="30" method="below"/>  
+       <Light name="Deposit test" groupname="checks" keyname="deposit_client_ok" 
+   alert="false" method="equals"/>  
    <Light name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10"/>  
    <Light name="warn" groupname="ingest" keyname="warn" show_value="on" warn="10" alert="30"/>  
    <Light name="died" groupname="ingest" keyname="died" show_value="on" warn="1" alert="20"/>  
@@ -285,12 +242,9 @@ function Ingest(props) {
    <Light name="running" groupname="ingest" keyname="running" show_value="on" warn="25" alert="50"/>  
    <Light name="ok" groupname="ingest" keyname="ok" show_value="on" warn="25" alert="50" method="below"/>
    <Light name="ok-errors" groupname="ingest" keyname="ok-errors" show_value="on" warn="10" alert="50"/>
-     
       </div>
     );
 }
-
-
 
 
   //----------
@@ -310,45 +264,41 @@ function DownnBlockArrow(props) {
 <text textAnchor="start" x={x} y={y} fontFamily="Times,serif" fontSize="14.00">{props.title}</text>
 </g>)
 }  
+ //----------
+ function RightBlockArrow(props) {
+  const x = parseInt(props.x);
+  const y = parseInt(props.y);
+  const width = parseInt(props.width);
+  const length = parseInt(props.length);
+  var x2 = x + length;
+  var y2 = y + width;
+  var yp = y + width * 0.5;
+  var xp = x2 + width * 0.3;
+  var points = x+","+y+" "+x2+","+y+" "+xp+","+yp+" "+x2+","+y2+" "+x+","+y2
+  return (
+<g><title>{props.title}</title>
+<polygon  fill={props.fill} points={points} opacity="0.6"/>
+<text textAnchor="start" x={x} y={y} fontFamily="Times,serif" fontSize="14.00">{props.title}</text>
+</g>)
+}  
 
-
+//---------
   function App() {
     return (
       <div>
 
 <svg height="800" width="1100">
-<DownnBlockArrow title="data" fill="pink" x="200" y="10" width="200" length="600"/>
-<DownnBlockArrow title="catalogue records" fill="blue" x="600" y="10" width="300" length="600"/>
-<DownnBlockArrow title="file metadata" fill="yellow" x="400" y="250" width="300" length="300"/>
-<circle cx="230" cy="20" r="100" fill="white" />
-<circle cx="230" cy="20" r="80" fill="yellow" />
-
+<RightBlockArrow title="data" fill="pink" x="100" y="200" width="200" length="900"/>
+<circle cx="30" cy="200" r="100" fill="yellow" stroke="white" strokeWidth="40px"/>
 </svg>
  
+<Arrivals x="180" y="120"/> 
+<Ingest x="400" y="120"/>
+<Deposit x="630" y="120"/>
+<Storage x="630" y="400"/>
+<Access x="850" y="120"/>
+<FBI x="700" y="600"/>
 
-
-
-<Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" 
-          x="400" y="700"/>
-  
-
-        
-
-        
-        <Light name="FBI" groupname="uptimerobot" keyname="FBI" x="700"/>
-        <Upmon name="data.ceda.ac.uk" img="images/data_s.png" x="650" y="800"/>
- 
-        <Catalogue x="650" y="600"/>
- 
-        <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png" y="650" x="1300"/>
-        
-        <Arrivals x="150" y="100"/>
-
-        <Ingest x="400" y="200"/>
-        <Storage x="600" y="200"/>
-
-        <Deposit x="170" y="430"/>
-        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk"/>
 
       
       </div>
