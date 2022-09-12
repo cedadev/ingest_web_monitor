@@ -86,7 +86,12 @@ class Light extends GrabStoreComponent {
     else {return "ok"}
   }
 
- 
+  up() {
+    if (this.state.value == undefined) {return "unknown"}
+    var value = String(this.state.value);
+    if (value != "2") {return "alert"}
+    else {return "ok"}
+  }
 
   render() {
       var alert_level = "";
@@ -95,6 +100,7 @@ class Light extends GrabStoreComponent {
       else if (this.props.method == "below") {alert_level = this.below()}
       else if (this.props.method == "equals") {alert_level = this.equals()}
       else if (this.props.method == "notequals") {alert_level = this.notequals()}
+      else if (this.props.method == "up") {alert_level = this.up()}
 
       const mystyle = {
           top: this.props.y + "px", 
@@ -104,12 +110,19 @@ class Light extends GrabStoreComponent {
     var display_value = "";
     if (this.props.icon != undefined) {icon = <span><i className={"fas fa-"+this.props.icon}></i>&nbsp;</span>}
     if (this.props.show_value !== undefined) {
-      if (this.state.value != undefined) {display_value  = this.state.value + " "}
+      if (this.state.value != undefined) {
+        var value = this.state.value
+        if (this.props.show_value == "int") {value = parseInt(value)}
+        else if (this.props.show_value == "percent") {value = parseInt(value) +"%"}
+        else if (this.props.show_value == "fixed") {value = value.toFixed(2)}
+        display_value  = value + " "}
       else {display_value = "? "}
     }
+    var display = <span>{icon}{display_value}{this.props.name}</span>;
+    if (this.props.link != undefined) {display = <a href={this.props.link}>{display}</a>}
     return (
       <div className={"light " + alert_level} style={mystyle} title={this.props.keyname + " = " + this.state.value}>
-           {icon}{display_value}{this.props.name}
+           {display}
       </div>
     );
   }
@@ -148,6 +161,8 @@ class Light extends GrabStoreComponent {
               </tbody>
           </table>
           <Light icon="inbox" name="RPCQ length" groupname="current_deposits" show_value="yes" keyname="rcpq_len" warn="1" alert="100"/>
+          <Light icon="inbox" name="10 min rate" groupname="current_deposits" show_value="fixed" keyname="filerate_10min" 
+            method="below" warn="0.1" alert="0.01"/>
         </div>
       );
     }
@@ -159,11 +174,11 @@ class Light extends GrabStoreComponent {
     return (
       <div className="group" style={posstyle}>
          <h4>Access</h4>
-        <Upmon name="catalogue.ceda.ac.uk" img="images/cat_s.png"/>
-        <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" alert="2" method="notequals"/>
-        <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png"/>
-        <Upmon name="data.ceda.ac.uk" img="images/data_s.png"/>     
-        <Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" />   
+        <Light name="archive.ceda.ac.uk" groupname="uptimerobot"  keyname="archive.ceda.ac.uk" 
+           link="https://archive.ceda.ac.uk" method="up" icon="desktop"/>
+        
+        <Light name="dap.ceda.ac.uk" groupname="uptimerobot"  keyname="dap.ceda.ac.uk" 
+           link="https://dap.ceda.ac.uk" method="up" icon="desktop"/>
         <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk" alert="2" method="notequals"/>
         <Light icon="download" name="anon-ftp" groupname="uptimerobot"  keyname="anon-ftp.ceda.ac.uk" alert="2" method="notequals"/>
         <Light name="Artefacts" groupname="uptimerobot"  keyname="artefacts server"  alert="2" method="notequals"/>
@@ -172,20 +187,19 @@ class Light extends GrabStoreComponent {
   }
 
   //---------------------
-  function ExtraAccess(props) {
+  function Catalogue(props) {
     const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
       <div className="group" style={posstyle}>
-         <h4>Access</h4>
-        <Upmon name="catalogue.ceda.ac.uk" img="images/cat_s.png"/>
+         <h4>Catalogue</h4>
+         <Light name="catalogue.ceda.ac.uk" groupname="uptimerobot"  keyname="catalogue.ceda.ac.uk" 
+           link="https://catalogue.ceda.ac.uk" method="up" icon="desktop"/>
+
         <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" alert="2" method="notequals"/>
-        <Upmon name="archive.ceda.ac.uk" img="images/archive_s.png"/>
-        <Upmon name="data.ceda.ac.uk" img="images/data_s.png"/>     
-        <Upmon name="dap.ceda.ac.uk" img="images/dap_s.png" link="https://dap.ceda.ac.uk" />   
-        <Light icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk" alert="2" method="notequals"/>
       </div>
     );
   }
+
 
 
 
@@ -195,6 +209,8 @@ class Light extends GrabStoreComponent {
   return (
     <div className="group" style={posstyle}>
        <h4>FBI</h4>
+       <Light name="data.ceda.ac.uk" groupname="uptimerobot"  keyname="data.ceda.ac.uk" 
+           link="https://data.ceda.ac.uk" method="up" icon="desktop"/> 
       <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"  alert="2" method="notequals"/>
       <Light icon="inbox" name="Slow Q" groupname="current_deposits" show_value="yes" keyname="slowq_len" warn="1" alert="10000"/>
       <Light icon="inbox" name="Fast Q" groupname="current_deposits" show_value="yes" keyname="fastq_len" warn="1" alert="10000"/>
@@ -211,14 +227,15 @@ class Light extends GrabStoreComponent {
     return (
       <div className="group" style={posstyle}>
          <h4>Arrivals</h4>
-        <Upmon name="arrivals" img="images/arrivals_s.png" link="https://arrivals.ceda.ac.uk"/>
+         <Light name="arrivals.ceda.ac.uk" groupname="uptimerobot"  keyname="arrivals" 
+           link="https://arrivals.ceda.ac.uk" method="up" icon="desktop"/>
         <Light icon="upload" name="ftp" groupname="uptimerobot"  keyname="arrivals-ftp" x={100} alert="2" method="notequals"/>
         <Light icon="upload" name="rsync" groupname="uptimerobot"  keyname="arrivals-rsync" x={100} y={30} alert="2" method="notequals"/>
         <Light icon="eraser" name="deleter" groupname="checks"  keyname="arrivals_deleter_ok" x={100} y={60} alert="true" method="notequals"/>
         <Light icon="hdd" name="processing3" groupname="checks"  keyname="/datacentre/processing3" x={100} y={90}
-             alert="90" warn="50" show_value="on"/>
+             alert="90" warn="50" show_value="percent"/>
         <Light icon="hdd" name="arrivals" groupname="checks"  keyname="/datacentre/arrivals" x={100} y={120}
-             alert="90" warn="50" show_value="on"/>
+             alert="90" warn="50" show_value="percent"/>
         <Light icon="hdd" name="GWS" groupname="checks"  keyname="/datacentre/gws" x={100} y={150}
              alert="90" warn="50" />             
       </div>
@@ -235,9 +252,9 @@ class Light extends GrabStoreComponent {
         <Light icon="hdd" name="archive" groupname="checks"  keyname="archive" x="100" y={10}
              alert="95" warn="90" show_value="on"/>
         <Light icon="hdd" name="opshome" groupname="checks"  keyname="/datacentre/opshome" x="100" y={40}
-             alert="95" warn="90" show_value="on"/>             
+             alert="95" warn="90" show_value="percent"/>             
         <Light icon="hdd" name="home" groupname="checks"  keyname="/home/badc" x="100" y={70}
-             alert="90" warn="50" show_value="on"/>
+             alert="90" warn="50" show_value="percent"/>
       </div>
     );
   }
@@ -259,7 +276,8 @@ function Ingest(props) {
    warn="100" alert="30" method="below"/>  
        <Light name="Deposit test" groupname="checks" keyname="deposit_client_ok" 
    alert="false" method="equals"/>  
-   <Light name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10"/>  
+   <Light name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10" 
+     link="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on"/>  
    <Light name="warn" groupname="ingest" keyname="warn" show_value="on" warn="10" alert="30"/>  
    <Light name="died" groupname="ingest" keyname="died" show_value="on" warn="1" alert="20"/>  
    <Light name="killed" groupname="ingest" keyname="killed" show_value="on" warn="5" alert="10"/>  
@@ -301,10 +319,10 @@ function DownnBlockArrow(props) {
   var xp = x2 + width * 0.3;
   var points = x+","+y+" "+x2+","+y+" "+xp+","+yp+" "+x2+","+y2+" "+x+","+y2
   return (
-<g><title>{props.title}</title>
-<polygon  fill={props.fill} points={points} opacity="0.6"/>
-<text textAnchor="start" x={x} y={y} fontFamily="Times,serif" fontSize="14.00">{props.title}</text>
-</g>)
+<svg opacity="0.1"><title>{props.title}</title>
+<polygon  fill={props.fill} points={points} />
+<text fill="white" textAnchor="start" x={x+width*0.1} y={y2-width*0.1} fontFamily="Times,serif" fontSize={width}>{props.title}</text>
+</svg>)
 }  
 
 //---------
@@ -313,23 +331,31 @@ function DownnBlockArrow(props) {
       <div>
 
 <svg height="800" width="1100">
-<RightBlockArrow title="data" fill="pink" x="100" y="200" width="200" length="900"/>
-<circle cx="30" cy="200" r="100" fill="yellow" stroke="white" strokeWidth="40px"/>
+<RightBlockArrow title="Data files" fill="red" x="100" y="300" width="200" length="900"/>
+<RightBlockArrow title="File info" fill="blue" x="100" y="600" width="200" length="900"/>
+<RightBlockArrow title="Metadata" fill="yellow" x="100" y="20" width="200" length="900"/>
+<svg x="10" y="100" hieght="700" width="100" fill="lightgreen">
+  <text fontSize="100.00" text-anchor="middle" transform="translate(100,300) rotate(270)">
+    Data Provider</text>
+</svg>
+<svg x="1000" y="100" hieght="700" width="100" fill="lightgreen">
+  <text fontSize="100.00" text-anchor="middle" transform="translate(100,300) rotate(270)">
+    Data User</text>
+</svg>
+
 </svg>
  
-<Arrivals x="180" y="120"/> 
-<Ingest x="400" y="120"/>
-<Deposit x="630" y="120"/>
-<Storage x="400" y="500"/>
-<Access x="850" y="120"/>
-<FBI x="630" y="450"/>
-
-      
+<Arrivals x="180" y="220"/> 
+<Ingest x="400" y="220"/>
+<Deposit x="600" y="320"/>
+<Storage x="600" y="600"/>
+<Catalogue x="800" y="50"/>
+<Access x="800" y="320"/>
+<FBI x="800" y="650"/>
       </div>
     );
   }
   
-
   ReactDOM.render(
     <App />,
     document.getElementById('root')

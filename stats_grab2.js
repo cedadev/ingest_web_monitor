@@ -106,7 +106,7 @@ function grab(url, name, timeout) {
 function ingest_sum(timeout)
 //ingest summary
 {
-    last_logs_query.query.range.logtime.gte = new Date(new Date() - 30*24*3600*1000);
+    last_logs_query.query.range.logtime.gte = new Date(new Date() - 2*24*3600*1000);
     console.log(ES_URL, timeout);
     $.post({
                 url: ES_URL,
