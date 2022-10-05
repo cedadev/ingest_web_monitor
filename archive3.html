@@ -5,11 +5,22 @@
     <title>Add React in One Minute</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" 
     crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="test_react.css">
 
   </head>
   <body>
   
+    <div>
+      <a class="btn btn-secondary btn-sm active mx-1" href="https://archdash.ceda.ac.uk/downloads">Downloads</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="https://archdash.ceda.ac.uk/deposits/">Deposits</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&owner=&reclen=30&host=&running=on&warn=on&fail=on&killed=on&died=on">Ingest state</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="http://cedaarchiveapp.ceda.ac.uk/cedaarchiveapp/fileset/index/?search=%2Fbadc%2Facsoe">View archive size</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="http://stats.ceda.ac.uk/cgi-bin/stats/user_stats.py"><span class="icon"> </span>User database statistics</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="https://stats.uptimerobot.com/LJKgZfn2G">Uptime</a>
+      <a class="btn btn-secondary btn-sm active mx-1" href="https://archdash.ceda.ac.uk/current/sum">Currently depositing</a>
+    </div>
 
     <!-- We will put our React component inside this div. -->
     <div id="root"></div>
@@ -21,10 +32,14 @@
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/4.8.0/react-datepicker.min.js" integrity="sha512-UET2jW3TDDDdkiV800plrUMmtXEBeH9po+xtT/chUQkq+Lk26cACnVT/uzap1yR1cRxHHDnKgQdlj0BYyXi4+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="stats_grab2.js"></script>
     
     <!-- Load our React component. -->
     <script type="text/babel" src="react_version.js"></script>
 
+
+ 
   </body>
 </html>

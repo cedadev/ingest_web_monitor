@@ -150,8 +150,7 @@ class Light extends GrabStoreComponent {
           };
       return (
         <div className="group" style={mystyle}>
-            <h4>Deposit Server</h4>
-            <a href="https://archdash.ceda.ac.uk/current/a_sum">current deposits</a>
+            <h4><a href="https://archdash.ceda.ac.uk/current/sum">Deposit Server</a></h4>
             <table className="metrics_table">
               <tbody>
               <tr><td>Period</td><td>Files/s</td><td>MB/s</td></tr>
@@ -212,8 +211,7 @@ class Light extends GrabStoreComponent {
        <Light name="data.ceda.ac.uk" groupname="uptimerobot"  keyname="data.ceda.ac.uk" 
            link="https://data.ceda.ac.uk" method="up" icon="desktop"/> 
       <Light icon="address-book" name="FBI up" groupname="uptimerobot" keyname="FBI"  alert="2" method="notequals"/>
-      <Light icon="inbox" name="Slow Q" groupname="current_deposits" show_value="yes" keyname="slowq_len" warn="1" alert="10000"/>
-      <Light icon="inbox" name="Fast Q" groupname="current_deposits" show_value="yes" keyname="fastq_len" warn="1" alert="10000"/>
+      <Light icon="inbox" name="New FBI Q" groupname="current_deposits" show_value="yes" keyname="new_fbiq_len" warn="1" alert="10000"/>
       <Light name="Files last 24 hrs" groupname="fbi" keyname="files_in_24hrs" show_value="on" method="below" warn="10000" alert="1000"/>  
       <Light name="Total files" groupname="fbi" keyname="total_files" show_value="on" method="below" alert="100000000"/>  
     </div>
@@ -248,7 +246,8 @@ class Light extends GrabStoreComponent {
     return (
       <div className="group" style={posstyle}>
         <h4>Storage</h4>
-        <Upmon name="cedaarchiveapp" link="https://cedaarchiveapp.ceda.ac.uk"/>
+        <Light name="cedaarchiveapp.ceda.ac.uk" groupname="uptimerobot"  keyname="cedaarchiveapp" 
+           link="https://cedaarchiveapp.ceda.ac.uk" method="up" icon="desktop"/>
         <Light icon="hdd" name="archive" groupname="checks"  keyname="archive" x="100" y={10}
              alert="95" warn="90" show_value="on"/>
         <Light icon="hdd" name="opshome" groupname="checks"  keyname="/datacentre/opshome" x="100" y={40}
@@ -271,13 +270,13 @@ function Ingest(props) {
   const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};   
     return (
       <div className="group" style={posstyle}>
-        <h4>Ingest control</h4>
+        <h4><a href="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on">Ingest control</a></h4>
+        
         <Light name="Crontab populated" groupname="checks" keyname="crontab_lines" 
    warn="100" alert="30" method="below"/>  
        <Light name="Deposit test" groupname="checks" keyname="deposit_client_ok" 
    alert="false" method="equals"/>  
-   <Light name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10" 
-     link="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on"/>  
+   <Light name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10" />  
    <Light name="warn" groupname="ingest" keyname="warn" show_value="on" warn="10" alert="30"/>  
    <Light name="died" groupname="ingest" keyname="died" show_value="on" warn="1" alert="20"/>  
    <Light name="killed" groupname="ingest" keyname="killed" show_value="on" warn="5" alert="10"/>  
@@ -348,7 +347,7 @@ function DownnBlockArrow(props) {
 <Arrivals x="180" y="220"/> 
 <Ingest x="400" y="220"/>
 <Deposit x="600" y="320"/>
-<Storage x="600" y="600"/>
+<Storage x="550" y="600"/>
 <Catalogue x="800" y="50"/>
 <Access x="800" y="320"/>
 <FBI x="800" y="650"/>
