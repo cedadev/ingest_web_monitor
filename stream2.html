@@ -54,14 +54,16 @@
     main.prepend("<div><h1>Job timeline for "+streamname+"</h1></div>");
     main.prepend("<p>"+top_button()+"</p>");
 
-    function get_last_logs()
+    function get_last_logs(end_time, name_filter)
+    
     {
 
         var query = {
              "query": {
                      "bool" : {
-      "must" :  { "terms" : { "state" : ["fail", "warn", "died"] }},
-      "filter": { "range": {"logtime": {"lte": "2021-01-16"}}}
+      "must" :  [{ "terms" : { "state" : ["fail", "warn", "died", "ok"] }},
+                 { "range": {"logtime": {"lte": end_time}}}
+                ],
     }
  //     "range": {
   //        "logtime": {
@@ -71,8 +73,13 @@
     //    "match" : { "state" : "fail" }
              },
             "sort": [{"logtime": {"order": "desc"}}],
-            "size": 1000
+            "size": 11
         };
+
+    // if (name_filter == '') {
+      //      query.bool.must.push({"match": {"stream": name_filter}})
+        //}
+        
 
         var logs = [];
         var job_names = [];
@@ -94,7 +101,7 @@
                         }
                         var total = data.hits.total;
                         render_logs(logs, total, timeline_res);
-                        setTimeout(get_last_logs, 50000);
+                        setTimeout(function() {get_last_logs(end_time, name_filter)}, 50000);
                     },
 
                     error: function (data) {
@@ -106,7 +113,7 @@
         return logs;
     }
 
-    llogs = get_last_logs();
+    llogs = get_last_logs(new Date("2022-01-22"), name_filter);
 
     function render_logs(logs, total, timeline_res) {
 

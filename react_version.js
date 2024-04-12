@@ -59,21 +59,21 @@ class Light extends GrabStoreComponent {
   equals() {
     if (this.state.value == undefined) {return "unknown"}
     var value = String(this.state.value);
-    if (value == this.props.alert) {return "alert"}
+    if (value == this.props.alert) {return "light-alert"}
     else {return "ok"}
   }
 
   notequals() {
     if (this.state.value == undefined) {return "unknown"}
     var value = String(this.state.value);
-    if (value != this.props.alert) {return "alert"}
+    if (value != this.props.alert) {return "light-alert"}
     else {return "ok"}
   }
 
   above() {
     if (this.state.value == undefined) {return "unknown"}
     var value = parseFloat(this.state.value);
-    if (value > parseFloat(this.props.alert)) {return "alert"}
+    if (value > parseFloat(this.props.alert)) {return "light-alert"}
     else if (this.props.warn != undefined && value > parseFloat(this.props.warn)) {return "warn"}
     else {return "ok"}
   }
@@ -81,7 +81,7 @@ class Light extends GrabStoreComponent {
   below() {
     if (this.state.value == undefined) {return "unknown"}
     var value = parseFloat(this.state.value);
-    if (value < parseFloat(this.props.alert)) {return "alert"}
+    if (value < parseFloat(this.props.alert)) {return "light-alert"}
     else if (this.props.warn != undefined && value < parseFloat(this.props.warn)) {return "warn"}
     else {return "ok"}
   }
@@ -89,7 +89,7 @@ class Light extends GrabStoreComponent {
   up() {
     if (this.state.value == undefined) {return "unknown"}
     var value = String(this.state.value);
-    if (value != "2") {return "alert"}
+    if (value != "2") {return "light-alert"}
     else {return "ok"}
   }
 
@@ -355,10 +355,9 @@ function DownnBlockArrow(props) {
     );
   }
   
-  ReactDOM.render(
-    <App />,
-    document.getElementById('root')
-  );
+console.log("start react app ...")
+    ReactDOM.render(<App />, document.getElementById('root'));
+
 
 
   

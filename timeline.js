@@ -27,14 +27,18 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
     var times = [];
     for (var i in data) {
         var start_event = {
-            "time": data[i]["start_time"].time_floor(time_res), "type": "interval_start",
+            "time": data[i]["start_time"].time_floor(time_res), 
+            "type": "interval_start",
             "data": data[i]
         };
         var end_event = {
-            "time": data[i]["end_time"].time_floor(time_res), "type": "interval_end",
+            "time": data[i]["end_time"].time_floor(time_res), 
+            "type": "interval_end",
             "data": data[i]
         };
         start_event["end"] = end_event;
+        console.log(data[i]["start_time"].getTime());
+
         end_event["start"] = start_event;
         times.push(start_event);
         times.push(end_event);
@@ -53,7 +57,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
             times.push({"time": this_time, "type": "boundary", "data": {}})
         }
     }
-
+  
     // ticks from start to end
     var ticks = [];
     tick_start = new Date(times[0]["time"].time_floor(tick_res));
@@ -67,7 +71,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
         }
         tick.setTime(tick.getTime() + tick_res);
     }
-
+    console.log(times);
     // make display lengeths x = c + d(period length)
     times.sort(function (a, b) {
         return a.time - b.time
