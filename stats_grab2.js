@@ -132,7 +132,7 @@ function ingest_sum(timeout)
 function simple_check_output(timeout)
 {
     // query for simple checks
-    var query = {"query": {"term": {"stream.keyword": "simple_checks"}},
+    var query = {"query": {"bool": {"must": [{"term": {"stream.keyword": "simple_checks"}}]}},
                  "sort": [{"logtime": {"order": "desc"}}],
                  "size": 1};
     $.post({

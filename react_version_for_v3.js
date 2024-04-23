@@ -116,12 +116,8 @@ alevel() {
     }
   
     render() {
-        const mystyle = {
-            top: this.props.y + "px", 
-            left: this.props.x + "px",
-          };
       return (
-        <div className="group" style={mystyle}>
+        <div className="group">
             <h4><a href="https://archdash.ceda.ac.uk/current/sum">Deposit Server</a></h4>
             <table className="metrics_table">
               <tbody>
@@ -141,9 +137,8 @@ alevel() {
 
   //---------------------
   function Access(props) {
-    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={posstyle}>
+      <div className="group">
          <h4>Access</h4>
         <LightUp name="archive.ceda.ac.uk" groupname="uptimerobot"  keyname="archive.ceda.ac.uk" 
            link="https://archive.ceda.ac.uk" icon="desktop"/>
@@ -159,9 +154,8 @@ alevel() {
 
   //---------------------
   function Catalogue(props) {
-    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={posstyle}>
+      <div className="group">
          <h4>Catalogue</h4>
          <LightUp name="catalogue.ceda.ac.uk" groupname="uptimerobot" keyname="catalogue.ceda.ac.uk" 
            link="https://catalogue.ceda.ac.uk" icon="desktop"/>
@@ -175,9 +169,8 @@ alevel() {
 
  //---------------------
  function FBI(props) {
-  const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
   return (
-    <div className="group" style={posstyle}>
+    <div className="group">
        <h4>FBI</h4>
        <LightUp name="data.ceda.ac.uk" groupname="uptimerobot"  keyname="data.ceda.ac.uk" 
            link="https://data.ceda.ac.uk" icon="desktop"/> 
@@ -193,9 +186,8 @@ alevel() {
 
   //---------------------
   function Arrivals(props) {
-    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={posstyle}>
+      <div className="group">
          <h4>Arrivals</h4>
          <LightUp name="arrivals.ceda.ac.uk" groupname="uptimerobot"  keyname="arrivals" 
            link="https://arrivals.ceda.ac.uk" icon="desktop"/>
@@ -212,9 +204,8 @@ alevel() {
 
   //---------------------
   function Storage(props) {
-    const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};
     return (
-      <div className="group" style={posstyle}>
+      <div className="group">
         <h4>Storage</h4>
         <LightUp name="cedaarchiveapp.ceda.ac.uk" groupname="uptimerobot"  keyname="Internal: cedaarchiveapp" 
            link="https://cedaarchiveapp.ceda.ac.uk" icon="desktop"/>
@@ -236,10 +227,9 @@ function isEmptyObject(obj) {
 }
 
 //------------------------------------------------------------------
-function Ingest(props) {
-  const posstyle = {top: parseInt(props.y) + "px", left: parseInt(props.x) + "px",};   
+function Ingest(props) {  
     return (
-      <div className="group" style={posstyle}>
+      <div className="group">
         <h4><a href="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on">Ingest control</a></h4>
         
         <LightBelow name="Crontab populated" groupname="checks" keyname="crontab_lines" 
@@ -263,9 +253,9 @@ function Ingest(props) {
       <div>
 
 
-<div><Arrivals/> <Ingest/> <Deposit/></div>
-<div><Storage/> <FBI/></div>
-<div><Catalogue/> <Access/></div>
+<div className={"ggroup"}> <h3>Ingest pipeline</h3> <Arrivals/> <Ingest/> <Deposit/></div>
+<div className={"ggroup"}> <h3>Info stores</h3> <Storage/> <FBI/></div>
+<div className={"ggroup"}> <h3>Distribution</h3> <Catalogue/> <Access/></div>
 
       </div>
     );

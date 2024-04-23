@@ -58,11 +58,20 @@ a:visited {
     font-family: "Arial"
 }
 
+
+
 .group {
-    background-color: rgb(199, 186, 239);
-    padding: 5px;
-    opacity: 0.8;
-    margin: 10px;
-    width: 250px;
-    float: left;
+  background-color: rgb(199, 186, 239);
+  padding: 5px;
+  opacity: 0.8;
+  margin: 10px;
+  width: 250px;
+  float: left;
+}
+
+.ggroup {
+  background-color: rgb(249, 243, 236);
+  padding: 5px;
+  margin: 5px;
+  float: left;
 }
