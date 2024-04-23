@@ -193,6 +193,8 @@ class Light extends GrabStoreComponent {
          <h4>Catalogue</h4>
          <Light name="catalogue.ceda.ac.uk" groupname="uptimerobot"  keyname="catalogue.ceda.ac.uk" 
            link="https://catalogue.ceda.ac.uk" method="up" icon="desktop"/>
+         <Light name="api.catalogue.ceda.ac.uk" groupname="uptimerobot"  keyname="MOLES catalogue API server" 
+           link="https://catalogue.ceda.ac.uk" method="up" icon="desktop"/>
 
         <Light  icon="address-book" name="Haystack" groupname="uptimerobot"  keyname="Haystack" alert="2" method="notequals"/>
       </div>
