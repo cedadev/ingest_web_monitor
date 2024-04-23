@@ -22,32 +22,6 @@ class GrabStoreComponent extends React.Component {
   tick_state() {new Object()}
 }
 
-class Upmon extends GrabStoreComponent {
-  
-    tick() {this.setState({up: grabstore.uptimerobot[this.props.name]})} 
-  
-    render() {
-        var alert_level = "unknown";
-        if (this.state.up == 2) {alert_level = "ok"} 
-        else if (this.state.up == undefined) {alert_level = "unknown"}
-        else {alert_level = "alert"}
-        const mystyle = {
-            top: this.props.y + "px", 
-            left: this.props.x + "px",
-          };
-      return (
-        <div className={"upmon " + alert_level} style={mystyle}>
-            <a href={this.props.link}>
-          <h5>{this.props.name}</h5>  
-          <img src={this.props.img}></img></a>
-        </div>
-      );
-    }
-  }
-  
-
-
-
 
 //-----------------------------------------------------------
 class Light extends GrabStoreComponent {
@@ -242,7 +216,7 @@ alevel() {
     return (
       <div className="group" style={posstyle}>
         <h4>Storage</h4>
-        <LightUp name="cedaarchiveapp.ceda.ac.uk" groupname="uptimerobot"  keyname="cedaarchiveapp" 
+        <LightUp name="cedaarchiveapp.ceda.ac.uk" groupname="uptimerobot"  keyname="Internal: cedaarchiveapp" 
            link="https://cedaarchiveapp.ceda.ac.uk" icon="desktop"/>
         <LightAbove icon="hdd" name="archive" groupname="checks"  keyname="archive" x="100" y={10}
              alert="95" warn="90" show_value="on"/>
