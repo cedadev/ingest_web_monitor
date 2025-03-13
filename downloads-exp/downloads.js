@@ -108,6 +108,32 @@ function fbi_item_count(path, end, stats, stats_table_id)
 
 
 
+function getFYStartAndEndDates(startingYear) {
+    let dates = [];
+
+    for (let i = 0; i < 12; i++) {
+        // Calculate the month based on fiscal year starting in April
+        let month = (3 + i) % 12; // 3 = April (0 = January, 11 = December)
+        
+        // Adjust year: months April to December belong to the starting year,
+        // and months January to March belong to the next year
+        let year = month < 3 ? startingYear + 1 : startingYear;
+
+        // Get the first day of the month
+        let startDate = new Date(year, month, 1);
+
+        // Get the last day of the month
+        let endDate = new Date(year, month + 1, 0);
+
+        dates.push({
+            month: startDate.toLocaleString('default', { month: 'long'jegr8ktycwd}),
+            start: startDate,
+            end: endDate
+        });
+    }
+
+    return dates;
+}
 
 
 

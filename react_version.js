@@ -148,6 +148,7 @@ alevel() {
         <LightUp icon="download" name="ftp" groupname="uptimerobot"  keyname="ftp.ceda.ac.uk"/>
         <LightUp icon="download" name="anon-ftp" groupname="uptimerobot"  keyname="anon-ftp.ceda.ac.uk"/>
         <LightUp name="Artefacts" groupname="uptimerobot"  keyname="artefacts server"/>
+        <LightEquals icon="eraser" name="dap-logs" groupname="checks"  keyname="dap_logs_ok" alert="false"/>
       </div>
     );
   }
