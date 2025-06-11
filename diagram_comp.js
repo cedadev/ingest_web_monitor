@@ -560,7 +560,7 @@ function draw() {
     down_cink_arrow2(ctx, c12, 650, 20, 650, 150, 10, 30, dw);
 
     machine_group(ctx, 560, 350, 150,100,  mcolour, "deposit", 5);
-    image_link(ctx, "image/deposit_mon.png", 565, 350, 105, 75, "https://archdash1.ceda.ac.uk/current/a_sum");
+    image_link(ctx, "image/deposit_mon.png", 565, 350, 105, 75, "/current/a_sum");
 
 
     //down_cink_arrow(ctx, c4, 610 , 500, 20, 140, 230, -85);
@@ -643,8 +643,8 @@ function draw() {
     //deposit_nums(ctx, 20, 100, "filerate_2min", "files/s", 1);
     //deposit_nums(ctx, 20, 60, "volrate_2min", "MB/s", 1e-6);
 
-    grab("https://archdash1.ceda.ac.uk/current/api", "current_deposits", 5000);
-    //grab("http://archdash1.ceda.ac.uk/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
+    grab("/current/api", "current_deposits", 5000);
+    //grab("/downloads/json/methods?start=2019%2F10%2F26&end=2020%2F01%2F24&user=&dataset=&method=&anon=all", "b", 5000);
     ingest_sum(20000);
     uptimerobot(60000);
     simple_check_output(30000);

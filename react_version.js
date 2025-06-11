@@ -118,7 +118,7 @@ alevel() {
     render() {
       return (
         <div className="group">
-            <h4><a href="https://archdash.ceda.ac.uk/current/sum">Deposit Server</a></h4>
+            <h4><a href="/current/sum">Deposit Server</a></h4>
             <table className="metrics_table">
               <tbody>
               <tr><td>Period</td><td>Files/s</td><td>MB/s</td></tr>
@@ -230,7 +230,7 @@ function isEmptyObject(obj) {
 function Ingest(props) {  
     return (
       <div className="group">
-        <h4><a href="https://archdash.ceda.ac.uk/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on">Ingest control</a></h4>
+        <h4><a href="/static/ingest_web_monitor/index.html?namefilter=&reclen=2&running=on&warn=on&fail=on&killed=on&died=on">Ingest control</a></h4>
         
         <LightBelow name="Crontab populated" groupname="checks" keyname="crontab_lines" 
    warn="100" alert="30"/>  
