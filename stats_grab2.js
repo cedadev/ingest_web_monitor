@@ -8,6 +8,10 @@ var grabstore = {};
 //var ES_URL = "http://jasmin-es1.ceda.ac.uk:9200/ingest-log/_search";
 //var ES_URL = "https://jasmin-es1.ceda.ac.uk/ingest-log/_search";
 var ES_URL = "https://elasticsearch.ceda.ac.uk/ingest-log/_search";
+const username="ingest_log_monitor";
+const password="ujdobg863";
+let headers = new Headers();
+headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
 
 // query for last logs
 last_logs_query = {
@@ -34,7 +38,7 @@ function fbi_item_count(timeout)
     };
     
     grabstore["fbi"] = {};
-    const ES_URL_FBI = "https://elasticsearch.ceda.ac.uk/fbi-2022/_count";
+     
     $.post({
         url: ES_URL_FBI,
         data: JSON.stringify(file_count_query),
@@ -95,6 +99,12 @@ function grab(url, name, timeout) {
 }
 
 
+function make_base_auth(user, password) {
+  var tok = user + ':' + password;
+  var hash = btoa(tok);
+  return "Basic " + hash;
+}
+
 function ingest_sum(timeout)
 //ingest summary
 {
@@ -103,6 +113,9 @@ function ingest_sum(timeout)
     $.post({
                 url: ES_URL,
                 data: JSON.stringify(last_logs_query),
+                beforeSend: function (xhr){ 
+                    xhr.setRequestHeader('Authorization', "Basic " + btoa(username + ':' + password) );
+                },
                 success: function (data) {
                     var counts = {};
                     for (i = 0; i < data.aggregations.stream.buckets.length; i++) {

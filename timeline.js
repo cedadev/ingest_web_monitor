@@ -22,122 +22,60 @@ var test_data = [{"start_time": new Date("2021-01-11 12:06:02"), "end_time": new
     {"start_time": new Date("2021-01-12 05:50:08"), "end_time": new Date("2021-01-13 03:50:30"), "label": "H"}
                 ];
 
-function timeline(data, wwidth, time_res, boundary_res, tick_res) {
-    // step 1 find all sig times for intervals. record intervals  start and end. Index and reorder.
-    var times = [];
-    for (var i in data) {
-        var start_event = {
-            "time": data[i]["start_time"].time_floor(time_res), 
-            "type": "interval_start",
-            "data": data[i]
-        };
-        var end_event = {
-            "time": data[i]["end_time"].time_floor(time_res), 
-            "type": "interval_end",
-            "data": data[i]
-        };
-        start_event["end"] = end_event;
-        console.log(data[i]["start_time"].getTime());
 
-        end_event["start"] = start_event;
-        times.push(start_event);
-        times.push(end_event);
+
+
+// class version for timeline
+
+
+
+
+class TimelineEvent {
+    constructor(start_time, end_time, label, description, colour, url) {
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.label = label;
+        this.decription = description;
+        this.colour = colour;
+        this.url = url;
     }
 
-    times.sort(function (a, b) {
-        return a.time - b.time
-    });
+}
 
-    // step 1a add date markers when date changes. Addtick markers every time.
-    var l = times.length;
-    for (var i = 1; i < l; i++) {
-        var this_time = times[i]["time"].time_floor(boundary_res);
-        var last_time = times[i - 1]["time"].time_floor(boundary_res);
-        if (this_time.getTime() != last_time.getTime()) {
-            times.push({"time": this_time, "type": "boundary", "data": {}})
-        }
-    }
-  
-    // ticks from start to end
-    var ticks = [];
-    tick_start = new Date(times[0]["time"].time_floor(tick_res));
-    tick_end = new Date(times[times.length - 1]["time"].time_ceil(tick_res));
 
-    var tick = new Date(tick_start);
-    while (tick < tick_end) {
-
-        if (tick.getTime() > tick_start.getTime() && tick.getTime() < tick_end.getTime()) {
-            times.push({"time": new Date(tick), "type": "tick", "data": {}})
-        }
-        tick.setTime(tick.getTime() + tick_res);
-    }
-    console.log(times);
-    // make display lengeths x = c + d(period length)
-    times.sort(function (a, b) {
-        return a.time - b.time
-    });
-    var x = 0;
-    var d = 5;
-    last_time = times[0]["time"];
-    var nmark = 0;
-    for (i in times) {
-        this_time = times[i]["time"];
-        if (last_time.getTime() < this_time.getTime()) {
-            nmark += 1;
-            x += d + Math.pow(this_time.getTime() - last_time.getTime(), 0.3) * 0.5;
-        }
-        times[i]["x"] = x;
-        last_time = this_time;
-    }
-    var xmax = times[times.length-1]["x"];
-    for (i in times) {
-        times[i]["x"] /= xmax;
-    }
-    for (i=0; i < times.length-2; i++) {
-        times[i]["x_mid"] = (times[i]["x"] + times[i+1]["x"]) *0.5;
-        times[i]["period"] = times[i]["time"].format_period(times[i+1]["time"]);
-    }
-    times[times.length-1]["x_mid"] = 1.0;
-    times[times.length-1]["period"] = '----';
-
-    // find the row for each interval. Go through each interval in order of start time. mark each interval with a row.
-    var row;
-    var max_rows = 0;
-    var rows = new Array(data.length).fill(undefined);
-    for (i in times) {
-        if (times[i]["type"] == "interval_start") {
-            row = rows.indexOf(undefined);
-            rows[row] = i;
-            if (row > max_rows) {
-                max_rows = row
-            }
-            times[i]["row"] = row;
-            console.log(i, row, max_rows);
-        }
-        for (row in rows) {
-            if (rows[row] == undefined) {
-                continue
-            }
-            start_event = times[rows[row]];
-            if (start_event["end"]["time"].getTime() < times[i]["time"].getTime()) {
-                // clear row if the event start time is less than current time
-                rows[row] = undefined;
-            }
-        }
+class Timeline {
+    constructor(events, wwidth) {
+        this.events = events;
+        this.wwidth = wwidth;
     }
 
-    // scale the time and display
+    add
 
+    render() {
+
+    }
+}
+
+
+
+//------
+
+function x2px(x, wwidth, offset) {
+    return x * wwidth + offset;
+}
+
+function render_timeline(times, max_rows, wwidth) {
 
     var y;
     var w;
     var x_mid;
     var row_h = 30;
+    const offset = 50;
     var tl_svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
-        tl_svg += 'height="' + ((max_rows+1) * row_h + 50) + '" width="' + (wwidth + 50) + '">';
+        tl_svg += 'height="' + ((max_rows+1) * row_h + 50) + '" width="' + (wwidth + offset+ 50) + '">';
     for (i in times) {
-        x = times[i]["x"] * wwidth;
-        x_mid = times[i]["x_mid"] * wwidth;
+        x = x2px(times[i]["x"], wwidth, offset);
+        x_mid = x2px(times[i]["x_mid"], wwidth, offset);
         period = times[i].period;
 
         if (period != '0 ms') {
@@ -155,7 +93,7 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
 
         if (times[i]["type"] == "interval_start") {
             y = (times[i]["row"]) * row_h + 50;
-            w = times[i]["end"]["x"]* wwidth - x;
+            w = x2px(times[i]["end"]["x"], wwidth, offset) - x;
             var label = times[i]["data"]["label"];
             var colour = times[i]["data"]["colour"];
             if (colour == undefined) {colour = "blue"}
@@ -187,3 +125,183 @@ function timeline(data, wwidth, time_res, boundary_res, tick_res) {
 
     return tl_svg;
 }
+
+
+function mark_rows(times, data) {
+    // find the row for each interval. Go through each interval in order of start time. mark each interval with a row.
+    var row;
+    var max_rows = 0;
+    var rows = new Array(data.length).fill(undefined);
+    for (i in times) {
+        if (times[i]["type"] == "interval_start") {
+            row = rows.indexOf(undefined);
+            rows[row] = i;
+            if (row > max_rows) {
+                max_rows = row
+            }
+            times[i]["row"] = row;
+            //console.log(i, row, max_rows);
+        }
+        for (row in rows) {
+            if (rows[row] == undefined) {
+                continue
+            }
+            start_event = times[rows[row]];
+            if (start_event["end"]["time"].getTime() < times[i]["time"].getTime()) {
+                // clear row if the event start time is less than current time
+                rows[row] = undefined;
+            }
+        }
+    }
+    return max_rows;
+}
+
+
+function add_date_markers(times, boundary_res) {
+
+    // step 1a add date markers when date changes. Addtick markers every time.
+    var l = times.length;
+    for (var i = 1; i < l; i++) {
+        var this_time = times[i]["time"].time_floor(boundary_res);
+        var last_time = times[i - 1]["time"].time_floor(boundary_res);
+        if (this_time.getTime() != last_time.getTime()) {
+            times.push({"time": this_time, "type": "boundary", "data": {}})
+        }
+    }
+}
+
+
+function add_tick_markers(times, tick_res) {
+    // ticks from start to end
+    var ticks = [];
+    tick_start = new Date(times[0]["time"].time_floor(tick_res));
+    tick_end = new Date(times[times.length - 1]["time"].time_ceil(tick_res));
+
+    var tick = new Date(tick_start);
+    while (tick < tick_end) {
+
+        if (tick.getTime() > tick_start.getTime() && tick.getTime() < tick_end.getTime()) {
+            times.push({"time": new Date(tick), "type": "tick", "data": {}})
+        }
+        tick.setTime(tick.getTime() + tick_res);
+    }
+}
+
+
+function make_times(data, time_res) {
+    // step 1 find all sig times for intervals. record intervals  start and end. Index and reorder.
+    var times = [];
+    for (var i in data) {
+        var start_event = {
+            "time": data[i]["start_time"].time_floor(time_res), 
+            "type": "interval_start",
+            "data": data[i]
+        };
+        var end_event = {
+            "time": data[i]["end_time"].time_floor(time_res), 
+            "type": "interval_end",
+            "data": data[i]
+        };
+        start_event["end"] = end_event;
+        //console.log(data[i]["start_time"].getTime());
+
+        end_event["start"] = start_event;
+        times.push(start_event);
+        times.push(end_event);
+    }
+
+    times.sort(function (a, b) {
+        return a.time - b.time
+    });
+    return times;
+}
+
+
+function time2x() {
+
+}
+
+function auto_ticks(events) {
+    // make a set of tick mark for some events
+    ticks = [];
+    const finishtime = Math.max(...events.map(o => o.end_time));
+    const starttime = Math.min(...events.map(o => o.start_time));
+    const mintickperiod = (finishtime - starttime)/ 10;
+    //                 10ms, 100ms, 1s,   10s,    1min,     10min,     1hr,        1day,         7days           30day,           365day
+    const tickperiods = [10, 100, 1000, 1000*10, 1000*60, 1000*60*10, 1000*3600, 1000*3600*24, 1000*3600*24*7, 1000*3600*24*30, 1000*3600*24*365];
+    let tickperiod = 1;
+    for (i in tickperiods) {
+        console.log(i, tickperiods[i], mintickperiod);
+        if (tickperiods[i] > mintickperiod) {
+            tickperiod = tickperiods[i];
+            break;
+        }
+    }
+    // step 1a add date markers when date changes. Addtick markers every time.
+    for (let t = starttime; t < finishtime; t += tickperiod) {
+        ticktime = new Date(t).time_floor(tickperiod);
+        ticks.push(ticktime);
+    }
+    console.log(ticks);
+}
+
+
+function display_lengths(times) {
+    // make display lengeths x = c + d(period length)
+
+    var x = 0;
+    var d = 5;
+    last_time = times[0]["time"];
+    var nmark = 0;
+    for (i in times) {
+        this_time = times[i]["time"];
+        if (last_time.getTime() < this_time.getTime()) {
+            nmark += 1;
+            x += d + Math.pow(this_time.getTime() - last_time.getTime(), 0.3) * 0.5;
+        }
+        times[i]["x"] = x;
+        last_time = this_time;
+        console.log("--", i, times[i]["time"], times[i]["x"]);
+    }
+    var xmax = times[times.length-1]["x"];
+    for (i in times) {
+        times[i]["x"] /= xmax;
+    }
+    for (i=0; i < times.length-2; i++) {
+        times[i]["x_mid"] = (times[i]["x"] + times[i+1]["x"]) *0.5;
+        times[i]["period"] = times[i]["time"].format_period(times[i+1]["time"]);
+    }
+    times[times.length-1]["x_mid"] = 1.0;
+    times[times.length-1]["period"] = '----';
+}
+
+function timeline2(data, wwidth, time_res, boundary_res, tick_res) {
+    // step 1 find all sig times for intervals. record intervals  start and end. Index and reorder.
+    times = make_times(data, time_res);
+
+    // step 1a add date markers when date changes. Addtick markers every time.
+    add_date_markers(times, boundary_res);
+  
+    // ticks from start to end
+    add_tick_markers(times, tick_res);
+
+    auto_ticks(data);
+
+    times.sort(function (a, b) {
+        return a.time - b.time
+    });
+
+    console.log(times);
+
+    // calculate display lengths. x = c + d(period length)
+    display_lengths(times)
+
+    // find the row for each interval. Go through each interval in order of start time. mark each interval with a row.
+    max_rows = mark_rows(times, data);
+
+
+    // scale the time and display
+    return render_timeline(times, max_rows, wwidth); 
+
+}
+

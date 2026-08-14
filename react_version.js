@@ -147,7 +147,7 @@ alevel() {
            link="https://dap.ceda.ac.uk" icon="desktop"/>
         <LightUp icon="download" name="anon-ftp" groupname="uptimerobot"  keyname="anon-ftp.ceda.ac.uk"/>
         <LightUp name="Artefacts" groupname="uptimerobot"  keyname="artefacts server"/>
-        <LightEquals icon="eraser" name="dap-logs" groupname="checks"  keyname="dap_log_ok" alert="false"/>
+        <LightEquals icon="book" name="dap-logs" groupname="checks"  keyname="dap_log_ok" alert="false"/>
       </div>
     );
   }
@@ -234,6 +234,7 @@ function Ingest(props) {
         
         <LightBelow name="Crontab populated" groupname="checks" keyname="crontab_lines" 
    warn="100" alert="30"/>  
+   <LightAbove name="Transport endpoint error" groupname="checks" keyname="Transport_found_in_ingest_logs" show_value="on" warn="0" alert="2"/>
    <LightEquals name="Deposit test" groupname="checks" keyname="deposit_client_ok" alert="false"/>  
    <LightAbove name="fail" groupname="ingest" keyname="fail" show_value="on" warn="5" alert="10" />  
    <LightAbove name="warn" groupname="ingest" keyname="warn" show_value="on" warn="10" alert="30"/>  
