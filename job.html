@@ -76,7 +76,7 @@
 
     function render_job_logs(logs) {
         var last_log = logs[0];
-        z.append("<p>Back: " + stream_button(logs[0]) + "</p>");
+        z.append("<p>Back: " + stream_button(logs[0]) + "<a class='btn btn-info' href='" + last_log.docs + "'>Docs</a></p>");
         var cron = ' (Manualy run)';
         if (last_log.config && last_log.config.when) {cron = " (Cron: "+ last_log.config.when + ")" }
         if (last_log.state == "new"){
