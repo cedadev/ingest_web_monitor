@@ -209,5 +209,5 @@ function get_last_logs() {
 ingest_sum(30000);
 uptimerobot(120000);
 simple_check_output(30000);
-grab("https://archdash.ceda.ac.uk/current/api", "current_deposits", 5000);
+grab("/current/api", "current_deposits", 5000);
 fbi_item_count(30000);
